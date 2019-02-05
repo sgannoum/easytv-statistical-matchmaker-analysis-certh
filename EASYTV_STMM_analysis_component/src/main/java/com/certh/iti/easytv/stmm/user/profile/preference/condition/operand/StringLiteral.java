@@ -40,4 +40,8 @@ public class StringLiteral extends OperandLiteral {
 		StringLiteral other = (StringLiteral) op2;
 		return str.compareToIgnoreCase(other.str);
 	}
+	
+	public double[] getPoint() {
+		return new double[] {str.length()};
+	}
 }

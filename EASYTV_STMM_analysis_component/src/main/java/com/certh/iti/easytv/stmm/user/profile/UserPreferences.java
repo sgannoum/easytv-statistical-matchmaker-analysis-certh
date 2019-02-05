@@ -3,12 +3,13 @@ package com.certh.iti.easytv.stmm.user.profile;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.json.JSONObject;
 
 import com.certh.iti.easytv.stmm.user.profile.preference.ConditionalPreference;
 import com.certh.iti.easytv.stmm.user.profile.preference.Preference;
 
-public class UserPreferences {
+public class UserPreferences implements Clusterable {
 	
 	private List<Preference> preferences;
 	private JSONObject jsonObj;
@@ -65,7 +66,7 @@ public class UserPreferences {
 	}
 	
 	public double distanceTo(UserPreferences other) {
-		//TO-DO how to compare user preferences
+		//TO-DO include the conditional preferences
 		Preference  pref1 = this.getDefaultPreference();
 		Preference  pref2 = other.getDefaultPreference();
 		return pref1.distanceTo(pref2);
@@ -73,6 +74,11 @@ public class UserPreferences {
 	
 	public double distanceTo(UserProfile other) {
 		return distanceTo(other.getUserPreferences());
+	}
+
+	public double[] getPoint() {
+		//TO-DO include the conditional preferences
+		return this.getDefaultPreference().getPoint();
 	}
 
 }

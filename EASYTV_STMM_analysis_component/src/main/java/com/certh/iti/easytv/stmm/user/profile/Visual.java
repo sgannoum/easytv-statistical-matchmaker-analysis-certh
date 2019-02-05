@@ -1,8 +1,9 @@
 package com.certh.iti.easytv.stmm.user.profile;
 
+import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.json.JSONObject;
 
-public class Visual {
+public class Visual implements Clusterable{
 	
 	private static final String[] ColorBlindessStrTypes = { "normal", "deuteranomaly" ,"deuteranopia","protanomaly","protanopia","tritanomaly","tritanopia"};
 
@@ -103,5 +104,9 @@ public class Visual {
 				return i;
 			
 		return -1;
+	}
+
+	public double[] getPoint() {
+		return new double[] {visualAcuity, contrastSensitivity, colorBlindness};
 	}
 }

@@ -46,4 +46,9 @@ public class ConditionLiteral extends OperandLiteral {
 		return conditionalLiteral.distanceTo(((ConditionLiteral) op2).conditionalLiteral);
 	}
 	
+	public double[] getPoint() {
+		//TO-DO implement a getPoint
+		return null;
+	}
+	
 }

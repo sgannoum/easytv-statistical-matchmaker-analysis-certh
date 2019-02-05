@@ -1,5 +1,6 @@
 package com.certh.iti.easytv.stmm.user.profile.preference.condition.operand;
 
+import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.json.JSONObject;
 
 
@@ -8,7 +9,7 @@ import org.json.JSONObject;
  * @author salgan
  *
  */
-public abstract class OperandLiteral {
+public abstract class OperandLiteral implements Clusterable{
 	
 	protected Object literal;
 	

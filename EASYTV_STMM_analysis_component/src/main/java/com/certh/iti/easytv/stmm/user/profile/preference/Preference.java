@@ -3,6 +3,8 @@ package com.certh.iti.easytv.stmm.user.profile.preference;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,8 +21,29 @@ import com.certh.iti.easytv.stmm.user.profile.preference.condition.operand.Strin
 import com.certh.iti.easytv.stmm.user.profile.preference.entry.BooleanEntry;
 import com.certh.iti.easytv.stmm.user.profile.preference.entry.ColorEntry;
 
-public class Preference {
+public class Preference implements Clusterable {
 
+	
+	protected static final String[] PREFERENCE_ATTRIBUTE = {"audio_volume",
+															"language_audio",
+															"contrast",
+															"font_size",
+														//	"font", 
+															"language_subtitles",
+															"language_sign", 
+															"tts_speed", 
+															"tts_volume", 
+															"tts_language", 
+															"cs_accessibility_imageMagnification_scale",
+															"cs_accessibility_textDetection", 
+															"cs_audio_volume", 
+															"cs_audio_track", 
+															"cs_audio_description", 
+															"cs_cc_audio_subtitles", 
+															"cs_cc_subtitles_language", 
+															"cs_cc_subtitles_font_size",
+															"fontColor", 
+															"backgroundColor"};
 	protected String name;
 	protected Map<String, OperandLiteral> preferences;
 	protected JSONObject jsonObj;
@@ -135,6 +158,37 @@ public class Preference {
 			}   
 		}
 		return  dist ;
+	}
+
+	public double[] getPoint() {
+		double[] points = new double[PREFERENCE_ATTRIBUTE.length + 4];
+		int index = 0;
+		for(int i = 0 ; i < PREFERENCE_ATTRIBUTE.length - 2; i++) {
+			OperandLiteral operand = preferences.get(PREFERENCE_ATTRIBUTE[i]);
+			if(operand == null) {
+				points[index++] = 0.0;
+			} else {
+				//TO-DO get all the operand values
+				points[index++] = operand.getPoint()[0];
+			}
+		}
+		
+		//Add color dimensions 
+		for(int i = PREFERENCE_ATTRIBUTE.length - 2 ; i < PREFERENCE_ATTRIBUTE.length; i++) {
+			OperandLiteral operand = preferences.get(PREFERENCE_ATTRIBUTE[i]);
+			if(operand == null) {
+				points[index++] = 0.0; 
+				points[index++] = 0.0; 
+				points[index++] = 0.0;
+			} else {
+				//TO-DO get all the operand values
+				points[index++] = operand.getPoint()[0];
+				points[index++] = operand.getPoint()[1];
+				points[index++] = operand.getPoint()[2];
+			}
+		}
+		
+		return points;
 	}
 	
 }

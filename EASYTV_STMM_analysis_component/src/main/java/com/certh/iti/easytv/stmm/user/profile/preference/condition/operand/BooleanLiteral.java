@@ -34,4 +34,8 @@ public class BooleanLiteral extends OperandLiteral {
 		BooleanLiteral other = (BooleanLiteral) op2;
 		return booleanLiteral == other.booleanLiteral ? 0 : 1.0;
 	}
+
+	public double[] getPoint() {
+		return new double[] {booleanLiteral ? 1.0 : 0.0};
+	}
 }

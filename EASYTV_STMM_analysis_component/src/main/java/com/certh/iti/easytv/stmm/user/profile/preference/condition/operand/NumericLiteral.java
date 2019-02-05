@@ -40,5 +40,9 @@ public class NumericLiteral  extends OperandLiteral {
 		NumericLiteral other = (NumericLiteral) op2;
 		return Math.pow(numericLiteral - other.numericLiteral, 2);
 	}
+	
+	public double[] getPoint() {
+		return new double[] {numericLiteral};
+	}
 
 }

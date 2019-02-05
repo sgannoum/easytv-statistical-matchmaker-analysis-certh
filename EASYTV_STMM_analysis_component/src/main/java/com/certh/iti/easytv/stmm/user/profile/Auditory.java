@@ -1,8 +1,9 @@
 package com.certh.iti.easytv.stmm.user.profile;
 
+import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.json.JSONObject;
 
-public class Auditory {
+public class Auditory implements Clusterable{
 	
     private int quarterK;
     private int halfK;
@@ -138,6 +139,10 @@ public class Auditory {
 	
 	public double distanceTo(UserProfile other) {
 		return distanceTo(other.getAuditoryCapabilities());
+	}
+
+	public double[] getPoint() {		
+		return new double[] {quarterK, halfK, oneK, twoK, fourK, eightK};
 	}
 	
 

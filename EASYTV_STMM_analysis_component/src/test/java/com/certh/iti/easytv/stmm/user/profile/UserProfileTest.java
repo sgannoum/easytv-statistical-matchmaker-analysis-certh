@@ -261,5 +261,56 @@ public class UserProfileTest {
 	
 		Assert.assertEquals(userProfile1.distanceTo(userProfile2), 4.0);
 	}
+	
+	
+	@Test
+	public void test_getPoints() throws IOException {
+		
+		JSONObject jsonProfile1 = new JSONObject("{\r\n" + 
+				"  \"general\": {\r\n" + 
+				"    \"age\": 40,\r\n" + 
+				"    \"gender\": \"male\"\r\n" + 
+				"  },\r\n" + 
+				"  \"visual\": {\r\n" + 
+				"    \"visual_acuity\": 8,\r\n" + 
+				"    \"contrast_sensitivity\": 24,\r\n" + 
+				"    \"color_blindness\": \"normal\"\r\n" + 
+				"  },\r\n" + 
+				"  \"auditory\": {\r\n" + 
+				"    \"quarterK\": 81,\r\n" + 
+				"    \"halfK\": 35,\r\n" + 
+				"    \"oneK\": 98,\r\n" + 
+				"    \"twoK\": 18,\r\n" + 
+				"    \"fourK\": 57,\r\n" + 
+				"    \"eightK\": 27\r\n" + 
+				"  },\r\n" + 
+				"  \"user_preferences\": {\r\n" + 
+				"    \"default\": {\r\n" + 
+				"      \"preferences\": {\r\n" + 
+				"        \"contrast\": 100,\r\n" + 
+				"        \"font_size\": 20,\r\n" + 
+				"        \"color_temperature\": 0.008,\r\n" + 
+				"        \"language_subtitles\": \"spanish\",\r\n" + 
+				"        \"language_sign\": \"spanish\",\r\n" + 
+				"        \"language_audio\": \"spanish\",\r\n" +
+				"        \"fontColor\": \"#030201\",\r\n" + 
+				"        \"backgroundColor\": \"#060504\"\r\n" + 
+				"      }\r\n" + 
+				"    }\r\n" + 
+				"  }\r\n" + 
+				"}");
+		
+		UserProfile userProfile1 = new UserProfile(jsonProfile1);
+		double[] expectedPoints = {40, 0, 8, 24, 0, 81, 35, 98, 18, 57, 27, 
+									0, 1, 100, 20, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3,1,2 ,6,4,5 };
+		
+		double[] actualPoints = userProfile1.getPoint();
+		
+		Assert.assertEquals(actualPoints.length, expectedPoints.length);
+		
+		for(int i = 0 ; i < actualPoints.length; i++)
+			Assert.assertEquals(actualPoints[i], expectedPoints[i]); 
+
+	}
 
 }

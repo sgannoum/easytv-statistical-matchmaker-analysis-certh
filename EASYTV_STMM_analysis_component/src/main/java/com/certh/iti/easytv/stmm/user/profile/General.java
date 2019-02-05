@@ -1,28 +1,18 @@
 package com.certh.iti.easytv.stmm.user.profile;
 
+import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.json.JSONObject;
 
-public class General {
-	
-	private enum Geneder{
-        MALE,
-        FEMALE
-	}
-	
+public class General implements Clusterable {
+		
 	private final String[] GenderTypes = {"male", "female"};
 	private int age;
-	private Geneder gender;
+	private int gender;
 	private JSONObject jsonObj;
 	
 	public General(int age, String gender) {
 		this.setAge(age);
-		this.gender = toGender(gender);
-		this.jsonObj = null;
-	}
-	
-	public General(int age, Geneder gender) {
-		this.setAge(age);
-		this.setGender(gender);
+		this.gender = indexOf(gender);
 		this.jsonObj = null;
 	}
 	
@@ -41,17 +31,14 @@ public class General {
 		this.age = age;
 	}
 
-	public Geneder getGender() {
+	public int getGender() {
 		return gender;
-	}
-
-	public void setGender(Geneder gender) {
-		this.gender = gender;
 	}
 	
 	public void setGender(String gender) {
-		this.gender = toGender(gender); 
-		if(this.gender == null) 
+		this.gender = indexOf(gender); 
+		
+		if(this.gender == -1) 
 			throw new IllegalStateException("Non existing gender type: " + gender);
 	}
 	
@@ -101,19 +88,23 @@ public class General {
 		if(jsonObj == null) {
 			jsonObj = new JSONObject();
 			jsonObj.put("age", age);
-			jsonObj.put("gender", gender == Geneder.MALE ? GenderTypes[0] : GenderTypes[1]);
+			jsonObj.put("gender", GenderTypes[gender]);
 		}  
 		return jsonObj;
 	}
 	
-	private Geneder toGender(String gender) {
+	private int indexOf(String gender) {
 		gender = gender.toLowerCase();
 		if(gender.equals(GenderTypes[0]))
-			return Geneder.MALE;
+			return 0;
 		else if(gender.equals(GenderTypes[1]))
-			return Geneder.FEMALE;
+			return 1;
 		else 
-			return null;
+			return -1;
+	}
+
+	public double[] getPoint() {
+		return new double[] {age, gender};
 	}
 
 }

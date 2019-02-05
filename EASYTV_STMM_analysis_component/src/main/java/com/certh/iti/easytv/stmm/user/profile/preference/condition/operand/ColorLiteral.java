@@ -37,6 +37,10 @@ public class ColorLiteral extends OperandLiteral{
 	              	Math.abs(color.getGreen() - other.color.getGreen());
 	}
 	
+	public double[] getPoint() {
+		return new double[] {color.getRed(), color.getBlue(), color.getGreen()};
+	}
+	
 /*
  *  TO-DO keep or remove
  

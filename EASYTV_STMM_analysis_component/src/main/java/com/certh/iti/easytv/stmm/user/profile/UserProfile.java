@@ -5,9 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+
+import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.json.JSONObject;
 
-public class UserProfile {
+public class UserProfile implements Clusterable {
 	
 	private final double NoiseReduction = 0.2;
 	private Boolean _IsAbstract = true;
@@ -141,6 +144,31 @@ public class UserProfile {
 
 	public void setUserPreferences(UserPreferences userPreferences) {
 		this.userPreferences = userPreferences;
+	}
+	
+	public double[] getPoint() {
+		double[] generalPoints = general.getPoint();
+		double[] visualPoints = visualCapabilities.getPoint();
+		double[] auditoryPoints = auditoryCapabilities.getPoint();
+		double[] defaultPreferencePoints = userPreferences.getPoint();
+		
+		int size = generalPoints.length + visualPoints.length + auditoryPoints.length + defaultPreferencePoints.length;
+		double [] userProfilePoints = new double[size];
+		int index = 0;
+		
+		for(int i = 0; i < generalPoints.length; i++, index++)
+			userProfilePoints[index] = generalPoints[i];
+		
+		for(int i = 0; i < visualPoints.length; i++, index++)
+			userProfilePoints[index] = visualPoints[i];
+		
+		for(int i = 0; i < auditoryPoints.length; i++, index++)
+			userProfilePoints[index] = auditoryPoints[i];
+		
+		for(int i = 0; i < defaultPreferencePoints.length; i++, index++)
+			userProfilePoints[index] = defaultPreferencePoints[i];
+		
+		return userProfilePoints;
 	}
 	
 	private void ReadProfileJSON(File file) throws IOException {

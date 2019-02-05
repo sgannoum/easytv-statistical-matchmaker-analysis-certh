@@ -42,5 +42,9 @@ public class TimeLiteral extends OperandLiteral{
 
 		return Math.pow(time.getHour() - other.time.getHour(), 2) + Math.pow((time.getMinute() - other.time.getMinute())/60.0, 2);
 	}
+	
+	public double[] getPoint() {
+		return new double[] {time.toNanoOfDay()};
+	}
 
 }

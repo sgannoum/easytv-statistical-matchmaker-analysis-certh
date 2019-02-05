@@ -49,4 +49,8 @@ public class LanguageLiteral extends OperandLiteral{
 			
 		return -1;
 	}
+	
+	public double[] getPoint() {
+		return new double[] {language};
+	}
 }
