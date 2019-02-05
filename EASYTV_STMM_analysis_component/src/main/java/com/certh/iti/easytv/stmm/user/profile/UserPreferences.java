@@ -36,6 +36,9 @@ public class UserPreferences implements Clusterable {
 	}
 
 	public JSONObject getJSONObject() {
+		if(jsonObj == null) {
+			toJSON();
+		}
 		return jsonObj;
 	}
 

@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 public class General implements Clusterable {
 		
-	private final String[] GenderTypes = {"male", "female"};
+	private static final String[] GenderTypes = {"male", "female"};
 	private int age;
 	private int gender;
 	private JSONObject jsonObj;
@@ -33,6 +33,13 @@ public class General implements Clusterable {
 
 	public int getGender() {
 		return gender;
+	}
+	
+	public static String getGender(int gender) {
+		if(gender < 0 || gender > GenderTypes.length) 
+			throw new IllegalStateException("Non existing gender type: " + gender);
+		
+		return GenderTypes[gender];
 	}
 	
 	public void setGender(String gender) {

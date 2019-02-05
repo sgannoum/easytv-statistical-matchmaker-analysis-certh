@@ -44,6 +44,7 @@ public class Preference implements Clusterable {
 															"cs_cc_subtitles_font_size",
 															"fontColor", 
 															"backgroundColor"};
+	
 	protected String name;
 	protected Map<String, OperandLiteral> preferences;
 	protected JSONObject jsonObj;

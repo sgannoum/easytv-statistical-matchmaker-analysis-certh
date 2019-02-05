@@ -58,6 +58,13 @@ public class Visual implements Clusterable{
 			throw new IllegalStateException("Unknown Color blindess condition " + colorBlindness);
 	}
 	
+	public static String getColorBlindness(int colorBlindness) {
+		if(colorBlindness < 0 || colorBlindness >= ColorBlindessStrTypes.length) 
+			throw new IllegalStateException("Non existing gender type: " + colorBlindness);
+		
+		return ColorBlindessStrTypes[colorBlindness];
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if(obj == null) return false;

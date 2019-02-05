@@ -42,12 +42,19 @@ public class LanguageLiteral extends OperandLiteral{
 	}
 	
 	
-	private int indexOf(String language) {
+	protected static int indexOf(String language) {
 		for(int i = 0; i < languagesStr.length; i++) 
 			if(language.equalsIgnoreCase(languagesStr[i])) 
 				return i;
 			
 		return -1;
+	}
+	
+	protected static String languageOf(int index) {
+		if(index < 0 || index >= languagesStr.length)
+			throw new IllegalStateException("Unknow integer representation of a language "+index);
+		
+		return languagesStr[index];
 	}
 	
 	public double[] getPoint() {
