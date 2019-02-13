@@ -59,11 +59,8 @@ public class General implements Clusterable {
 		this.jsonObj = json;
 	}
 	
-	public double distanceTo(General other) {
-		if(other.gender != this.gender)
-			return Math.sqrt(age - other.age) + 1;
-		else 
-			return Math.sqrt(age - other.age);
+	public double distanceTo(General other) { 
+		return Math.pow((age - other.age), 2) + Math.pow((gender - other.gender), 2);
 	}
 	
 	public double distanceTo(UserProfile other) {

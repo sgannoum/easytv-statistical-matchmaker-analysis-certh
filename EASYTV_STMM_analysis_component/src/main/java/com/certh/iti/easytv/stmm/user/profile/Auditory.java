@@ -32,6 +32,7 @@ public class Auditory implements Clusterable{
 	}
 
 	public void setQuarterK(int quarterK) {
+		//TO-DO Check value
 		this.quarterK = quarterK;
 	}
 
@@ -40,6 +41,7 @@ public class Auditory implements Clusterable{
 	}
 
 	public void setHalfK(int halfK) {
+		//TO-DO Check value
 		this.halfK = halfK;
 	}
 
@@ -48,6 +50,7 @@ public class Auditory implements Clusterable{
 	}
 
 	public void setOneK(int oneK) {
+		//TO-DO Check value
 		this.oneK = oneK;
 	}
 
@@ -56,6 +59,7 @@ public class Auditory implements Clusterable{
 	}
 
 	public void setTwoK(int twoK) {
+		//TO-DO Check value
 		this.twoK = twoK;
 	}
 
@@ -64,6 +68,7 @@ public class Auditory implements Clusterable{
 	}
 
 	public void setFourK(int fourK) {
+		//TO-DO Check value
 		this.fourK = fourK;
 	}
 
@@ -72,6 +77,7 @@ public class Auditory implements Clusterable{
 	}
 
 	public void setEightK(int eightK) {
+		//TO-DO Check value
 		this.eightK = eightK;
 	}
 	

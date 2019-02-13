@@ -7,12 +7,16 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.apache.commons.math3.ml.clustering.Cluster;
+
+import com.certh.iti.easytv.stmm.user.profile.UserProfile;
+
 public class Abstracts {
 	
 	/**
 	 * @brief Find the profile that represents the cluster center.
 	 * The center of the cluster is the profile that has the lowest mean distance 
-	 * from all other cluster profiles.
+	 * from all other cluster's profiles.
 	 * 
 	 * @param cluster The cluster profiles
 	 * @param resultProfile The center of the cluster
@@ -20,24 +24,25 @@ public class Abstracts {
 	 * @param resultMeanDistance The center mean distance from all cluster profiles.
 	 * @return The mean distance of the center profile.
 	 */
-	public static double FindCenter(HashSet<Profile> cluster, Profile resultProfile, TreeMap<Double, HashSet<Profile>> distances, Double resultMeanDistance) {
+	public static double FindCenter(Cluster<UserProfile> cluster, UserProfile resultProfile, TreeMap<Double, HashSet<UserProfile>> distances, Double resultMeanDistance) {
 		Double curMeanDistance = null, curDistance;
-		TreeMap<Double, HashSet<Profile>> curDistances;
-		HashSet<Profile> curDistancesSub = null;
+		TreeMap<Double, HashSet<UserProfile>> curDistances;
+		HashSet<UserProfile> curDistancesSub = null;
 		
-		Iterator<Profile> clusterIter1 = cluster.iterator();
+		Iterator<UserProfile> clusterIter1 = cluster.getPoints().iterator();
 		while(clusterIter1.hasNext()){
+
 			curMeanDistance = 0.0;
-			curDistances = new TreeMap<Double, HashSet<Profile>>();
-			Profile candidateCenter = clusterIter1.next();
+			curDistances = new TreeMap<Double, HashSet<UserProfile>>();
+			UserProfile candidateCenter = clusterIter1.next();
 			
-			Iterator<Profile> clusterIter2 = cluster.iterator();
-			while(clusterIter2.hasNext() && !clusterIter1.equals(clusterIter2)){
-				Profile other = clusterIter2.next();
-				curDistance = candidateCenter.DistanceTo(other);
+			Iterator<UserProfile> clusterIter2 = cluster.getPoints().iterator();
+			while(clusterIter2.hasNext() && !clusterIter1.equals(clusterIter2)) {
+				UserProfile other = clusterIter2.next();
+				curDistance = candidateCenter.distanceTo(other);
 				
 				if((curDistancesSub = curDistances.get(curDistance)) == null) {
-                    curDistancesSub = new HashSet<Profile>();
+                    curDistancesSub = new HashSet<UserProfile>();
                     curDistances.put(curDistance, curDistancesSub);
 				}
 				
@@ -45,9 +50,13 @@ public class Abstracts {
                 curMeanDistance += curDistance;
 			}
 			
-			curMeanDistance /= cluster.size();
+			curMeanDistance /= cluster.getPoints().size();
 			if(curMeanDistance < resultMeanDistance) {
-				resultProfile.copy(candidateCenter);
+				resultProfile.setAuditoryCapabilities(candidateCenter.getAuditoryCapabilities());
+				resultProfile.setGeneral(candidateCenter.getGeneral());
+				resultProfile.setVisualCapabilities(candidateCenter.getVisualCapabilities());
+				resultProfile.setUserPreferences(candidateCenter.getUserPreferences());
+
                 resultMeanDistance = curMeanDistance;
                 distances.putAll(curDistances);
 			}
@@ -56,7 +65,7 @@ public class Abstracts {
 		return curMeanDistance;
 	}
 	
-	public static double FindCenter(HashSet<Profile> cluster, Profile resultProfile, TreeMap<Double, HashSet<Profile>> distances) {
+	public static double FindCenter(Cluster<UserProfile> cluster, UserProfile resultProfile, TreeMap<Double, HashSet<UserProfile>> distances) {
 		return FindCenter(cluster, resultProfile, distances, Double.MAX_VALUE);
 	}
 	

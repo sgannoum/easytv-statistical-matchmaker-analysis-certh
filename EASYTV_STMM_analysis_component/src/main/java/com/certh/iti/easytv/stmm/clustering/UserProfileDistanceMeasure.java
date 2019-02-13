@@ -25,6 +25,11 @@ public class UserProfileDistanceMeasure implements DistanceMeasure {
 	private EnumSet<CompareType> compareType;
 	private long mask;
 	
+	public UserProfileDistanceMeasure(String[] compareType) {
+		this.compareType = toEnum(compareType);
+		this.setMask(this.compareType);
+	}
+	
 	public UserProfileDistanceMeasure(EnumSet<CompareType> compareType) {
 		this.compareType = compareType;
 		this.setMask(compareType);
@@ -73,27 +78,28 @@ public class UserProfileDistanceMeasure implements DistanceMeasure {
 		return Math.sqrt(distance);
 	}
 	
-	public static EnumSet<CompareType> toEnum(String[] compare){
-		//TO-DO convert the string array into a EnumSet
-		return EnumSet.of(UserProfileDistanceMeasure.strToEnum(compare[0]));
-	}
-	
-	public String indexOf(String type) {
-		
-		for(int i = 0; i < CompareTypeStr.length; i++) 
-			if(CompareTypeStr[i].toLowerCase().equals(type)) 
-				return CompareTypeStr[i];
-			
-		return null;
+	/**
+	 * Convert a 
+	 * @param compare
+	 * @return
+	 */
+	public static EnumSet<CompareType> toEnum(String[] compare) {
+		List<CompareType> compareType = new ArrayList<CompareType>();
+		for(int i = 0; i < compare.length; i++) 
+			compareType.add(UserProfileDistanceMeasure.strToEnum(compare[i]));
+		return EnumSet.copyOf(compareType);
 	}
 	
 	public static CompareType strToEnum(String type) {
-		
+		return CompareTypeEnum[indexOf(type)];
+	}
+	
+	public static int indexOf(String type) {
 		for(int i = 0; i < CompareTypeStr.length; i++) 
-			if(CompareTypeStr[i].toLowerCase().equals(type)) 
-				return CompareTypeEnum[i];
+			if(CompareTypeStr[i].equalsIgnoreCase(type)) 
+				return i;
 			
-		return null;
+		return -1;
 	}
 
 }

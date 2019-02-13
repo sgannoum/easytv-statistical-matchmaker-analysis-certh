@@ -94,49 +94,49 @@ public class UserProfileDistanceMeasureTest {
 	public void test_only_general_mask() {
 		UserProfileDistanceMeasure distanceMeasure = new UserProfileDistanceMeasure(EnumSet.of(UserProfileDistanceMeasure.CompareType.GENERAL));
 		
-		Assert.assertEquals(101.0, distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
+		Assert.assertEquals(Math.sqrt(101.0), distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
 	}
 	
 	@Test
 	public void test_only_visual_mask() {
 		UserProfileDistanceMeasure distanceMeasure = new UserProfileDistanceMeasure(EnumSet.of(UserProfileDistanceMeasure.CompareType.VISUAL));
 		
-		Assert.assertEquals(117.0, distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
+		Assert.assertEquals(Math.sqrt(117.0), distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
 	}
 	
 	@Test
 	public void test_only_auditory_mask() {
 		UserProfileDistanceMeasure distanceMeasure = new UserProfileDistanceMeasure(EnumSet.of(UserProfileDistanceMeasure.CompareType.AUDITORY));
 		
-		Assert.assertEquals(345.0, distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
+		Assert.assertEquals(Math.sqrt(345.0), distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
 	}
 	
 	@Test
 	public void test_only_preferences_mask() {
 		UserProfileDistanceMeasure distanceMeasure = new UserProfileDistanceMeasure(EnumSet.of(UserProfileDistanceMeasure.CompareType.DEFAULT_PREFERENCE));
 		
-		Assert.assertEquals(500.0, distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
+		Assert.assertEquals(Math.sqrt(500.0), distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
 	}
 	
 	@Test
 	public void test_general_auditory_mask() {
 		UserProfileDistanceMeasure distanceMeasure = new UserProfileDistanceMeasure(EnumSet.of(UserProfileDistanceMeasure.CompareType.GENERAL, UserProfileDistanceMeasure.CompareType.AUDITORY));
 		
-		Assert.assertEquals(446.0, distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
+		Assert.assertEquals(Math.sqrt(446.0), distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
 	}
 	
 	@Test
 	public void test_general_visual_auditory_mask() {
 		UserProfileDistanceMeasure distanceMeasure = new UserProfileDistanceMeasure(EnumSet.of(UserProfileDistanceMeasure.CompareType.GENERAL, UserProfileDistanceMeasure.CompareType.AUDITORY, UserProfileDistanceMeasure.CompareType.VISUAL));
 		
-		Assert.assertEquals(563.0, distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
+		Assert.assertEquals(Math.sqrt(563.0), distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
 	}
 	
 	@Test
 	public void test_all_mask() {
 		UserProfileDistanceMeasure distanceMeasure = new UserProfileDistanceMeasure(EnumSet.of(UserProfileDistanceMeasure.CompareType.ALL));
 		
-		Assert.assertEquals(1063.0, distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
+		Assert.assertEquals(Math.sqrt(1063.0), distanceMeasure.compute(userProfile1.getPoint(), userProfile2.getPoint()));
 	}
 	
 

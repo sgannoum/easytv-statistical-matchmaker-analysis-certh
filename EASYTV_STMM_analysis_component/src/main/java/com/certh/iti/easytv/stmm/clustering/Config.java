@@ -1,7 +1,6 @@
 package com.certh.iti.easytv.stmm.clustering;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,11 +10,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.math3.ml.clustering.Clusterer;
+
+import com.certh.iti.easytv.stmm.user.profile.UserProfile;
+
 public class Config {
 	
 	private static Config instance = null;
-	public List<iClustering> Config;
-	private List<iClustering> _Clusterers;
+	public List<Clusterer<UserProfile>> Config;
+	private final List<iCluster> _Clusterers;
 	
 	private enum ParseMode{
 		None,
@@ -23,9 +26,9 @@ public class Config {
 	};
 	
 	private Config() {
-		Config = new ArrayList<iClustering>();
-		_Clusterers = new ArrayList<iClustering>();
-		_Clusterers.add(new DBScan());
+		Config = new ArrayList<Clusterer<UserProfile>>();
+		_Clusterers = new ArrayList<iCluster>();
+		_Clusterers.add(new DBScanWrapper());
 	}
 	
 	public static Config getInstance() {
@@ -49,33 +52,64 @@ public class Config {
 	public void ReadConfiguration(File file) throws IOException, NumberFormatException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		ParseMode parseMode = ParseMode.None;
 		String line, name, value;
-		iClustering _CurrentClusterer = null;
+		iCluster _CurrentClusterer = null;
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 		
 		while((line = reader.readLine()) != null) {
 			line = line.trim();
+			
+			//Specify clustering algorithm
 			if(line.startsWith("[")) {
 				parseMode = ParseMode.None;
 				
-				Iterator<iClustering> clustersIter = instance._Clusterers.iterator();
+				//Clone the previous algorithm
+				if(_CurrentClusterer != null) 
+					instance.Config.add(_CurrentClusterer.Clone());
+				
+				Iterator<iCluster> clustersIter = instance._Clusterers.iterator();
 				while(clustersIter.hasNext()) {
-					iClustering clusterer = clustersIter.next();
+					iCluster clusterer = clustersIter.next();
 					if(line.toLowerCase().equals("["+clusterer.get_Name().toLowerCase()+"]")) {
 						parseMode = ParseMode.Clusterer;
-						instance.Config.add(clusterer.Clone());
-						_CurrentClusterer = instance.Config.get(instance.Config.size() - 1);
+						_CurrentClusterer = clusterer;
 					}
 				}
 				
-			} else {
-				if(parseMode == ParseMode.Clusterer) {
-                    name = line.split("=")[0].trim();
-                    value = line.split("=")[1].trim();
-                    Field field = _CurrentClusterer.getClass().getField(name);
+			} else if(parseMode == ParseMode.Clusterer) {
+				
+				//Set parameters
+                name = line.split("=")[0].trim();
+                value = line.split("=")[1].trim();
+                
+                Field field = _CurrentClusterer.getClass().getDeclaredField(name);
+                
+                if(field.getType().isArray()) {
+                    String[] values = null;
+                    
+                    //Specify one or multiple values
+                    if(value.contains(",")) 
+                    	values = value.split(",");
+                    else 
+                    	values = new String[]{value};
+                    
+                    field.setAccessible(true);
+                    field.set(_CurrentClusterer, values);
+                } else if(field.getType().equals(int.class) || field.getType().equals(Integer.class) ) {
+                    field.setAccessible(true);
+                    field.set(_CurrentClusterer, Integer.valueOf(value));
+                } else if(field.getType().equals(double.class) || field.getType().equals(Double.class)) {
+                    field.setAccessible(true);
                     field.set(_CurrentClusterer, Double.valueOf(value));
-				}
+                } else if(field.getType().equals(String.class)) {
+                    field.setAccessible(true);
+                    field.set(_CurrentClusterer, value);
+                }
+
 			}
 		}
+		
+        //clone
+		instance.Config.add(_CurrentClusterer.Clone());
 		
 		reader.close();
 	}

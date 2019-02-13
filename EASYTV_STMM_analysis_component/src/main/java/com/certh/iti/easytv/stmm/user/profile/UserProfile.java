@@ -10,6 +10,8 @@ import java.util.Arrays;
 import org.apache.commons.math3.ml.clustering.Clusterable;
 import org.json.JSONObject;
 
+import com.certh.iti.easytv.stmm.user.profile.preference.condition.operand.ColorLiteral;
+
 public class UserProfile implements Clusterable {
 	
 	private final double NoiseReduction = 0.2;
@@ -32,7 +34,7 @@ public class UserProfile implements Clusterable {
 	
 	public UserProfile(File _File) throws IOException {
 		_IsAbstract = false;
-		_File = null;
+		this._File = _File;
 		jsonObj = null;
 		ReadProfileJSON(_File);
 	}
@@ -73,10 +75,12 @@ public class UserProfile implements Clusterable {
 	}
 
 	public double distanceTo(UserProfile other) {
-		return general.distanceTo(other.general) +
+		return general.distanceTo(other.general) 
+/*				+
 				visualCapabilities.distanceTo(other.visualCapabilities)+
 					auditoryCapabilities.distanceTo(other.auditoryCapabilities) + 
-					 	userPreferences.distanceTo(other.userPreferences);
+					 	userPreferences.distanceTo(other.userPreferences)*/
+					;
 	}
 	
 	public void setJSONObject(JSONObject json) {		
@@ -101,6 +105,15 @@ public class UserProfile implements Clusterable {
 			userPreferences.setJSONObject(json.getJSONObject("user_preferences"));
 		
 		jsonObj = json;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null) return false;
+		if(obj == this) return true;
+		if(!UserProfile.class.isInstance(obj)) return false;
+		UserProfile other = (UserProfile) obj;
+		return getJSONObject().similar(other.getJSONObject());
 	}
 	
 	public JSONObject getJSONObject() {

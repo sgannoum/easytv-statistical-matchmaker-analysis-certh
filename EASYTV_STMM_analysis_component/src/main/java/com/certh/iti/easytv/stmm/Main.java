@@ -1,33 +1,30 @@
 package com.certh.iti.easytv.stmm;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.math3.ml.clustering.Cluster;
+import org.apache.commons.math3.ml.clustering.Clusterer;
+import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
+
 import com.certh.iti.easytv.stmm.clustering.Config;
-import com.certh.iti.easytv.stmm.clustering.iClustering;
+import com.certh.iti.easytv.stmm.clustering.UserProfileDistanceMeasure;
 import com.certh.iti.easytv.stmm.parser.Parser;
 import com.certh.iti.easytv.stmm.preferences.Abstracts;
-import com.certh.iti.easytv.stmm.preferences.Entry;
-import com.certh.iti.easytv.stmm.preferences.EntryManager;
-import com.certh.iti.easytv.stmm.preferences.Profile;
+import com.certh.iti.easytv.stmm.user.profile.UserProfile;
 
 public class Main {
 
@@ -40,7 +37,7 @@ public class Main {
 	private static File _ConfigFile = null;
 	private static File _OutputFile = null;
 	private static File _ProfilesDirectory = null;
-	private static List<Profile> _Profiles = new ArrayList<Profile>();
+	private static Collection<UserProfile> _Profiles = new ArrayList<UserProfile>();
 
 	public static void main(String[] args) throws NumberFormatException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, IOException {
 		//Parse arguments
@@ -58,13 +55,13 @@ public class Main {
 		
 		if(_ProfilesDirectory == null || !_ProfilesDirectory.exists() ) {
 			String pwd = System.getProperty("user.dir");
-            _ProfilesDirectory = new File(pwd + File.separator + "GPII-Statistical-Matchmaker-Data");
+            _ProfilesDirectory = new File(pwd + File.separator + "auto_generated_profiles");
             System.out.println("Could not find profiles directory, reverted to :'" + _ProfilesDirectory.getAbsolutePath() + "'");
 		}
 		
 		if(_ConfigFile == null || !_ConfigFile.exists() ) {
 			String pwd = System.getProperty("user.dir");
-			_ConfigFile = new File(pwd + File.separator + "GPII-Statistical-Matchmaker-Data"+ File.separator+ "config.ini");
+			_ConfigFile = new File(pwd + File.separator + "config.ini");
             System.out.println("Could not find profiles directory, reverted to :'" + _ConfigFile.getAbsolutePath() + "'");
 		}
 		
@@ -84,6 +81,7 @@ public class Main {
 			System.err.println("CRITICAL: Profiles directory ('" + _ConfigFile.getAbsolutePath() + "') does not exist.");
 			System.exit(-1);
 		}
+
 	
 		//Read config
 		Config.getInstance().ReadConfiguration(_ConfigFile);
@@ -104,34 +102,35 @@ public class Main {
         System.out.println("--------");
         System.out.println("Finished loading " + _Profiles.size() + " profiles.");
         System.out.println("--------");
-        System.out.println("Analyzing preferences...");
-        EntryManager.GetMinsAndMaxs(_Profiles);
-        System.out.println("--------");
         System.out.println("Clustering...");
         
         //Cluster
-        List<HashSet<Profile>> clusters = new ArrayList<HashSet<Profile>>();
-        HashSet<Profile> noise = new HashSet<Profile>();
-        Iterator<iClustering> clusterer = Config.getInstance().Config.iterator();
+        List<Cluster<UserProfile>> clusters = new ArrayList<Cluster<UserProfile>>();
+        Iterator<Clusterer<UserProfile>> clusterer = Config.getInstance().Config.iterator();
         while(clusterer.hasNext()) 
-        	clusterer.next().Run(_Profiles, clusters, noise);
-        
+        	clusters.addAll(clusterer.next().cluster(_Profiles));
         
         //Start processing
         System.out.println("--------");
         System.out.println("Reducing clusters..." + clusters.size());
-        List<Profile> generalized = new ArrayList<Profile>();
+        List<UserProfile> generalized = new ArrayList<UserProfile>();
         
-        Iterator<HashSet<Profile>> clustersIter = clusters.iterator();
+        Iterator<Cluster<UserProfile>> clustersIter = clusters.iterator();
+        int clusterIndx = 1;
         while(clustersIter.hasNext()) {
-        	HashSet<Profile> aCluster = clustersIter.next();
-            Profile clusterCenter = new Profile();
-        	TreeMap<Double, HashSet<Profile>> distances = new TreeMap<Double, HashSet<Profile>>();
+        	Cluster<UserProfile> aCluster = clustersIter.next();
+        	UserProfile clusterCenter = new UserProfile();
+        	TreeMap<Double, HashSet<UserProfile>> distances = new TreeMap<Double, HashSet<UserProfile>>();
         	Abstracts.FindCenter(aCluster, clusterCenter, distances);
         	
         	//Generalized.Add(Preferences.GeneralizeProfile(center, distances, _Profiles))
         	generalized.add(clusterCenter);
+        	
+        	System.out.println(clusterIndx++ + " : "+ aCluster.getPoints().size());
         }
+        
+        System.out.println("--------");
+		System.out.println("write JS file to "+_OutputFile.getAbsolutePath());
 
         //Write JS
         WriteJavaScript(generalized);
@@ -150,7 +149,7 @@ public class Main {
 
 		class IniFileFilter implements FilenameFilter {
 			public boolean accept(File dir, String name) {
-				return name.endsWith(".ini") && name.contains(".gen");
+				return name.endsWith(".json");
 			}
 		}
 
@@ -181,13 +180,13 @@ public class Main {
 
 		class IniFileFilter implements FilenameFilter {
 			public boolean accept(File dir, String name) {
-				return name.endsWith(".ini") && !name.contains(".gen");
+				return name.endsWith(".json");
 			}
 		}
 
 		File[] iniFiles = directory.listFiles(new IniFileFilter());
 		for (int i = 0; i < iniFiles.length; i++)
-			Parser.ReadProfile(iniFiles[i], _Profiles);
+			_Profiles.add(new UserProfile(iniFiles[i]));
 
 		class dirFileFilter implements FileFilter {
 			public boolean accept(File dir) {
@@ -209,19 +208,11 @@ public class Main {
 	 * @param clusters
 	 * @throws IOException
 	 */
-	private static void WriteJavaScript(List<Profile> clusters) throws IOException {
-		
-		class PreferenceType {
-			public String name;
-			public boolean IsEnum;
-			public double Min, Max;
-			
-			public PreferenceType() {}
-		}
+	private static void WriteJavaScript(List<UserProfile> clusters) throws IOException {
 		
 		if(!_OutputFile.exists())
 			_OutputFile.createNewFile();
-		
+				
 		PrintWriter writer = new PrintWriter(_OutputFile);
 		Date now = new Date();
 		DateFormat df = new SimpleDateFormat("dd MMM HH:mm:ss");
@@ -248,139 +239,21 @@ public class Main {
         writer.println("var stat = fluid.registerNamespace(\"gpii.matchMaker.statistical\");");
 
         //entry count
-        writer.println("stat.entryCount = " + EntryManager.EntryNames().size() + ";");
+        writer.println("stat.entryCount = " + clusters.size() + ";");
         
         //clusters
         writer.println("stat.clusters = [");
         
-        int clusterCount = 0;
-        Iterator<Profile> clustersIter = clusters.iterator();
-        while(clustersIter.hasNext()) {
-        	clusterCount++;
-        	Profile cluster = clustersIter.next();
-        	if(cluster.PreferenceEntries.size() == 0) 
-        		continue;
-            
-        	writer.println("\t"+ "{");
-            
-        	HashMap<String, HashSet<Entry>> prefsByApp = new HashMap<String, HashSet<Entry>>();
-        	Iterator<String> entryNamesIter = EntryManager.EntryNames().iterator();
-            while(entryNamesIter.hasNext()){
-            	Entry entry = null;
-            	if(( entry = cluster.PreferenceEntries.get(entryNamesIter.next())) != null) {
-            		HashSet<Entry> appPrefs = null;
-            		if((appPrefs = prefsByApp.get(entry.get_Application())) == null) {
-            			appPrefs = new HashSet<Entry>();
-            			prefsByApp.put(entry.get_Application(), appPrefs);
-            		}
-            		appPrefs.add(entry);
-            	}
-            }
-            
-            //Print
-            Iterator<java.util.Map.Entry<String, HashSet<Entry>>> prefsByAppIter = prefsByApp.entrySet().iterator();
-            int preferenceCount = 0;
-            while(prefsByAppIter.hasNext()) {
-            	preferenceCount++;
-            	java.util.Map.Entry<String, HashSet<Entry>> pair = prefsByAppIter.next();
-            	writer.println("\t\t" + "\"" + pair.getKey() + "\": {");
-            	Iterator<Entry> pairIter = pair.getValue().iterator();
-            	int pairCount = 0;
-            	while(pairIter.hasNext()) {
-            		pairCount++;
-            		if(pairCount < pair.getValue().size()) 
-            			writer.println("\t\t\t" + WriteJavaScriptEntry(pairIter.next()) + ",");
-            		else 
-                        writer.println("\t\t\t" + WriteJavaScriptEntry(pairIter.next()));
-            	}
-                	//Get the last element from the map
-                	if(preferenceCount == prefsByApp.entrySet().size()) 
-                		writer.println("\t\t" + "}");
-                	else 
-                		writer.println("\t\t" + "},");
-            	}
-            	
-            	if(clusterCount < clusters.size()) 
-            		writer.println("\t" + "},");
-            	else 
-            		writer.println("\t" + "}");	
-
-            } 
-            writer.println("];");
-            
-            //Properties
-            writer.println("stat.preferenceTypes = {");
-            HashMap<String, List<PreferenceType>> typesByApp = new HashMap<String, List<PreferenceType>>();
-        	Iterator<String> entryNamesIter = EntryManager.EntryNames().iterator();
-            while(entryNamesIter.hasNext()){
-            	String entryName = entryNamesIter.next();
-            	List<PreferenceType> appPrefs = null;
-            	if((appPrefs = typesByApp.get(EntryManager.EntryApp(entryName))) == null) {
-            		appPrefs = new ArrayList<PreferenceType>();
-            		typesByApp.put(EntryManager.EntryApp(entryName), appPrefs);
-            	}
-            	
-            	PreferenceType newPrefType = new PreferenceType();
-                newPrefType.name = entryName;
-                newPrefType.IsEnum = EntryManager.IsEnumeration(entryName);
-                newPrefType.Min = EntryManager.EntryMin(entryName);
-                newPrefType.Max = EntryManager.EntryMax(entryName);
-                appPrefs.add(newPrefType);
-            }
-        	
-            //Print
-            int typesCount = 0;
-            Iterator<java.util.Map.Entry<String, List<PreferenceType>>> typesByAppIter = typesByApp.entrySet().iterator();
-            while(typesByAppIter.hasNext()) {
-            	typesCount++;
-            	java.util.Map.Entry<String, List<PreferenceType>> pair = typesByAppIter.next();
-            	writer.println("\t" + "\"" + pair.getKey() + "\": {");
-            	for(int n = 0; n < pair.getValue().size(); n++) {
-                    writer.println("\t\t" + "\"" + EntryManager.EntryPrintName(pair.getValue().get(n).name) + "\": {");
-                    if(pair.getValue().get(n).IsEnum) {
-                        writer.println("\t\t\t" + "\"isEnum\": true,");
-                        writer.println("\t\t\t" + "\"min\": 0,");
-                        writer.println("\t\t\t" + "\"max\": " + EntryManager.EnumerationSize(pair.getValue().get(n).name));
-                    } else {
-                        writer.println("\t\t\t" + "\"isEnum\": false,");
-                        writer.println("\t\t\t" + "\"min\": " + pair.getValue().get(n).Min + ",");
-                        writer.println("\t\t\t" + "\"max\": " + pair.getValue().get(n).Max);
-                    }      
-                    
-                    if(n < pair.getValue().size() - 1) 
-                    	writer.println("\t\t" + "},");
-                    else 
-                    	writer.println("\t\t" + "}");
-            	}
-            	
-
-            	if(typesCount == typesByApp.entrySet().size()) 
-            		writer.println("\t" + "}");
-            	else
-            		writer.println("\t" + "},");
-            }
-            
-            writer.println("};");
-            writer.close();
-	}
-
-	/**
-	 * 
-	 * @param entry
-	 * @return
-	 */
-	private static String WriteJavaScriptEntry(Entry entry) {
-		if (EntryManager.IsEnumeration(entry)) {
-			String enumValue = EntryManager.ToEnumeration(entry.get_Name(), (int) entry.get_Value()).trim();
-			enumValue = enumValue.replace(" |,|\"", "");
-			if (!(enumValue.toLowerCase().equals("true") || enumValue.toLowerCase().equals("false")
-					|| enumValue.charAt(0) == '[' || enumValue.charAt(0) == '{')) {
-				enumValue = "\"" + enumValue + "\"";
-			}
-			return "\"" + EntryManager.EntryPrintName(entry.get_Name()) + "\": " + enumValue;
-		} else {
-			return "\"" + EntryManager.EntryPrintName(entry.get_Name()) + "\": " + entry.get_Value();
-		}
+        for(int i = 0 ; i < clusters.size() - 1; i++) {
+        	writer.println(clusters.get(i).getJSONObject().toString(4)+",");
+        }
+        
+        if(clusters.size() > 0) {
+        	writer.println(clusters.get(clusters.size() - 1).getJSONObject().toString(4));
+        }
+        
+        writer.println("];");        
+        writer.close();
 	}
 
 }

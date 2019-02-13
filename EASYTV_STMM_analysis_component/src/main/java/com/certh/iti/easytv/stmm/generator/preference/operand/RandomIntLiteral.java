@@ -7,7 +7,7 @@ import com.certh.iti.easytv.stmm.user.profile.preference.condition.operand.Numer
 public class RandomIntLiteral extends NumericLiteral {
 
 	public RandomIntLiteral(Random literal) {
-		super(literal.nextInt());
+		super(literal.nextInt(100));
 	}
 
 }

@@ -10,90 +10,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 
-import com.certh.iti.easytv.stmm.preferences.EntryManager;
-import com.certh.iti.easytv.stmm.preferences.Profile;
 
 public class Parser {
-	
-	private static final String _TokenContext = "[context]";
-	private static final String _TokenPreferences = "[preferences]";
-
-
-
-	/**
-	 * @brief Load profile from files
-	 * 
-	 * @param file
-	 * @param profiles
-	 * @throws IOException
-	 */
-	public static void ReadProfile(File file, List<Profile> profiles) throws IOException {
-		System.out.println("Reading profile: " + file.getAbsolutePath() + "");
-		Profile profile =  new Profile(file);
-		
-		//Read file
-		ParseMode parseMode = ParseMode.None;
-		String line, name, value, application = "";
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-		while((line = reader.readLine()) != null) {
-			line = line.trim();
-			
-			//Remove Comments
-			int commentStart = line.indexOf(";");
-			if(commentStart >= 0) line = line.substring(0, commentStart);
-			
-			//Parse line
-			//line = line.toLowerCase();
-			if(line.toLowerCase().equals(_TokenContext)) {
-				parseMode = Parser.ParseMode.Context;
-			} else if (line.toLowerCase().equals(_TokenPreferences)) {
-                parseMode = Parser.ParseMode.Preferences;
-                application = "";
-			} else {
-				if(line.endsWith(","))
-					line = line.substring(0, line.length() - 1);
-				
-				//Splitting
-				if(line.contains("=")) {
-					String tmp = line.trim().replace("\"", "").replace("\\", "");
-                    name = tmp.split("=")[0].trim();
-                    value = tmp.split("=")[1].trim();
-				} else if (line.contains(":")) {
-					String tmp = line.trim().replace("\"", "").replace("\\", "");
-                    name = tmp.split(":")[0].trim();
-                    value = tmp.split(":")[1].trim();
-				} else {
-					continue;
-				}
-				
-				//Parsing
-				if(name.equals("app")) {
-					application = value.trim().replace(" ", "").replace("\"", "");
-				} else {
-					switch(parseMode) {
-						case Context:
-							com.certh.iti.easytv.stmm.preferences.Entry newEntry = EntryManager.ToEntry("context", name, value);
-							//if(newEntry == null) continue;
-							profile.ContextEntries.put(newEntry.get_Name(), newEntry);
-							break;
-						case Preferences:
-							com.certh.iti.easytv.stmm.preferences.Entry newEntry1 = EntryManager.ToEntry(application, name, value);
-							//if(newEntry1 == null) continue;
-							profile.PreferenceEntries.put(newEntry1.get_Name(), newEntry1);
-							break;
-						default:
-							break;
-					}
-				}
-			}
-		}
-		reader.close();
-		
-		profiles.add(profile);
-	}
 	
 	/*
 	 * 
@@ -159,12 +79,6 @@ public class Parser {
             writer.write(curResult);
             writer.close();
 		}
-	}
-	
-	private enum ParseMode{
-        None,
-        Context,
-        Preferences
 	}
 
 }
