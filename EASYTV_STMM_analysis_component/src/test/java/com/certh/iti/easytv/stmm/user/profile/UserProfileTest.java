@@ -184,7 +184,7 @@ public class UserProfileTest {
 		UserProfile userProfile1 = new UserProfile(jsonProfile1);
 		UserProfile userProfile2 = new UserProfile(jsonProfile2);
 	
-		Assert.assertEquals(userProfile1.distanceTo(userProfile2), 8.0);
+		Assert.assertEquals(userProfile1.distanceTo(userProfile2), 0.0);
 	}
 	
 	@Test
@@ -259,7 +259,7 @@ public class UserProfileTest {
 		UserProfile userProfile1 = new UserProfile(jsonProfile1);
 		UserProfile userProfile2 = new UserProfile(jsonProfile2);
 	
-		Assert.assertEquals(userProfile1.distanceTo(userProfile2), 4.0);
+		Assert.assertEquals(userProfile1.distanceTo(userProfile2), 0.0);
 	}
 	
 	
@@ -301,8 +301,13 @@ public class UserProfileTest {
 				"}");
 		
 		UserProfile userProfile1 = new UserProfile(jsonProfile1);
-		double[] expectedPoints = {40, 0, 8, 24, 0, 81, 35, 98, 18, 57, 27, 
-									0, 1, 100, 20, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3,1,2 ,6,4,5 };
+		double[] expectedPoints = {40,  0,    //general
+								    8, 24,  0, //visual
+								    81, 35,  98, 18, 57, 27, //auditory  
+								    0,  1, 100, 20,  1,  1,  0, 
+								    0,   0,  0,  0,  0,  0, 
+								    0,   0,  0,  0,  3,  2,
+								    1 ,  6,  5,  4 };
 		
 		double[] actualPoints = userProfile1.getPoint();
 		

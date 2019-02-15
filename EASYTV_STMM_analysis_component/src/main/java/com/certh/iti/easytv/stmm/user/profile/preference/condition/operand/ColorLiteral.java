@@ -33,12 +33,12 @@ public class ColorLiteral extends OperandLiteral{
 		ColorLiteral other = (ColorLiteral) op2;
 
 		return Math.abs(color.getRed() - other.color.getRed()) + 
-	              Math.abs(color.getBlue() - other.color.getBlue()) +
-	              	Math.abs(color.getGreen() - other.color.getGreen());
+				Math.abs(color.getGreen() - other.color.getGreen()) +
+	              Math.abs(color.getBlue() - other.color.getBlue());
 	}
 	
 	public double[] getPoint() {
-		return new double[] {color.getRed(), color.getBlue(), color.getGreen()};
+		return new double[] {color.getRed(), color.getGreen(), color.getBlue()};
 	}
 	
 /*
