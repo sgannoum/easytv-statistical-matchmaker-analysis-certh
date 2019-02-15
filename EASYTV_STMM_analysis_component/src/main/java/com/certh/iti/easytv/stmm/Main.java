@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -18,11 +17,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.Clusterer;
-import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
-
 import com.certh.iti.easytv.stmm.clustering.Config;
-import com.certh.iti.easytv.stmm.clustering.UserProfileDistanceMeasure;
-import com.certh.iti.easytv.stmm.parser.Parser;
 import com.certh.iti.easytv.stmm.preferences.Abstracts;
 import com.certh.iti.easytv.stmm.user.profile.UserProfile;
 
@@ -147,16 +142,6 @@ public class Main {
 		if (directory == null || !directory.exists())
 			return;
 
-		class IniFileFilter implements FilenameFilter {
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".json");
-			}
-		}
-
-		File[] iniFiles = directory.listFiles(new IniFileFilter());
-		for (int i = 0; i < iniFiles.length; i++)
-			Parser.PreprocessProfile(iniFiles[i], generatedDirectory);
-
 		class dirFileFilter implements FileFilter {
 			public boolean accept(File dir) {
 				return dir.isDirectory();
@@ -202,9 +187,6 @@ public class Main {
 	/**
 	 * Write a javascript file that represent all the given clusters, the file is used by 
 	 * the runtime component to answer matching requests.
-	 * The extracted js file contain information about the data type of each preference type
-	 * in addition to the min and max value.
-	 * 
 	 * @param clusters
 	 * @throws IOException
 	 */
@@ -219,9 +201,9 @@ public class Main {
 
         writer.println("/*!");
         writer.println();
-        writer.println("GPII/Cloud4all Statistical Matchmaker ");
+        writer.println("EasyTV Statistical Matchmaker ");
         writer.println();
-        writer.println("Copyright 2012-2015 Hochschule der Medien (HdM) / Stuttgart Media University");
+        writer.println("Copyright 2017-2020 Center for Research & Technology - HELLAS");
         writer.println();
         writer.println("Licensed under the New BSD License. You may not use this file except in");
         writer.println("compliance with this licence.");
@@ -230,13 +212,13 @@ public class Main {
         writer.println("https://github.com/REMEXLabs/GPII-Statistical-Matchmaker/blob/master/LICENSE.txt");
         writer.println();
         writer.println("The research leading to these results has received funding from");
-        writer.println("the European Union's Seventh Framework Programme (FP7/2007-2013)");
-        writer.println("under grant agreement no. 289016.");
+        writer.println("the European Union's H2020-ICT-2016-2, ICT-19-2017 Media and content convergence");
+        writer.println("under grant agreement no. 761999.");
         writer.println("*/");
         writer.println();
         writer.println("//Generated " +  df.format(now));
         writer.println("var fluid = fluid || require(\"universal\");");
-        writer.println("var stat = fluid.registerNamespace(\"gpii.matchMaker.statistical\");");
+        writer.println("var stat = fluid.registerNamespace(\"easytv.matchMaker.statistical\");");
 
         //entry count
         writer.println("stat.entryCount = " + clusters.size() + ";");

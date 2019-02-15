@@ -1,10 +1,7 @@
 package com.certh.iti.easytv.stmm.preferences;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
@@ -77,7 +74,8 @@ public class Abstracts {
 	 * @param profiles
 	 * @return
 	 */
-	public static Profile GeneralizeProfile(Profile center ,TreeMap<Double, HashSet<Profile>> clusterDistances, List<Profile> profiles) {
+	
+/*	public static Profile GeneralizeProfile(Profile center ,TreeMap<Double, HashSet<Profile>> clusterDistances, List<Profile> profiles) {
 		Profile result = new Profile();
 		Double centerUser, centerOs;
 		centerUser = center.ContextEntries.get("context||user").get_Value();
@@ -151,6 +149,6 @@ public class Abstracts {
 			 }
 		 } 
 		return result;	
-	}
+	}*/
 	
 }
