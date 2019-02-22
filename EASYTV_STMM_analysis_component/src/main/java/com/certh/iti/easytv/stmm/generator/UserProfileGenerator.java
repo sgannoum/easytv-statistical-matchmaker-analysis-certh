@@ -10,6 +10,8 @@ import java.util.Random;
 import com.certh.iti.easytv.stmm.generator.preference.operand.RandomBooleanLiteral;
 import com.certh.iti.easytv.stmm.generator.preference.operand.RandomColorLiteral;
 import com.certh.iti.easytv.stmm.generator.preference.operand.RandomLanguageLiteral;
+import com.certh.iti.easytv.stmm.generator.preference.operand.RandomTTSSpeed;
+import com.certh.iti.easytv.stmm.generator.preference.operand.RandomTTSVolume;
 import com.certh.iti.easytv.stmm.generator.preference.operand.RandomIntLiteral;
 import com.certh.iti.easytv.stmm.user.profile.Auditory;
 import com.certh.iti.easytv.stmm.user.profile.General;
@@ -25,25 +27,25 @@ public class UserProfileGenerator {
 	
 	
 	protected static final String[] PREFERENCE_ATTRIBUTE = {"audio_volume",
-			"language_audio",
-			"contrast",
-			"font_size",
-		//	"font", 
-			"language_subtitles",
-			"language_sign", 
-			"tts_speed", 
-			"tts_volume", 
-			"tts_language", 
-			"cs_accessibility_imageMagnification_scale",
-			"cs_accessibility_textDetection", 
-			"cs_audio_volume", 
-			"cs_audio_track", 
-			"cs_audio_description", 
-			"cs_cc_audio_subtitles", 
-			"cs_cc_subtitles_language", 
-			"cs_cc_subtitles_font_size",
-			"fontColor", 
-			"backgroundColor"};
+															"language_audio",
+															"contrast",
+															"font_size",
+														//	"font", 
+															"language_subtitles",
+															"language_sign", 
+															"tts_speed", 
+															"tts_volume", 
+															"tts_language", 
+															"cs_accessibility_imageMagnification_scale",
+															"cs_accessibility_textDetection", 
+															"cs_audio_volume", 
+															"cs_audio_track", 
+															"cs_audio_description", 
+															"cs_cc_audio_subtitles", 
+															"cs_cc_subtitles_language", 
+															"cs_cc_subtitles_font_size",
+															"fontColor", 
+															"backgroundColor"};
 	
 	protected static final Class<?>[] PREFERENCE_CLASSES = {  RandomIntLiteral.class,	 //"audio_volume",
 															  RandomLanguageLiteral.class,	 //"language_audio",
@@ -51,8 +53,8 @@ public class UserProfileGenerator {
 															  RandomIntLiteral.class,	 //"font_size",
 															  RandomLanguageLiteral.class,   //"language_subtitles",
 															  RandomLanguageLiteral.class,   //"language_sign", 
-															  RandomIntLiteral.class,   //"tts_speed", 
-															  RandomIntLiteral.class,   //"tts_volume", 
+															  RandomTTSSpeed.class,   //"tts_speed", 
+															  RandomTTSVolume.class,   //"tts_volume", 
 															  RandomLanguageLiteral.class,  //"tts_language", 
 															  RandomIntLiteral.class,   //"cs_accessibility_imageMagnification_scale",
 															  RandomBooleanLiteral.class,   //"cs_accessibility_textDetection", 
@@ -65,7 +67,6 @@ public class UserProfileGenerator {
 															  RandomColorLiteral.class,   //"fontColor", 
 															  RandomColorLiteral.class    //"backgroundColor"
 															  };
-	
 	
 	public UserProfileGenerator() {
 		rand = new Random();
