@@ -32,6 +32,13 @@ public class UserProfile implements Clusterable {
 		userPreferences = null;
 	}
 	
+	public UserProfile(UserProfile other) throws IOException {
+		_IsAbstract = true;
+		this._File = null;
+		jsonObj = null;
+		setJSONObject(other.getJSONObject());
+	}
+	
 	public UserProfile(File _File) throws IOException {
 		_IsAbstract = false;
 		this._File = _File;

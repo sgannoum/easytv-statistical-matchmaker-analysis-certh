@@ -125,6 +125,10 @@ public class UserProfileDistanceMeasure implements DistanceMeasure {
 			index++;
 		} while((tmpMask /=2) != 0.0);
 
+		// TO-DO 
+		// before handing to the distance measure, calculate the 
+		// distance between enumeration requiring special handling
+		// before passing them to the distance measure.
 		return dist.compute(ca, cb);
 	}
 	
