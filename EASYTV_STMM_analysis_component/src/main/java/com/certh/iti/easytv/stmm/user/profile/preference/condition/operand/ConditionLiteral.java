@@ -1,5 +1,6 @@
 package com.certh.iti.easytv.stmm.user.profile.preference.condition.operand;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.certh.iti.easytv.stmm.user.profile.preference.Condition;
@@ -48,6 +49,17 @@ public class ConditionLiteral extends OperandLiteral {
 	
 	public double[] getPoint() {
 		//TO-DO implement a getPoint
+		return null;
+	}
+	
+	@Override
+	public OperandLiteral createFromJson(JSONObject jsonPreference, String field) {
+		
+		try {
+			String obj = jsonPreference.getString(field);
+			return new ConditionLiteral(obj);
+		} catch (JSONException e) {}
+		
 		return null;
 	}
 	

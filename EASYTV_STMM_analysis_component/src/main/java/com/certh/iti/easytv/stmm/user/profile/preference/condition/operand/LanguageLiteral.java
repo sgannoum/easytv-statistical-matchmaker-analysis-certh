@@ -1,11 +1,16 @@
 package com.certh.iti.easytv.stmm.user.profile.preference.condition.operand;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LanguageLiteral extends OperandLiteral{
 	
 	private int language; 
-	private static final String[] languagesStr = {"ENGLISH", "SPANISH", "CATALAN", "GREEK", "ITALIAN"};
+	private static final String[][] languagesStr = {{"ENGLISH", "EN"}, 
+													{"SPANISH", "ES"}, 
+													{"CATALAN", "CA"}, 
+													{"GREEK", "GR"}, 
+													{"ITALIAN", "IT"}};
 
 	public LanguageLiteral(Object literal) {
 		super(literal);
@@ -22,7 +27,7 @@ public class LanguageLiteral extends OperandLiteral{
 	
 	@Override
 	public String toString() {
-		return languagesStr[language];
+		return languagesStr[language][0];
 	}
 	
 	@Override
@@ -43,8 +48,10 @@ public class LanguageLiteral extends OperandLiteral{
 	
 	
 	protected static int indexOf(String language) {
+		language = language.toUpperCase();
 		for(int i = 0; i < languagesStr.length; i++) 
-			if(language.equalsIgnoreCase(languagesStr[i])) 
+			for(int j = 0; j < languagesStr[i].length; j++)
+			if(language.equalsIgnoreCase(languagesStr[i][j])) 
 				return i;
 			
 		return -1;
@@ -54,10 +61,21 @@ public class LanguageLiteral extends OperandLiteral{
 		if(index < 0 || index >= languagesStr.length)
 			throw new IllegalStateException("Unknow integer representation of a language "+index);
 		
-		return languagesStr[index];
+		return languagesStr[index][0];
 	}
 	
 	public double[] getPoint() {
 		return new double[] {language};
+	}
+	
+	@Override
+	public OperandLiteral createFromJson(JSONObject jsonPreference, String field) {
+		
+		try {
+			String obj = jsonPreference.getString(field);
+			return new LanguageLiteral(obj);
+		} catch (JSONException e) {}
+		
+		return null;
 	}
 }

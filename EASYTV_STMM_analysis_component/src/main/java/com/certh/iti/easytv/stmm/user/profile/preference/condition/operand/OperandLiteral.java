@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 
 /**
- * Each operand shall be either a URI (in accordance with IETF RFC 3986) – in which case it shall be interpreted as the value of the concept with the URI as key, a condition object (i.e. a nested condition), or a literal.
+ * Each operand shall be either a URI (in accordance with IETF RFC 3986) ï¿½ in which case it shall be interpreted as the value of the concept with the URI as key, a condition object (i.e. a nested condition), or a literal.
  * @author salgan
  *
  */
@@ -23,4 +23,6 @@ public abstract class OperandLiteral implements Clusterable{
 	
 	public abstract JSONObject toJSON();
 	public abstract double distanceTo(OperandLiteral op2);
+	
+	public abstract OperandLiteral createFromJson(JSONObject jsonPreference, String field);
 }

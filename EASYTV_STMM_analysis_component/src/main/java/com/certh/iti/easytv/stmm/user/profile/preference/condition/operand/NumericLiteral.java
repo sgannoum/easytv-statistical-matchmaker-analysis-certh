@@ -1,5 +1,6 @@
 package com.certh.iti.easytv.stmm.user.profile.preference.condition.operand;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -43,6 +44,17 @@ public class NumericLiteral  extends OperandLiteral {
 	
 	public double[] getPoint() {
 		return new double[] {numericLiteral};
+	}
+
+	@Override
+	public OperandLiteral createFromJson(JSONObject jsonPreference, String field) {
+		
+		try {
+			Number obj = jsonPreference.getNumber(field);
+			return new NumericLiteral(obj);
+		} catch (JSONException e) {}
+		
+		return null;
 	}
 
 }

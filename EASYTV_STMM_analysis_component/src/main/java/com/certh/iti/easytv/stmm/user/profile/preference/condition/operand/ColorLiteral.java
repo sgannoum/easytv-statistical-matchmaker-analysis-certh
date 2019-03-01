@@ -2,6 +2,7 @@ package com.certh.iti.easytv.stmm.user.profile.preference.condition.operand;
 
 import java.awt.Color;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ColorLiteral extends OperandLiteral{
@@ -39,6 +40,17 @@ public class ColorLiteral extends OperandLiteral{
 	
 	public double[] getPoint() {
 		return new double[] {color.getRed(), color.getGreen(), color.getBlue()};
+	}
+
+	@Override
+	public OperandLiteral createFromJson(JSONObject jsonPreference, String field) {
+		
+		try {
+			String obj = jsonPreference.getString(field);
+			return new ColorLiteral(obj);
+		} catch (JSONException e) {}
+		
+		return null;
 	}
 	
 /*

@@ -10,7 +10,11 @@ import java.util.Random;
 
 import com.certh.iti.easytv.stmm.generator.preference.operand.RandomBooleanLiteral;
 import com.certh.iti.easytv.stmm.generator.preference.operand.RandomColorLiteral;
+import com.certh.iti.easytv.stmm.generator.preference.operand.RandomDisplayContrastLiteral;
+import com.certh.iti.easytv.stmm.generator.preference.operand.RandomFontLiteral;
+import com.certh.iti.easytv.stmm.generator.preference.operand.RandomImageMagnificationScaleLiteral;
 import com.certh.iti.easytv.stmm.generator.preference.operand.RandomLanguageLiteral;
+import com.certh.iti.easytv.stmm.generator.preference.operand.RandomTTSQualityLiteral;
 import com.certh.iti.easytv.stmm.generator.preference.operand.RandomTTSSpeed;
 import com.certh.iti.easytv.stmm.generator.preference.operand.RandomTTSVolume;
 import com.certh.iti.easytv.stmm.generator.preference.operand.RandomIntLiteral;
@@ -26,46 +30,35 @@ public class UserProfileGenerator {
 	
 	private Random rand;
 	
-	protected static final String[] PREFERENCE_ATTRIBUTE = {"audio_volume",
-															"language_audio",
-															"contrast",
-															"font_size",
-														//	"font", 
-															"language_subtitles",
-															"language_sign", 
-															"tts_speed", 
-															"tts_volume", 
-															"tts_language", 
-															"cs_accessibility_imageMagnification_scale",
-															"cs_accessibility_textDetection", 
-															"cs_audio_volume", 
-															"cs_audio_track", 
-															"cs_audio_description", 
-															"cs_cc_audio_subtitles", 
-															"cs_cc_subtitles_language", 
-															"cs_cc_subtitles_font_size",
-															"fontColor", 
-															"backgroundColor"};
-	
-	protected static final Class<?>[] PREFERENCE_CLASSES = {  RandomIntLiteral.class,	 //"audio_volume",
-															  RandomLanguageLiteral.class,	 //"language_audio",
-															  RandomIntLiteral.class, 	 //"contrast",
-															  RandomIntLiteral.class,	 //"font_size",
-															  RandomLanguageLiteral.class,   //"language_subtitles",
-															  RandomLanguageLiteral.class,   //"language_sign", 
-															  RandomTTSSpeed.class,   //"tts_speed", 
-															  RandomTTSVolume.class,   //"tts_volume", 
-															  RandomLanguageLiteral.class,  //"tts_language", 
-															  RandomIntLiteral.class,   //"cs_accessibility_imageMagnification_scale",
-															  RandomBooleanLiteral.class,   //"cs_accessibility_textDetection", 
-															  RandomIntLiteral.class,   // "cs_audio_volume", 
-															  RandomLanguageLiteral.class,  //"cs_audio_track", 
-															  RandomBooleanLiteral.class,  //"cs_audio_description", 
-															  RandomBooleanLiteral.class,   //"cs_cc_audio_subtitles", 
-															  RandomLanguageLiteral.class, //"cs_cc_subtitles_language", 
-															  RandomIntLiteral.class,  //"cs_cc_subtitles_font_size",
-															  RandomColorLiteral.class,   //"fontColor", 
-															  RandomColorLiteral.class    //"backgroundColor"
+	protected static final Class<?>[] PREFERENCE_CLASSES = {  RandomIntLiteral.class,	 		//"audioVolume",
+															  RandomLanguageLiteral.class,	 	//"audioLanguage",
+															  RandomDisplayContrastLiteral.class, 	 		//"displayContrast",
+															  RandomIntLiteral.class,	 		//"fontSize",
+															  RandomFontLiteral.class, //font 
+															  RandomLanguageLiteral.class,   	//"subtitles",
+															  RandomLanguageLiteral.class,   	//"signLanguage", 
+															  
+															  RandomTTSSpeed.class,   			//"tts/speed", 
+															  RandomTTSVolume.class,   			//"tts/volume", 
+															  RandomLanguageLiteral.class,  	//"tts/language", 
+															  RandomTTSQualityLiteral.class,  	//"tts/audioQuality",
+															  
+															  RandomImageMagnificationScaleLiteral.class,   		//"cs/accessibility/imageMagnification/scale",
+															  RandomBooleanLiteral.class,   	//"cs/accessibility/textDetection", 
+															  RandomBooleanLiteral.class,   	//"cs/accessibility/faceDetection", 
+															  
+															  RandomIntLiteral.class,   		//"cs/audio/volume", 
+															  RandomLanguageLiteral.class,  	//"cs/audio/track", 
+															  RandomBooleanLiteral.class,  		//"cs/audio/audioDescription", 
+															  
+															  RandomBooleanLiteral.class,   	//"cs/cc/audioSubtitles", 
+															  RandomLanguageLiteral.class, 		//"cs/cc/subtitles/language", 
+															  RandomIntLiteral.class,  	   		//"cs/cc/subtitles/fontSize",
+															  
+															  RandomColorLiteral.class,   		//"cs/cc/subtitles/fontColor", 
+															  RandomColorLiteral.class,    		//"cs/cc/subtitles/backgroundColor"
+															  RandomColorLiteral.class,   		//"fontColor", 
+															  RandomColorLiteral.class    		//"backgroundColor"
 															  };
 	
 	private int[] age_range;
@@ -190,7 +183,7 @@ public class UserProfileGenerator {
 			Map<String, OperandLiteral> map = new HashMap<String, OperandLiteral>();
 			for(int j = 0 ; j < PREFERENCE_CLASSES.length; j++) {
 				Class<?> cls = PREFERENCE_CLASSES[j];
-				map.put(PREFERENCE_ATTRIBUTE[j], (OperandLiteral) cls.getConstructor(Random.class).newInstance(rand));
+				map.put(Preference.PREFERENCE_ATTRIBUTE[j], (OperandLiteral) cls.getConstructor(Random.class).newInstance(rand));
 			}
 			
 			Preference defaultPreference = new Preference("default", map);
