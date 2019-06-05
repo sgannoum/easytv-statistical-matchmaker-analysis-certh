@@ -9,15 +9,16 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.certh.iti.easytv.config.Config;
+
 public class UserPreferencesTest {
 
-	private final String path = "C:\\Users\\salgan\\git\\EASYTV_STMM_analysis_component\\EASYTV_STMM_analysis_component\\target\\test-classes\\testing_profiles\\userModel.json";
 	private JSONObject json;
 	
 	@BeforeClass
 	public void beforClass() throws IOException {
 		String line;
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(Config.path)));
 		StringBuffer buff = new StringBuffer();
 		
 		while((line = reader.readLine()) != null) {
@@ -31,9 +32,10 @@ public class UserPreferencesTest {
 	@Test
 	public void test_constructor() {
 		UserPreferences userPreferences = new UserPreferences(json.getJSONObject("user_preferences"));
-		UserPreferences userPreferences2 = new UserPreferences(userPreferences.getPreferences());
-	
+		UserPreferences userPreferences2 = new UserPreferences(userPreferences.getDefaultPreference(), userPreferences.getConditionalPreferences());
+			
 		Assert.assertTrue(userPreferences.getJSONObject().similar(json.getJSONObject("user_preferences")));
 	}
+	
 	
 }

@@ -50,7 +50,7 @@ public class Main {
 		
 		if(_ProfilesDirectory == null || !_ProfilesDirectory.exists() ) {
 			String pwd = System.getProperty("user.dir");
-            _ProfilesDirectory = new File(pwd + File.separator + "auto_generated_profiles");
+            _ProfilesDirectory = new File(pwd + File.separator + "auto_generated_testing_profiles");
             System.out.println("Could not find profiles directory, reverted to :'" + _ProfilesDirectory.getAbsolutePath() + "'");
 		}
 		

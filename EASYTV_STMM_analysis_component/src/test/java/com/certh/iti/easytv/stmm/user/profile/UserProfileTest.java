@@ -10,15 +10,16 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.certh.iti.easytv.config.Config;
+
 public class UserProfileTest {
 	
-	private final String path = "C:\\Users\\salgan\\git\\EASYTV_STMM_analysis_component\\EASYTV_STMM_analysis_component\\target\\test-classes\\testing_profiles\\userModel.json";
 	private JSONObject json;
 	
 	@BeforeClass
 	public void beforClass() throws IOException {
 		String line;
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(Config.path)));
 		StringBuffer buff = new StringBuffer();
 		
 		while((line = reader.readLine()) != null) {
@@ -61,13 +62,10 @@ public class UserProfileTest {
 				"  \"user_preferences\": {\r\n" + 
 				"    \"default\": {\r\n" + 
 				"      \"preferences\": {\r\n" + 
-				"        \"contrast\": 100,\r\n" + 
-				"        \"font_size\": 20,\r\n" + 
-				"        \"color_temperature\": 0.008,\r\n" + 
-				"        \"language_subtitles\": \"spanish\",\r\n" + 
-				"        \"language_sign\": \"spanish\",\r\n" + 
-				"        \"language_audio\": \"spanish\",\r\n" + 
-				"        \"backgroundColor\": \"#000000\"\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/volume\": 100,\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/font/size\": 20,\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/language\": \"es\",\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/background\": \"#000000\"\r\n" + 
 				"      }\r\n" + 
 				"    }\r\n" + 
 				"  }\r\n" + 
@@ -94,13 +92,10 @@ public class UserProfileTest {
 				"  \"user_preferences\": {\r\n" + 
 				"    \"default\": {\r\n" + 
 				"      \"preferences\": {\r\n" + 
-				"        \"contrast\": 100,\r\n" + 
-				"        \"font_size\": 20,\r\n" + 
-				"        \"color_temperature\": 0.008,\r\n" + 
-				"        \"language_subtitles\": \"spanish\",\r\n" + 
-				"        \"language_sign\": \"spanish\",\r\n" + 
-				"        \"language_audio\": \"spanish\",\r\n" + 
-				"        \"backgroundColor\": \"#000000\"\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/volume\": 100,\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/font/size\": 20,\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/language\": \"es\",\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/background\": \"#000000\"\r\n" + 
 				"      }\r\n" + 
 				"    }\r\n" + 
 				"  }\r\n" + 
@@ -136,13 +131,10 @@ public class UserProfileTest {
 				"  \"user_preferences\": {\r\n" + 
 				"    \"default\": {\r\n" + 
 				"      \"preferences\": {\r\n" + 
-				"        \"contrast\": 100,\r\n" + 
-				"        \"font_size\": 20,\r\n" + 
-				"        \"color_temperature\": 0.008,\r\n" + 
-				"        \"language_subtitles\": \"spanish\",\r\n" + 
-				"        \"language_sign\": \"spanish\",\r\n" + 
-				"        \"language_audio\": \"spanish\",\r\n" + 
-				"        \"backgroundColor\": \"#000000\"\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/volume\": 100,\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/font/size\": 20,\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/language\": \"es\",\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/background\": \"#000000\"\r\n" + 
 				"      }\r\n" + 
 				"    }\r\n" + 
 				"  }\r\n" + 
@@ -169,13 +161,10 @@ public class UserProfileTest {
 				"  \"user_preferences\": {\r\n" + 
 				"    \"default\": {\r\n" + 
 				"      \"preferences\": {\r\n" + 
-				"        \"contrast\": 100,\r\n" + 
-				"        \"font_size\": 20,\r\n" + 
-				"        \"color_temperature\": 0.008,\r\n" + 
-				"        \"language_subtitles\": \"spanish\",\r\n" + 
-				"        \"language_sign\": \"spanish\",\r\n" + 
-				"        \"language_audio\": \"spanish\",\r\n" + 
-				"        \"backgroundColor\": \"#080000\"\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/volume\": 100,\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/font/size\": 20,\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/language\": \"es\",\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/background\": \"#080000\"\r\n" + 
 				"      }\r\n" + 
 				"    }\r\n" + 
 				"  }\r\n" + 
@@ -211,13 +200,10 @@ public class UserProfileTest {
 				"  \"user_preferences\": {\r\n" + 
 				"    \"default\": {\r\n" + 
 				"      \"preferences\": {\r\n" + 
-				"        \"contrast\": 100,\r\n" + 
-				"        \"font_size\": 20,\r\n" + 
-				"        \"color_temperature\": 0.008,\r\n" + 
-				"        \"language_subtitles\": \"spanish\",\r\n" + 
-				"        \"language_sign\": \"spanish\",\r\n" + 
-				"        \"language_audio\": \"spanish\",\r\n" + 
-				"        \"backgroundColor\": \"#000000\"\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/volume\": 100,\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/font/size\": 20,\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/language\": \"es\",\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/background\": \"#000000\"\r\n" + 
 				"      }\r\n" + 
 				"    }\r\n" + 
 				"  }\r\n" + 
@@ -244,13 +230,10 @@ public class UserProfileTest {
 				"  \"user_preferences\": {\r\n" + 
 				"    \"default\": {\r\n" + 
 				"      \"preferences\": {\r\n" + 
-				"        \"contrast\": 100,\r\n" + 
-				"        \"font_size\": 20,\r\n" + 
-				"        \"color_temperature\": 0.008,\r\n" + 
-				"        \"language_subtitles\": \"spanish\",\r\n" + 
-				"        \"language_sign\": \"spanish\",\r\n" + 
-				"        \"language_audio\": \"greek\",\r\n" + 
-				"        \"backgroundColor\": \"#000000\"\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/volume\": 100,\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/font/size\": 20,\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/language\": \"greek\",\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/background\": \"#000000\"\r\n" + 
 				"      }\r\n" + 
 				"    }\r\n" + 
 				"  }\r\n" + 
@@ -287,14 +270,11 @@ public class UserProfileTest {
 				"  \"user_preferences\": {\r\n" + 
 				"    \"default\": {\r\n" + 
 				"      \"preferences\": {\r\n" + 
-				"        \"contrast\": 100,\r\n" + 
-				"        \"font_size\": 20,\r\n" + 
-				"        \"color_temperature\": 0.008,\r\n" + 
-				"        \"language_subtitles\": \"spanish\",\r\n" + 
-				"        \"language_sign\": \"spanish\",\r\n" + 
-				"        \"language_audio\": \"spanish\",\r\n" +
-				"        \"fontColor\": \"#030201\",\r\n" + 
-				"        \"backgroundColor\": \"#060504\"\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/volume\": 100,\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/font/size\": 20,\r\n" + 
+				"        \"http://registry.easytv.eu/common/content/audio/language\": \"es\",\r\n" +
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/font/color\": \"#030201\",\r\n" + 
+				"        \"http://registry.easytv.eu/common/display/screen/enhancement/background\": \"#060504\"\r\n" + 
 				"      }\r\n" + 
 				"    }\r\n" + 
 				"  }\r\n" + 
@@ -304,10 +284,17 @@ public class UserProfileTest {
 		double[] expectedPoints = {40,  0,    //general
 								    8, 24,  0, //visual
 								    81, 35,  98, 18, 57, 27, //auditory  
-								    0,  1, 100, 20,  1,  1,  0, 
-								    0,   0,  0,  0,  0,  0, 
-								    0,   0,  0,  0,  3,  2,
-								    1 ,  6,  5,  4 };
+								    100,  1, 0, 
+								    20, 0,  0,  
+								    0,  0,   0,  
+								    0,  0,  0,  
+								    0,  0,  0, 
+								    0,  0,  0, 
+								    0,  0,  0, 
+								    0,  0,  0, 
+								    0,  0,  
+								    3,  2,  1 ,  
+								    6, 5,  4 };
 		
 		double[] actualPoints = userProfile1.getPoint();
 		

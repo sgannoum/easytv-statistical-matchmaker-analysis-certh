@@ -57,6 +57,9 @@ public class ConditionalPreference extends Preference {
 			//Convert the preference section
 			super.toJSON();
 			
+			//Add condition name
+			jsonObj.put("name", name);
+			
 			//Add condition section
 			JSONArray jsonConditions = new JSONArray();
 			for(int i = 0; i < conditions.size(); i++) 

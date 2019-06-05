@@ -1,51 +1,30 @@
 package com.certh.iti.easytv.stmm.user.profile.preference;
 
-import java.lang.reflect.InvocationTargetException;
-import java.nio.channels.IllegalSelectorException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
-
 import org.apache.commons.math3.ml.clustering.Clusterable;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.certh.iti.easytv.stmm.user.profile.preference.entry.Entry;
-import com.certh.iti.easytv.stmm.user.profile.preference.entry.LanguageEntry;
-import com.certh.iti.easytv.stmm.user.profile.preference.entry.NumericEntry;
-import com.certh.iti.easytv.stmm.user.profile.preference.entry.StringEntry;
-import com.certh.iti.easytv.stmm.generator.preference.operand.RandomBooleanLiteral;
-import com.certh.iti.easytv.stmm.generator.preference.operand.RandomColorLiteral;
-import com.certh.iti.easytv.stmm.generator.preference.operand.RandomDisplayContrastLiteral;
-import com.certh.iti.easytv.stmm.generator.preference.operand.RandomImageMagnificationScaleLiteral;
-import com.certh.iti.easytv.stmm.generator.preference.operand.RandomIntLiteral;
-import com.certh.iti.easytv.stmm.generator.preference.operand.RandomLanguageLiteral;
-import com.certh.iti.easytv.stmm.generator.preference.operand.RandomTTSQualityLiteral;
-import com.certh.iti.easytv.stmm.generator.preference.operand.RandomTTSSpeed;
-import com.certh.iti.easytv.stmm.generator.preference.operand.RandomTTSVolume;
 import com.certh.iti.easytv.stmm.user.profile.preference.condition.operand.BooleanLiteral;
 import com.certh.iti.easytv.stmm.user.profile.preference.condition.operand.ColorLiteral;
 import com.certh.iti.easytv.stmm.user.profile.preference.condition.operand.FontLiteral;
 import com.certh.iti.easytv.stmm.user.profile.preference.condition.operand.LanguageLiteral;
 import com.certh.iti.easytv.stmm.user.profile.preference.condition.operand.NumericLiteral;
 import com.certh.iti.easytv.stmm.user.profile.preference.condition.operand.OperandLiteral;
-import com.certh.iti.easytv.stmm.user.profile.preference.condition.operand.StringLiteral;
-import com.certh.iti.easytv.stmm.user.profile.preference.entry.BooleanEntry;
-import com.certh.iti.easytv.stmm.user.profile.preference.entry.ColorEntry;
 
 public class Preference implements Clusterable {
 
 	
-	protected static final String common_pefix = "https://easytvproject.eu/registry/common/";
-	protected static final String application_pefix = "https://easytvproject.eu/registry/application/";
+	protected static final String common_pefix = "http://registry.easytv.eu/common/";
+	protected static final String application_pefix = "http://registry.easytv.eu/application/";
 	
 	public static final String[] PREFERENCE_ATTRIBUTE = { 
-			common_pefix + "audioVolume",
-			common_pefix + "audioLanguage",
+			common_pefix + "content/audio/volume",
+			common_pefix + "content/audio/language",
 			common_pefix + "displayContrast",
-			common_pefix + "fontSize",
-			common_pefix + "font", 
+			common_pefix + "display/screen/enhancement/font/size",
+			common_pefix + "display/screen/enhancement/font/type", 
 			common_pefix + "subtitles",
 			common_pefix + "signLanguage", 
 			application_pefix + "tts/speed", 
@@ -63,8 +42,8 @@ public class Preference implements Clusterable {
 			application_pefix + "cs/cc/subtitles/fontSize",
 			application_pefix + "cs/cc/subtitles/fontColor",
 			application_pefix + "cs/cc/subtitles/backgroundColor",
-			common_pefix + "fontColor", 
-			common_pefix + "backgroundColor"};
+			common_pefix + "display/screen/enhancement/font/color", 
+			common_pefix + "display/screen/enhancement/background"};
 	
 	protected static final OperandLiteral[] PREFERENCE_CLASSES = {  
 			  new NumericLiteral(1),	 		//"audioVolume",
@@ -141,7 +120,6 @@ public class Preference implements Clusterable {
 		String[] fields = JSONObject.getNames(jsonPreference);
 		
 		for(int i = 0 ; i < fields.length; i++) {
-			System.out.println(fields[i]);
 			OperandLiteral instance = getLiteralClass(fields[i]);
 			
 			if(instance == null)
@@ -157,6 +135,7 @@ public class Preference implements Clusterable {
 		if(jsonObj == null) {
 			jsonObj = new JSONObject();
 			JSONObject jsonPreferences = new JSONObject();
+			
 			Iterator<java.util.Map.Entry<String, OperandLiteral>> interator = preferences.entrySet().iterator();
 			while(interator.hasNext()) {
 				Map.Entry<String, OperandLiteral> entry = interator.next();

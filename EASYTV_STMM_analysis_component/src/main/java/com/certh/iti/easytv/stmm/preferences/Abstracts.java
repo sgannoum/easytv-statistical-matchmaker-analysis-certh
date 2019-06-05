@@ -1,7 +1,9 @@
 package com.certh.iti.easytv.stmm.preferences;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeMap;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
@@ -65,6 +67,7 @@ public class Abstracts {
 	public static double FindCenter(Cluster<UserProfile> cluster, UserProfile resultProfile, TreeMap<Double, HashSet<UserProfile>> distances) {
 		return FindCenter(cluster, resultProfile, distances, Double.MAX_VALUE);
 	}
+	
 	
 	/**
 	 * 

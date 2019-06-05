@@ -10,27 +10,51 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.certh.iti.easytv.config.Config;
+
 public class PreferenceTests {
 	
-	//private final String path = "C:\\Users\\salgan\\git\\EASYTV_STMM_analysis_component\\EASYTV_STMM_analysis_component\\target\\test-classes\\testing_profiles\\userModel.json";
-	private final String path = "C:\\Users\\salgan\\git\\EASYTV_STMM_analysis_component\\EASYTV_STMM_analysis_component\\target\\test-classes\\testing_profiles\\userModel_url.json";
-
-	private JSONObject json;
+	private JSONObject json = new JSONObject("{  \"user_preferences\": {\r\n" + 
+			"	\"default\": {\r\n" + 
+			"	  \"preferences\": {\r\n" +  
+			"		\"http://registry.easytv.eu/common/display/screen/enhancement/font/size\": 13,\r\n" + 
+			"		\"http://registry.easytv.eu/common/display/screen/enhancement/font/type\": \"sans-serif\",\r\n" + 
+			"		\"http://registry.easytv.eu/common/display/screen/enhancement/background\": \"#ffffff\",\r\n" + 
+			"		\"http://registry.easytv.eu/common/display/screen/enhancement/font/color\": \"#000000\"\r\n" + 
+			"	  }\r\n" + 
+			"	},\r\n" + 
+			"	\"conditional\": [\r\n" + 
+			"	  {\r\n" + 
+			"		\"name\": \"condition_1\",\r\n" + 
+			"		\"conditions\": [\r\n" + 
+			"		 {\r\n" + 
+			"			\"type\": \"and\",\r\n" + 
+			"			\"operands\": [\r\n" + 
+			"				  {\r\n" + 
+			"					\"type\": \"eq\",\r\n" + 
+			"					\"operands\": [\r\n" + 
+			"						\"http://registry.easytv.eu/context/location\",\r\n" + 
+			"						\"fr\"\r\n" + 
+			"					]\r\n" + 
+			"				  },\r\n" + 
+			"				  {\r\n" + 
+			"					\"type\": \"eq\",\r\n" + 
+			"					\"operands\": [\r\n" + 
+			"						\"http://registry.easytv.eu/context/location\",\r\n" + 
+			"						\"fr\"\r\n" + 
+			"					]\r\n" + 
+			"				  }\r\n" + 
+			"			]\r\n" + 
+			"		   }\r\n" + 
+			"		  ],\r\n" + 
+			"					  \"preferences\": {\r\n" + 
+			"		  \"http://registry.easytv.eu/common/content/audio/volume\": 21\r\n" + 
+			"		}\r\n" + 
+			"		}\r\n" + 
+			"	  ]\r\n" + 
+			"	}" +
+			" }");
 	 
-	
-	@BeforeClass
-	public void beforClass() throws IOException {
-		String line;
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
-		StringBuffer buff = new StringBuffer();
-		
-		while((line = reader.readLine()) != null) {
-			buff.append(line);
-		}
-		
-		json = new JSONObject(buff.toString());		
-		reader.close();
-	}
 	
 	@Test
 	public void test_preference() {

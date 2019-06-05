@@ -188,8 +188,7 @@ public class UserProfileGenerator {
 			
 			Preference defaultPreference = new Preference("default", map);
 			List<Preference> preferences = new ArrayList<Preference>();
-			preferences.add(defaultPreference);
-			UserPreferences userPreferences = new UserPreferences(preferences);
+			UserPreferences userPreferences = new UserPreferences(defaultPreference, preferences);
 			
 			try {
 				profiles.add(new UserProfile(general, visualCapabilities, auditoryCapabilities, userPreferences, false));

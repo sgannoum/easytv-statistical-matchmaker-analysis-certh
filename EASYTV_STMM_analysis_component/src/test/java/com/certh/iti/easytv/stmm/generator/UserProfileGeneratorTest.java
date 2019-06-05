@@ -13,6 +13,7 @@ import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.certh.iti.easytv.config.Config;
 import com.certh.iti.easytv.stmm.user.profile.UserProfile;
 
 public class UserProfileGeneratorTest {
@@ -49,7 +50,7 @@ public class UserProfileGeneratorTest {
 			//System.out.println(actualProfile.getJSONObject().toString(4));
 			Assert.assertEquals(actualProfile, expectedProfile);
 			
-			File file = new File("C:\\Users\\salgan\\git\\EASYTV_STMM_analysis_component\\EASYTV_STMM_analysis_component\\auto_generated_testing_profiles"+File.separator+"user_"+i+".json");
+			File file = new File(Config.path);
 			if(!file.exists())
 				Assert.assertTrue(file.createNewFile());
 			
