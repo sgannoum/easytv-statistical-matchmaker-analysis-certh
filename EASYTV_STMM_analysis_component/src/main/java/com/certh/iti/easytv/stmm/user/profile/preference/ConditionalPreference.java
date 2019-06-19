@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.certh.iti.easytv.stmm.user.profile.preference.condition.operand.OperandLiteral;
-import com.certh.iti.easytv.stmm.user.profile.preference.entry.Entry;
 
 
 public class ConditionalPreference extends Preference {
