@@ -5,9 +5,8 @@ import java.util.EnumSet;
 
 import org.json.JSONObject;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
-import com.certh.iti.easytv.stmm.user.profile.UserProfile;
+import com.certh.iti.easytv.user.UserProfile;
 
 import junit.framework.Assert;
 

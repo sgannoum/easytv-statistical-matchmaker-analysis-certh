@@ -3,7 +3,7 @@ package com.certh.iti.easytv.stmm.clustering;
 import org.apache.commons.math3.ml.clustering.Clusterer;
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 
-import com.certh.iti.easytv.stmm.user.profile.UserProfile;
+import com.certh.iti.easytv.user.UserProfile;
 
 public class DBScanWrapper implements iCluster{
 	

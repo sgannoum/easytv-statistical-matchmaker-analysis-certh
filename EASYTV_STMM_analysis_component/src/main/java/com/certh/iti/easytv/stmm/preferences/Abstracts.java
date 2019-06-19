@@ -1,14 +1,12 @@
 package com.certh.iti.easytv.stmm.preferences;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.TreeMap;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 
-import com.certh.iti.easytv.stmm.user.profile.UserProfile;
+import com.certh.iti.easytv.user.UserProfile;
 
 public class Abstracts {
 	
@@ -51,9 +49,6 @@ public class Abstracts {
 			
 			curMeanDistance /= cluster.getPoints().size();
 			if(curMeanDistance < resultMeanDistance) {
-				resultProfile.setAuditoryCapabilities(candidateCenter.getAuditoryCapabilities());
-				resultProfile.setGeneral(candidateCenter.getGeneral());
-				resultProfile.setVisualCapabilities(candidateCenter.getVisualCapabilities());
 				resultProfile.setUserPreferences(candidateCenter.getUserPreferences());
 
                 resultMeanDistance = curMeanDistance;

@@ -17,9 +17,10 @@ import java.util.TreeMap;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.Clusterer;
+
 import com.certh.iti.easytv.stmm.clustering.Config;
 import com.certh.iti.easytv.stmm.preferences.Abstracts;
-import com.certh.iti.easytv.stmm.user.profile.UserProfile;
+import com.certh.iti.easytv.user.UserProfile;
 
 public class Main {
 
