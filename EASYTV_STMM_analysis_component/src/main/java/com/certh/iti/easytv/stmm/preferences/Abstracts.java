@@ -36,7 +36,8 @@ public class Abstracts {
 			Iterator<UserProfile> clusterIter2 = cluster.getPoints().iterator();
 			while(clusterIter2.hasNext() && !clusterIter1.equals(clusterIter2)) {
 				UserProfile other = clusterIter2.next();
-				curDistance = candidateCenter.distanceTo(other);
+			//	curDistance = candidateCenter.distanceTo(other);
+				curDistance = 0.0;
 				
 				if((curDistancesSub = curDistances.get(curDistance)) == null) {
                     curDistancesSub = new HashSet<UserProfile>();
