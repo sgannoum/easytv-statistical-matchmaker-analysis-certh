@@ -4,6 +4,7 @@ import org.apache.commons.math3.ml.clustering.Clusterer;
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 
 import com.certh.iti.easytv.user.UserProfile;
+import com.certh.iti.easytv.user.preference.Preference;
 
 public class DBScanWrapper implements iCluster{
 	
@@ -24,7 +25,11 @@ public class DBScanWrapper implements iCluster{
 		System.out.print(compareMode[compareMode.length - 1]);
 		System.out.println(" distanceMeasure= "+distanceMeasure);
 				
-		return new DBSCANClusterer<UserProfile>(eps, minPts, new UserProfileDistanceMeasure(compareMode, distanceMeasure));
+		//Filter out user profile dimensions
+		AllDimensionsDistanceMeasure allDimensions = new AllDimensionsDistanceMeasure(Preference.getOperands());
+		
+		//Call clustering algorithm
+		return new DBSCANClusterer<UserProfile>(eps, minPts, allDimensions.getDistanceMeasure());
 	}
 
 	public String get_Name() {

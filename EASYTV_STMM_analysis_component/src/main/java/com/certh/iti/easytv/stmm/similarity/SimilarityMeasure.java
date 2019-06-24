@@ -27,10 +27,9 @@ public class SimilarityMeasure implements DistanceMeasure{
 			
 			dividend += delta_d[0] * delta_d[1];
 			divisor += delta_d[0];
-			
 		}
 		
+		//return similarity
 		return 1.0 - (dividend/divisor);
-
 	}
 }
