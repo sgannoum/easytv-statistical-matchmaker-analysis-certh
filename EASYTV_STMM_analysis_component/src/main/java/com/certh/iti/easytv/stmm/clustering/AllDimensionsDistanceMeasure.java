@@ -9,10 +9,12 @@ import com.certh.iti.easytv.stmm.similarity.dimension.Nominal;
 import com.certh.iti.easytv.stmm.similarity.dimension.Numeric;
 import com.certh.iti.easytv.stmm.similarity.dimension.Ordinal;
 import com.certh.iti.easytv.stmm.similarity.dimension.SymmetricBinary;
-import com.certh.iti.easytv.user.preference.operand.NumericLiteral;
-import com.certh.iti.easytv.user.preference.operand.OperandLiteral;
-import com.certh.iti.easytv.user.preference.operand.OperandLiteral.Type;
-import com.certh.iti.easytv.user.preference.operand.OrdinalLiteral;
+import com.certh.iti.easytv.user.preference.attributes.AsymmetricBinaryAttribute;
+import com.certh.iti.easytv.user.preference.attributes.Attribute;
+import com.certh.iti.easytv.user.preference.attributes.NominalAttribute;
+import com.certh.iti.easytv.user.preference.attributes.NumericAttribute;
+import com.certh.iti.easytv.user.preference.attributes.OrdinalAttribute;
+import com.certh.iti.easytv.user.preference.attributes.SymmetricBinaryAttribute;
 
 public class AllDimensionsDistanceMeasure {
 
@@ -20,25 +22,30 @@ public class AllDimensionsDistanceMeasure {
 
 	protected AllDimensionsDistanceMeasure() {}
 	
-	public AllDimensionsDistanceMeasure(OperandLiteral[] operands) {
+	public AllDimensionsDistanceMeasure(Attribute[] operands) {
 		Dimension[] dimensions = new Dimension[operands.length];
+		int i = 0;
+		for (Attribute operand : operands) {
+			Dimension d = null; 
+			
+			if (NumericAttribute.class.isInstance(operand)) {
+				NumericAttribute numeric = (NumericAttribute) operand;
+				d = new Numeric(operand.getOperandMissingValue(), numeric.getMaxValue(), numeric.getMinValue());
+			} else if (OrdinalAttribute.class.isInstance(operand)) {
+				OrdinalAttribute ordinal = (OrdinalAttribute) operand;
+				d = new Ordinal(ordinal.getOperandMissingValue(), ordinal.getMaxValue(), ordinal.getMinValue());
+				
+			} else if (NominalAttribute.class.isInstance(operand)) {
+				d = new Nominal(operand.getOperandMissingValue());
+				
+			} else if (SymmetricBinaryAttribute.class.isInstance(operand)) {
+				d = new SymmetricBinary(operand.getOperandMissingValue());
 
-		for (int i = 0; i < operands.length; i++) {
-			OperandLiteral operand = operands[i];
-
-			if (operand.getType() == Type.Nominal) {
-				dimensions[i] = new Nominal(operand.getOperandMissingValue());
-			} else if (operand.getType() == Type.Asymetric_Binary) {
-				dimensions[i] = new AsymmetricBinary();
-			} else if (operand.getType() == Type.Symmetric_Binary) {
-				dimensions[i] = new SymmetricBinary(operand.getOperandMissingValue());
-			} else if (operand.getType() == Type.Ordinal) {
-				OrdinalLiteral ordinal = (OrdinalLiteral) operand;
-				dimensions[i] = new Ordinal(ordinal.getOperandMissingValue(), ordinal.getMaxValue(), ordinal.getMinValue());
-			} else if (operand.getType() == Type.Numeric) {
-				NumericLiteral numeric = (NumericLiteral) operand;
-				dimensions[i] = new Numeric(numeric.getOperandMissingValue(), numeric.getMaxValue(), numeric.getMinValue());
+			} else if (AsymmetricBinaryAttribute.class.isInstance(operand)) {
+				d = new AsymmetricBinary();
 			}
+			
+			dimensions[i++] = d;
 		}
 
 		dist = new SimilarityMeasure(dimensions);
