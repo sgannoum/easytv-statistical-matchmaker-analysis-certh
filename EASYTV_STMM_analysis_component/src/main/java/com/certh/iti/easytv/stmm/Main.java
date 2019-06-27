@@ -171,8 +171,10 @@ public class Main {
 		}
 
 		File[] iniFiles = directory.listFiles(new IniFileFilter());
-		for (int i = 0; i < iniFiles.length; i++)
+		for (int i = 0; i < iniFiles.length; i++) {
+			System.out.println("Reading file: " +iniFiles[i].getPath());
 			_Profiles.add(new UserProfile(iniFiles[i]));
+		}
 
 		class dirFileFilter implements FileFilter {
 			public boolean accept(File dir) {

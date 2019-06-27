@@ -49,7 +49,7 @@ public class SimilarityMeasureTest {
 	public void test_ordinal_attribute() {
 		
 		Dimension[] dimensions = new Dimension[1];
-		dimensions[0] = new Ordinal(2, 0);
+		dimensions[0] = new Ordinal(2, 2, 0);
 		
 		double[][] data = { {2},
 							{0},
@@ -84,7 +84,7 @@ public class SimilarityMeasureTest {
 		
 		Dimension[] dimensions = new Dimension[3];
 		dimensions[0] = new Nominal();
-		dimensions[1] = new Ordinal(2, 0);
+		dimensions[1] = new Ordinal(2, 2, 0);
 		dimensions[2] = new Numeric(64.0, 22.0);
 		
 		double[][] data = { {0, 2, 45},

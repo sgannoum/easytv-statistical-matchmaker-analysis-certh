@@ -33,7 +33,7 @@ public class AllDimensionsDistanceMeasure {
 				d = new Numeric(operand.getOperandMissingValue(), numeric.getMaxValue(), numeric.getMinValue());
 			} else if (OrdinalAttribute.class.isInstance(operand)) {
 				OrdinalAttribute ordinal = (OrdinalAttribute) operand;
-				d = new Ordinal(ordinal.getOperandMissingValue(), ordinal.getMaxValue(), ordinal.getMinValue());
+				d = new Ordinal(ordinal.getStates().length - 1, ordinal.getMaxValue(), ordinal.getMinValue());
 				
 			} else if (NominalAttribute.class.isInstance(operand)) {
 				d = new Nominal(operand.getOperandMissingValue());
