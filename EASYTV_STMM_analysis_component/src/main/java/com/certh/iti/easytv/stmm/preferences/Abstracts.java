@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.TreeMap;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
+import org.apache.commons.math3.ml.distance.DistanceMeasure;
 
 import com.certh.iti.easytv.user.UserProfile;
 
@@ -21,7 +22,7 @@ public class Abstracts {
 	 * @param resultMeanDistance The center mean distance from all cluster profiles.
 	 * @return The mean distance of the center profile.
 	 */
-	public static double FindCenter(Cluster<UserProfile> cluster, UserProfile resultProfile, TreeMap<Double, HashSet<UserProfile>> distances, Double resultMeanDistance) {
+	public static double FindCenter(DistanceMeasure dist, Cluster<UserProfile> cluster, UserProfile resultProfile, TreeMap<Double, HashSet<UserProfile>> distances, Double resultMeanDistance) {
 		Double curMeanDistance = null, curDistance;
 		TreeMap<Double, HashSet<UserProfile>> curDistances;
 		HashSet<UserProfile> curDistancesSub = null;
@@ -36,8 +37,7 @@ public class Abstracts {
 			Iterator<UserProfile> clusterIter2 = cluster.getPoints().iterator();
 			while(clusterIter2.hasNext() && !clusterIter1.equals(clusterIter2)) {
 				UserProfile other = clusterIter2.next();
-			//	curDistance = candidateCenter.distanceTo(other);
-				curDistance = 0.0;
+				curDistance = dist.compute(candidateCenter.getPoint(), other.getPoint());
 				
 				if((curDistancesSub = curDistances.get(curDistance)) == null) {
                     curDistancesSub = new HashSet<UserProfile>();
@@ -60,8 +60,8 @@ public class Abstracts {
 		return curMeanDistance;
 	}
 	
-	public static double FindCenter(Cluster<UserProfile> cluster, UserProfile resultProfile, TreeMap<Double, HashSet<UserProfile>> distances) {
-		return FindCenter(cluster, resultProfile, distances, Double.MAX_VALUE);
+	public static double FindCenter(DistanceMeasure dist, Cluster<UserProfile> cluster, UserProfile resultProfile, TreeMap<Double, HashSet<UserProfile>> distances) {
+		return FindCenter(dist, cluster, resultProfile, distances, Double.MAX_VALUE);
 	}
 	
 	

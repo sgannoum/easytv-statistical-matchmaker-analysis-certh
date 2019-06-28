@@ -17,9 +17,11 @@ import java.util.TreeMap;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.Clusterer;
+import org.apache.commons.math3.ml.distance.DistanceMeasure;
 
 import com.certh.iti.easytv.stmm.clustering.Config;
 import com.certh.iti.easytv.stmm.preferences.Abstracts;
+import com.certh.iti.easytv.stmm.similarity.DistanceMeasureFactory;
 import com.certh.iti.easytv.user.UserProfile;
 
 public class Main {
@@ -102,22 +104,25 @@ public class Main {
         
         //Cluster
         List<Cluster<UserProfile>> clusters = new ArrayList<Cluster<UserProfile>>();
-        Iterator<Clusterer<UserProfile>> clusterer = Config.getInstance().Config.iterator();
-        while(clusterer.hasNext()) 
-        	clusters.addAll(clusterer.next().cluster(_Profiles));
+        Iterator<Clusterer<UserProfile>> itertor = Config.getInstance().Config.iterator();
+        while(itertor.hasNext()) { 
+        	Clusterer<UserProfile> cluster = itertor.next();
+        	clusters.addAll(cluster.cluster(_Profiles));
+        }
         
         //Start processing
         System.out.println("--------");
         System.out.println("Reducing clusters..." + clusters.size());
         List<UserProfile> generalized = new ArrayList<UserProfile>();
         
+        DistanceMeasure allDimensionsDistance = DistanceMeasureFactory.getInstance(new String[] {"ALL"});
         Iterator<Cluster<UserProfile>> clustersIter = clusters.iterator();
         int clusterIndx = 1;
         while(clustersIter.hasNext()) {
         	Cluster<UserProfile> aCluster = clustersIter.next();
         	UserProfile clusterCenter = new UserProfile();
         	TreeMap<Double, HashSet<UserProfile>> distances = new TreeMap<Double, HashSet<UserProfile>>();
-        	Abstracts.FindCenter(aCluster, clusterCenter, distances);
+        	Abstracts.FindCenter(allDimensionsDistance, aCluster, clusterCenter, distances);
         	
         	//Generalized.Add(Preferences.GeneralizeProfile(center, distances, _Profiles))
         	generalized.add(clusterCenter);
