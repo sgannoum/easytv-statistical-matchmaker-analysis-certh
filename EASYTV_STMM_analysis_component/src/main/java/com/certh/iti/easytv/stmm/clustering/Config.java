@@ -29,6 +29,8 @@ public class Config {
 		Config = new ArrayList<Clusterer<UserProfile>>();
 		_Clusterers = new ArrayList<iCluster>();
 		_Clusterers.add(new DBScanWrapper());
+		_Clusterers.add(new KMeansPlusPlusWrapper());
+		_Clusterers.add(new MultiKMeansPlusPlusWrapper());
 	}
 	
 	public static Config getInstance() {

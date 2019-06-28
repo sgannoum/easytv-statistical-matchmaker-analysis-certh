@@ -115,6 +115,7 @@ public class Main {
         System.out.println("Reducing clusters..." + clusters.size());
         List<UserProfile> generalized = new ArrayList<UserProfile>();
         
+        //TO-DO replace all dimensions distance measurement with a proper distance
         DistanceMeasure allDimensionsDistance = DistanceMeasureFactory.getInstance(new String[] {"ALL"});
         Iterator<Cluster<UserProfile>> clustersIter = clusters.iterator();
         int clusterIndx = 1;
