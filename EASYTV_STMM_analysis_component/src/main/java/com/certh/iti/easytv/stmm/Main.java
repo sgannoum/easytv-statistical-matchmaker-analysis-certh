@@ -20,6 +20,7 @@ import org.apache.commons.math3.ml.clustering.Clusterer;
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
 
 import com.certh.iti.easytv.stmm.clustering.Config;
+import com.certh.iti.easytv.stmm.clustering.iCluster;
 import com.certh.iti.easytv.stmm.preferences.Abstracts;
 import com.certh.iti.easytv.stmm.similarity.DistanceMeasureFactory;
 import com.certh.iti.easytv.user.UserProfile;
@@ -35,7 +36,7 @@ public class Main {
 	private static File _ConfigFile = null;
 	private static File _OutputFile = null;
 	private static File _ProfilesDirectory = null;
-	private static Collection<UserProfile> _Profiles = new ArrayList<UserProfile>();
+	private static Cluster<UserProfile> _Profiles = new Cluster<UserProfile>();
 
 	public static void main(String[] args) throws NumberFormatException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, IOException {
 		//Parse arguments
@@ -98,37 +99,42 @@ public class Main {
 			throw new IllegalStateException("Preference Directory not set."); 
 		
         System.out.println("--------");
-        System.out.println("Finished loading " + _Profiles.size() + " profiles.");
+        System.out.println("Finished loading " + _Profiles.getPoints().size() + " profiles.");
         System.out.println("--------");
         System.out.println("Clustering...");
         
         //Cluster
-        List<Cluster<UserProfile>> clusters = new ArrayList<Cluster<UserProfile>>();
-        Iterator<Clusterer<UserProfile>> itertor = Config.getInstance().Config.iterator();
-        while(itertor.hasNext()) { 
-        	Clusterer<UserProfile> cluster = itertor.next();
-        	clusters.addAll(cluster.cluster(_Profiles));
+        List<Cluster<UserProfile>> clusteres = new ArrayList<Cluster<UserProfile>>();
+        clusteres.add(_Profiles);
+
+        for(iCluster clusterer : Config.getInstance().Config) {
+
+        	System.out.println("["+clusterer.get_Name()+"] "+ clusterer.toString());
+        	
+        	List<Cluster<UserProfile>> tmp = new ArrayList<Cluster<UserProfile>>();
+        	for(Cluster<UserProfile> cluster : clusteres) 
+        		tmp.addAll(clusterer.getClusterer().cluster(cluster.getPoints()));
+        			
+            System.out.println("\tClusters generated... " + tmp.size());
+            for(int i = 0; i < tmp.size(); i++)
+            	System.out.println("\tcluster_" + (i + 1) + " : "+ tmp.get(i).getPoints().size());
+
+        	clusteres.clear();
+        	clusteres = tmp;
         }
         
         //Start processing
-        System.out.println("--------");
-        System.out.println("Reducing clusters..." + clusters.size());
         List<UserProfile> generalized = new ArrayList<UserProfile>();
         
-        //TO-DO replace all dimensions distance measurement with a proper distance
+        //TO-DO replace all dimensions distance measurement with a proper distance for finding the cluster center
         DistanceMeasure allDimensionsDistance = DistanceMeasureFactory.getInstance(new String[] {"ALL"});
-        Iterator<Cluster<UserProfile>> clustersIter = clusters.iterator();
-        int clusterIndx = 1;
-        while(clustersIter.hasNext()) {
-        	Cluster<UserProfile> aCluster = clustersIter.next();
+        for(Cluster<UserProfile> aCluster : clusteres) {
         	UserProfile clusterCenter = new UserProfile();
         	TreeMap<Double, HashSet<UserProfile>> distances = new TreeMap<Double, HashSet<UserProfile>>();
         	Abstracts.FindCenter(allDimensionsDistance, aCluster, clusterCenter, distances);
         	
         	//Generalized.Add(Preferences.GeneralizeProfile(center, distances, _Profiles))
         	generalized.add(clusterCenter);
-        	
-        	System.out.println(clusterIndx++ + " : "+ aCluster.getPoints().size());
         }
         
         System.out.println("--------");
@@ -179,7 +185,7 @@ public class Main {
 		File[] iniFiles = directory.listFiles(new IniFileFilter());
 		for (int i = 0; i < iniFiles.length; i++) {
 			System.out.println("Reading file: " +iniFiles[i].getPath());
-			_Profiles.add(new UserProfile(iniFiles[i]));
+			_Profiles.addPoint(new UserProfile(iniFiles[i]));
 		}
 
 		class dirFileFilter implements FileFilter {

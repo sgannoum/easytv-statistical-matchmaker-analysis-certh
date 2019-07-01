@@ -1,5 +1,7 @@
 package com.certh.iti.easytv.stmm.clustering;
 
+import java.util.Arrays;
+
 import org.apache.commons.math3.ml.clustering.Clusterer;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 
@@ -15,19 +17,6 @@ public class KMeansPlusPlusWrapper implements iCluster {
 
 	
 	public KMeansPlusPlusWrapper() {
-		
-	}
-
-	@Override
-	public Clusterer<UserProfile> Clone() {
-		System.out.print("Initiating Apache KMeans++ with values k= "+k+" maxIterations= "+maxIterations+" compareMode= [");
-		for(int i = 0; i < compareMode.length - 1; i++)
-			System.out.print("\""+compareMode[i]+"\",");
-		
-		System.out.print("\""+compareMode[compareMode.length - 1] + "\"]");
-		
-		//Call clustering algorithm
-		return new KMeansPlusPlusClusterer<UserProfile>(k, maxIterations, DistanceMeasureFactory.getInstance(compareMode));
 	}
 
 	@Override
@@ -35,4 +24,36 @@ public class KMeansPlusPlusWrapper implements iCluster {
 		return "KMeans++";
 	}
 
+	@Override
+	public iCluster Clone() {
+		KMeansPlusPlusWrapper k_means = new KMeansPlusPlusWrapper();
+		k_means.k = k;
+		k_means.maxIterations = maxIterations;
+		k_means.distanceMeasure = distanceMeasure;
+		k_means.compareMode = Arrays.copyOf(compareMode, compareMode.length);
+				
+		System.out.print(k_means.toString());
+		
+		return k_means;
+	}
+
+	@Override
+	public Clusterer<UserProfile> getClusterer() {
+		return new KMeansPlusPlusClusterer<UserProfile>(k, maxIterations, DistanceMeasureFactory.getInstance(compareMode));
+	}
+
+	@Override
+	public String toString() {
+		
+		String str = new String(); 
+
+		str += "Initiating Apache KMeans++ with values k="+k+" maxIterations="+maxIterations+" compareMode=[";
+		for(int i = 0; i < compareMode.length - 1; i++)
+			str += "\""+compareMode[i]+"\",";
+		
+		str += "\""+compareMode[compareMode.length - 1] + "\"]";
+		
+		return str;
+		
+	}
 }

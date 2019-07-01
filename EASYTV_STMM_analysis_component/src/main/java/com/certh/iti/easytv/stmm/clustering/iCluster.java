@@ -6,8 +6,21 @@ import com.certh.iti.easytv.user.UserProfile;
 
 public interface iCluster {
 	
-	 public Clusterer<UserProfile> Clone();
+	/**
+	 * @return A clone with the same initialization values
+	 */
+	 public iCluster Clone();
 	 
+	 /**
+	  * 
+	  * @return The clustering algorithm name
+	  */
 	 public String get_Name();
+	 
+	 /**
+	  * 
+	  * @return An instance of the clustering algorithm
+	  */
+	 public Clusterer<UserProfile> getClusterer();
 
 }

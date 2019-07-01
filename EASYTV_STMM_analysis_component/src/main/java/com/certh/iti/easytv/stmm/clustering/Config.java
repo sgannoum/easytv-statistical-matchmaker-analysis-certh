@@ -7,17 +7,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
-import org.apache.commons.math3.ml.clustering.Clusterer;
-
-import com.certh.iti.easytv.user.UserProfile;
 
 public class Config {
 	
 	private static Config instance = null;
-	public List<Clusterer<UserProfile>> Config;
+	public List<iCluster> Config;
 	private final List<iCluster> _Clusterers;
 	
 	private enum ParseMode{
@@ -26,7 +21,7 @@ public class Config {
 	};
 	
 	private Config() {
-		Config = new ArrayList<Clusterer<UserProfile>>();
+		Config = new ArrayList<iCluster>();
 		_Clusterers = new ArrayList<iCluster>();
 		_Clusterers.add(new DBScanWrapper());
 		_Clusterers.add(new KMeansPlusPlusWrapper());
@@ -68,9 +63,7 @@ public class Config {
 				if(_CurrentClusterer != null) 
 					instance.Config.add(_CurrentClusterer.Clone());
 				
-				Iterator<iCluster> clustersIter = instance._Clusterers.iterator();
-				while(clustersIter.hasNext()) {
-					iCluster clusterer = clustersIter.next();
+				for(iCluster clusterer : instance._Clusterers) {
 					if(line.toLowerCase().equals("["+clusterer.get_Name().toLowerCase()+"]")) {
 						parseMode = ParseMode.Clusterer;
 						_CurrentClusterer = clusterer;
