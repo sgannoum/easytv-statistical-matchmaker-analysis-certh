@@ -13,12 +13,11 @@ public class DistanceMeasureFactory {
 		//All dimensions
 		for(String mode : compareMode)
 			if(mode.equalsIgnoreCase("all")) {
-				System.out.println("Compare all dimensions...");
 				return  new SimilarityMeasure(dimensionsGenerator.getDimensions());
 			}
 		
 		//Subset of dimensions
-		return new MaskedSimilarityMeasure(MaskGenerator.getMask(Preference.getUris(), compareMode), dimensionsGenerator.getDimensions());
+		return new MaskedSimilarityMeasure(MaskGenerator.getMask(Preference.getUris(), Preference.getOperands(), compareMode), dimensionsGenerator.getDimensions());
 	}
 
 }

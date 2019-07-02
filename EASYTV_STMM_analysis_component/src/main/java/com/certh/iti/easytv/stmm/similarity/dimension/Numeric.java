@@ -19,9 +19,9 @@ public class Numeric extends Dimension {
 
 	@Override
 	public double[] dissimilarity(double a, double b) {	
-		if(a == missingValue && a == b) {
+		if(a == missingValue && a == b) 
 			return new double[] {0.0, 0.0};
-		}
+		
 
 		return new double[] {1.0, Math.abs(a - b)/ (max - min)};
 	}

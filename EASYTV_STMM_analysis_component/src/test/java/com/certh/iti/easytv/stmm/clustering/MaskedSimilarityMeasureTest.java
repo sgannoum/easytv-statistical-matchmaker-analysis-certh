@@ -11,6 +11,7 @@ import com.certh.iti.easytv.stmm.similarity.MaskGenerator;
 import com.certh.iti.easytv.stmm.similarity.MaskedSimilarityMeasure;
 import com.certh.iti.easytv.user.UserProfile;
 import com.certh.iti.easytv.user.preference.Preference;
+import com.certh.iti.easytv.user.preference.attributes.Attribute;
 
 public class MaskedSimilarityMeasureTest {
 	JSONObject jsonProfile1 = new JSONObject("{\"user_preferences\": {\"default\": {\"preferences\": {\r\n" + 
@@ -124,6 +125,7 @@ public class MaskedSimilarityMeasureTest {
 	
 	
 	private String[] uris = Preference.getUris();
+	private Attribute[] attribute = Preference.getOperands();
 	private DimensionsGenerator dimensionsGenerator;
 	private UserProfile[] userProfiles = new UserProfile[4];
 	
@@ -144,7 +146,7 @@ public class MaskedSimilarityMeasureTest {
 		UserProfile profile1 = userProfiles[0];
 		UserProfile profile2 = userProfiles[1];
 		
-		long mask = MaskGenerator.getMask(uris, "http://registry.easytv.eu/common/content/audio/volume");
+		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/content/audio/volume"});
 				
 		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getDimensions());
 		
@@ -156,7 +158,7 @@ public class MaskedSimilarityMeasureTest {
 		UserProfile profile1 = userProfiles[0];
 		UserProfile profile2 = userProfiles[1];
 		
-		long mask = MaskGenerator.getMask(uris, "http://registry.easytv.eu/common/content/audio/language");
+		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/content/audio/language"});
 				
 		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getDimensions());
 		
@@ -168,7 +170,7 @@ public class MaskedSimilarityMeasureTest {
 		UserProfile profile1 = userProfiles[0];
 		UserProfile profile2 = userProfiles[1];
 		
-		long mask = MaskGenerator.getMask(uris, "http://registry.easytv.eu/common/content/audio/language");
+		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/content/audio/language"});
 				
 		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getDimensions());
 		
@@ -180,7 +182,7 @@ public class MaskedSimilarityMeasureTest {
 		UserProfile profile1 = userProfiles[0];
 		UserProfile profile2 = userProfiles[1];
 		
-		long mask = MaskGenerator.getMask(uris, new String[] {"http://registry.easytv.eu/common/content/audio/volume", 
+		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/content/audio/volume", 
 															  "http://registry.easytv.eu/common/content/audio/language"});
 				
 		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getDimensions());
