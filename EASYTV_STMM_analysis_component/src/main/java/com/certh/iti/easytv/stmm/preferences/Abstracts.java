@@ -22,30 +22,28 @@ public class Abstracts {
 	 * @param resultMeanDistance The center mean distance from all cluster profiles.
 	 * @return The mean distance of the center profile.
 	 */
-	public static double FindCenter(DistanceMeasure dist, Cluster<UserProfile> cluster, UserProfile resultProfile, TreeMap<Double, HashSet<UserProfile>> distances, Double resultMeanDistance) {
-		Double curMeanDistance = null, curDistance;
+	public static double FindCenter(DistanceMeasure distFunction, Cluster<UserProfile> cluster, UserProfile resultProfile, TreeMap<Double, HashSet<UserProfile>> distances, Double resultMeanDistance) {
+		Double curMeanDistance = null, distance;
 		TreeMap<Double, HashSet<UserProfile>> curDistances;
 		HashSet<UserProfile> curDistancesSub = null;
 		
-		Iterator<UserProfile> clusterIter1 = cluster.getPoints().iterator();
-		while(clusterIter1.hasNext()){
-
+		for(UserProfile candidateCenter : cluster.getPoints()) {
+			
 			curMeanDistance = 0.0;
 			curDistances = new TreeMap<Double, HashSet<UserProfile>>();
-			UserProfile candidateCenter = clusterIter1.next();
 			
-			Iterator<UserProfile> clusterIter2 = cluster.getPoints().iterator();
-			while(clusterIter2.hasNext() && !clusterIter1.equals(clusterIter2)) {
-				UserProfile other = clusterIter2.next();
-				curDistance = dist.compute(candidateCenter.getPoint(), other.getPoint());
-				
-				if((curDistancesSub = curDistances.get(curDistance)) == null) {
+			for(UserProfile other : cluster.getPoints()) {
+				if(candidateCenter.equals(other)) 
+					continue;
+
+				distance = distFunction.compute(candidateCenter.getPoint(), other.getPoint());				
+				if((curDistancesSub = curDistances.get(distance)) == null) {
                     curDistancesSub = new HashSet<UserProfile>();
-                    curDistances.put(curDistance, curDistancesSub);
+                    curDistances.put(distance, curDistancesSub);
 				}
 				
                 curDistancesSub.add(other);
-                curMeanDistance += curDistance;
+                curMeanDistance += distance;
 			}
 			
 			curMeanDistance /= cluster.getPoints().size();
@@ -56,12 +54,12 @@ public class Abstracts {
                 distances.putAll(curDistances);
 			}
 		}
-		
+
 		return curMeanDistance;
 	}
 	
-	public static double FindCenter(DistanceMeasure dist, Cluster<UserProfile> cluster, UserProfile resultProfile, TreeMap<Double, HashSet<UserProfile>> distances) {
-		return FindCenter(dist, cluster, resultProfile, distances, Double.MAX_VALUE);
+	public static double FindCenter(DistanceMeasure distFunction, Cluster<UserProfile> cluster, UserProfile resultProfile, TreeMap<Double, HashSet<UserProfile>> distances) {
+		return FindCenter(distFunction, cluster, resultProfile, distances, Double.MAX_VALUE);
 	}
 	
 	

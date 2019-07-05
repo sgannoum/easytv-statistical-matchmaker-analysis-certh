@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
@@ -23,7 +24,20 @@ import com.certh.iti.easytv.stmm.clustering.Config;
 import com.certh.iti.easytv.stmm.clustering.iCluster;
 import com.certh.iti.easytv.stmm.preferences.Abstracts;
 import com.certh.iti.easytv.stmm.similarity.DistanceMeasureFactory;
+import com.certh.iti.easytv.stmm.similarity.dimension.AsymmetricBinary;
+import com.certh.iti.easytv.stmm.similarity.dimension.Nominal;
+import com.certh.iti.easytv.stmm.similarity.dimension.Numeric;
+import com.certh.iti.easytv.stmm.similarity.dimension.Ordinal;
+import com.certh.iti.easytv.stmm.similarity.dimension.SymmetricBinary;
 import com.certh.iti.easytv.user.UserProfile;
+import com.certh.iti.easytv.user.preference.Preference;
+import com.certh.iti.easytv.user.preference.attributes.AsymmetricBinaryAttribute;
+import com.certh.iti.easytv.user.preference.attributes.Attribute;
+import com.certh.iti.easytv.user.preference.attributes.ColorAttribute;
+import com.certh.iti.easytv.user.preference.attributes.NominalAttribute;
+import com.certh.iti.easytv.user.preference.attributes.NumericAttribute;
+import com.certh.iti.easytv.user.preference.attributes.OrdinalAttribute;
+import com.certh.iti.easytv.user.preference.attributes.SymmetricBinaryAttribute;
 
 public class Main {
 
@@ -103,15 +117,19 @@ public class Main {
         System.out.println("--------");
         System.out.println("Clustering...");
         
-        //Cluster
+        //clusters
         List<Cluster<UserProfile>> clusteres = new ArrayList<Cluster<UserProfile>>();
+        
+        //start with all profile as first cluster
         clusteres.add(_Profiles);
 
+        //run clustering algorithm
+    	List<Cluster<UserProfile>> tmp = new ArrayList<Cluster<UserProfile>>();
         for(iCluster clusterer : Config.getInstance().Config) {
 
         	System.out.println("["+clusterer.get_Name()+"] "+ clusterer.toString());
         	
-        	List<Cluster<UserProfile>> tmp = new ArrayList<Cluster<UserProfile>>();
+        	//cluster each cluster
         	for(Cluster<UserProfile> cluster : clusteres) 
         		tmp.addAll(clusterer.getClusterer().cluster(cluster.getPoints()));
         			
@@ -120,7 +138,8 @@ public class Main {
             	System.out.println("\tcluster_" + (i + 1) + " : "+ tmp.get(i).getPoints().size());
 
         	clusteres.clear();
-        	clusteres = tmp;
+        	clusteres.addAll(tmp);
+        	tmp.clear();
         }
         
         //Start processing
@@ -131,8 +150,11 @@ public class Main {
         for(Cluster<UserProfile> aCluster : clusteres) {
         	UserProfile clusterCenter = new UserProfile();
         	TreeMap<Double, HashSet<UserProfile>> distances = new TreeMap<Double, HashSet<UserProfile>>();
+        	
+        	//Find the cluster center
         	Abstracts.FindCenter(allDimensionsDistance, aCluster, clusterCenter, distances);
         	
+        	//TO-DO generilize cluster
         	//Generalized.Add(Preferences.GeneralizeProfile(center, distances, _Profiles))
         	generalized.add(clusterCenter);
         }
@@ -238,6 +260,68 @@ public class Main {
         //entry count
         writer.println("stat.entryCount = " + clusters.size() + ";");
         
+        //import classes
+        writer.println();
+        writer.println("var Numeric = require(\"./DimensionHandlers\").Numeric");
+        writer.println("var Nominal = require(\"./DimensionHandlers\").Nominal");
+        writer.println("var Ordinal = require(\"./DimensionHandlers\").Ordinal");
+        writer.println("var SymmetricBinary = require(\"./DimensionHandlers\").SymmetricBinary");
+        writer.println("var Color = require(\"./DimensionHandlers\").Color");
+        writer.println();
+
+        
+        writer.println("stat.dimensionsHandlers = new Map();");
+
+        //add preference handlers
+        for(Entry<String, Attribute> entry : Preference.preferencesAttributes.entrySet()) {
+        	Attribute operand =  entry.getValue();
+        	String handlerInstance = "";
+        	
+        	if(ColorAttribute.class.isInstance(operand)) {
+				ColorAttribute colorAttribute = (ColorAttribute) operand;
+				
+				for (NumericAttribute attribte : colorAttribute.getDimensions()) 
+					handlerInstance += "new Numeric("+String.valueOf(attribte.getMaxValue())+", "+ String.valueOf(attribte.getMinValue())+", "+String.valueOf(attribte.getOperandMissingValue())+" ),";
+				
+				handlerInstance =  "new Color("+handlerInstance.substring(0, handlerInstance.length() - 1 ) +")";
+				
+			} else if (NumericAttribute.class.isInstance(operand)) {
+				NumericAttribute numeric = (NumericAttribute) operand;
+				
+				handlerInstance = "new Numeric("+String.valueOf(numeric.getMaxValue())+", "+ String.valueOf(numeric.getMinValue())+", "+String.valueOf(numeric.getOperandMissingValue())+" )";
+				
+			} else if (OrdinalAttribute.class.isInstance(operand)) {
+				OrdinalAttribute ordinal = (OrdinalAttribute) operand;
+				
+				String states = "";
+				for(String state : ordinal.getStates())
+					states += "\""+state+"\",";
+				
+				handlerInstance = "new Ordinal(["+states.substring(0, states.length() - 1).toLowerCase()+"], "+ String.valueOf(ordinal.getMaxValue())+", "+ String.valueOf(ordinal.getMinValue())+", "+String.valueOf(ordinal.getOperandMissingValue())+" )";
+				
+			} else if (NominalAttribute.class.isInstance(operand)) {
+				NominalAttribute nominal = (NominalAttribute) operand;
+				
+				
+				String states = "";
+				for(String state : nominal.getStates())
+					states += "\""+state+"\",";
+				
+				handlerInstance = "new Nominal(["+states.substring(0, states.length() - 1).toLowerCase()+"], "+String.valueOf(operand.getOperandMissingValue())+")";
+				
+			} else if (SymmetricBinaryAttribute.class.isInstance(operand)) {
+				
+				handlerInstance = "new SymmetricBinary("+String.valueOf(operand.getOperandMissingValue())+")";
+
+			} else if (AsymmetricBinaryAttribute.class.isInstance(operand)) {
+				//handlerInstance = new AsymmetricBinary();
+			}
+        	
+        	 writer.println("stat.dimensionsHandlers.set(\"" +entry.getKey() + "\", "+ handlerInstance +");");
+        }
+        
+        writer.println();
+
         //clusters
         writer.println("stat.clusters = [");
         
