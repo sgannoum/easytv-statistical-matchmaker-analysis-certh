@@ -268,7 +268,7 @@ public class Main {
         writer.println("*/");
         writer.println();
         writer.println("//Generated " +  df.format(now));
-        writer.println("var fluid = fluid || require(\"universal\");");
+        writer.println("var fluid = fluid || require(\"gpii-universal\");");
         writer.println("var stat = fluid.registerNamespace(\"easytv.matchMaker.statistical\");");
 
         //entry count
@@ -396,7 +396,7 @@ public class Main {
         writer.println("*/");
         writer.println();
         writer.println("//Generated " +  df.format(now));
-        writer.println("var fluid = fluid || require(\"universal\");");
+        writer.println("var fluid = fluid || require(\"gpii-universal\");");
         writer.println("var hybrid = fluid.registerNamespace(\"easytv.matchMaker.hybrid\");");
         
         //import classes
