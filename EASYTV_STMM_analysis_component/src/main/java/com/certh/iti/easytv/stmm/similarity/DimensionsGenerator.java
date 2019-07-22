@@ -2,6 +2,7 @@ package com.certh.iti.easytv.stmm.similarity;
 
 import com.certh.iti.easytv.stmm.similarity.dimension.AsymmetricBinary;
 import com.certh.iti.easytv.stmm.similarity.dimension.Dimension;
+import com.certh.iti.easytv.stmm.similarity.dimension.MultiNumeric;
 import com.certh.iti.easytv.stmm.similarity.dimension.Nominal;
 import com.certh.iti.easytv.stmm.similarity.dimension.Numeric;
 import com.certh.iti.easytv.stmm.similarity.dimension.Ordinal;
@@ -19,18 +20,20 @@ public class DimensionsGenerator {
 	protected Dimension[] dimensions;
 	
 	public DimensionsGenerator(Attribute[] operands) {
-		int length = 0, i = 0;
-		for(Attribute attribute : operands)
-			length += attribute.getDimensionsNumber();
+		int i = 0;
 		
-		dimensions = new Dimension[length];
+		dimensions = new Dimension[operands.length];
 		for (Attribute operand : operands) {
 			
 			if(ColorAttribute.class.isInstance(operand)) {
 				ColorAttribute colorAttribute = (ColorAttribute) operand;
-				
+				Numeric[] subDimensions = new Numeric[colorAttribute.getDimensions().length];
+
+				int index = 0;
 				for (NumericAttribute attribte : colorAttribute.getDimensions()) 
-					dimensions[i++] = new Numeric(attribte.getOperandMissingValue(), attribte.getMaxValue(), attribte.getMinValue());
+					subDimensions[index++] = new Numeric(attribte.getOperandMissingValue(), attribte.getMaxValue(), attribte.getMinValue());
+				
+				dimensions[i++] = new MultiNumeric(subDimensions, 8);
 				
 			} else if (NumericAttribute.class.isInstance(operand)) {
 				NumericAttribute numeric = (NumericAttribute) operand;

@@ -17,17 +17,6 @@ public class MaskGeneratorTest {
 	String[] uris = Preference.getUris();
 	private Attribute[] attribute = Preference.getOperands();
 	
-	@Test
-	public void test_all_unique_masks() throws IOException {
-		
-		for(int i = 0, pos = 0; i < uris.length; i++) {
-			long mask = 0;
-			for(int j = 0; j < attribute[i].getDimensionsNumber(); j++)
-				mask |= (long) Math.pow(2, pos++);
-			
-			Assert.assertEquals(mask, MaskGenerator.getMask(uris, attribute, new String[] {uris[i]}));
-		}
-	}
 	
 	@Test
 	public void test_mask_generato() throws IOException {

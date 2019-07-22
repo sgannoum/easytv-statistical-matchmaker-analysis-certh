@@ -12,18 +12,14 @@ public class MaskGenerator {
 	 */
 	public static long getMask(final String[] uris, final Attribute[] attributes, String[] categories) {
 		long mask = 0;
-		for(int i = 0, pos = 0; i < uris.length; i++) {
+		for(int i = 0; i < uris.length; i++) {
 			String uri = uris[i];
 			
 			for(String category : categories)
 				if(uri.contains(category)) {
-					for(int j = 0 ; j < attributes[i].getDimensionsNumber(); j++) 
-						mask |= (long) Math.pow(2, pos + j);
-					
+					mask |= (long) Math.pow(2, i);
 					break;
 			}
-			
-			pos += attributes[i].getDimensionsNumber();
 		}
 		
 		return mask;
