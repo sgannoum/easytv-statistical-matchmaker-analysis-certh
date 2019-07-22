@@ -36,6 +36,7 @@ public class MaskedSimilarityMeasure implements DistanceMeasure {
 			index++;
 		} while((tmpMask /=2) != 0.0);
 		
+		//System.out.println(1.0 - (dividend/divisor));
 		//return similarity
 		return 1.0 - (dividend/divisor);
 	}
