@@ -268,10 +268,9 @@ public class Main {
         writer.println("*/");
         writer.println();
         writer.println("//Generated " +  df.format(now));
-        writer.println("var fluid = fluid || require(\"gpii-universal\");");
-        writer.println("var stat = fluid.registerNamespace(\"easytv.matchMaker.statistical\");");
 
         //entry count
+        writer.println("var stat = {}");
         writer.println("stat.entryCount = " + clusters.size() + ";");
         
         //import classes
@@ -359,7 +358,9 @@ public class Main {
         	writer.println(clusters.get(clusters.size() - 1).getJSONObject().toString(4));
         }
         
-        writer.println("];");        
+        writer.println("];");    
+        writer.println();
+        writer.println("module.exports = stat;");
         writer.close();
 	}
 	
@@ -396,11 +397,9 @@ public class Main {
         writer.println("*/");
         writer.println();
         writer.println("//Generated " +  df.format(now));
-        writer.println("var fluid = fluid || require(\"gpii-universal\");");
-        writer.println("var hybrid = fluid.registerNamespace(\"easytv.matchMaker.hybrid\");");
         
         //import classes
-        writer.println();
+        writer.println("var hybrid = {}");
         writer.println("var Numeric = require(\"./DimensionHandlers\").Numeric");
         writer.println("var IntegerNumeric = require(\"./DimensionHandlers\").IntegerNumeric");
         writer.println("var Nominal = require(\"./DimensionHandlers\").Nominal");
@@ -472,6 +471,7 @@ public class Main {
         }
         
         writer.println();
+        writer.println("module.exports = hybrid;");
         writer.close();
 	}
 

@@ -60,7 +60,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.certh.iti.easytv.stmm.UserProfileGenratorMain</mainClass>
+							<mainClass>com.certh.iti.easytv.stmm.Main</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

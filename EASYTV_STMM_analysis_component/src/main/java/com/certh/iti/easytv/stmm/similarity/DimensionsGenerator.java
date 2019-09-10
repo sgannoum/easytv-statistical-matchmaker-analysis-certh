@@ -26,6 +26,10 @@ public class DimensionsGenerator {
 		for (Attribute operand : operands) {
 			
 			if(ColorAttribute.class.isInstance(operand)) {
+				/**
+				 * Color dimension is RGB value as double.
+				 * It is handled as a three dimensional value.
+				 */
 				ColorAttribute colorAttribute = (ColorAttribute) operand;
 				Numeric[] subDimensions = new Numeric[colorAttribute.getDimensions().length];
 

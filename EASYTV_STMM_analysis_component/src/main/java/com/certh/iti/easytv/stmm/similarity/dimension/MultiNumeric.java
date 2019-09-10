@@ -2,12 +2,12 @@ package com.certh.iti.easytv.stmm.similarity.dimension;
 
 public class MultiNumeric extends Dimension {
 
-	private Numeric[] dimensions;
-	private int bitLength;
+	private Numeric[] subDimensionsHandler;
+	private int dimensionBitLength;
 
-	public MultiNumeric(Numeric[] dimensions, int length) {
-		this.dimensions = dimensions;
-		this.bitLength = length;
+	public MultiNumeric(Numeric[] subDimensionsHandler, int dimensionBitLength) {
+		this.subDimensionsHandler = subDimensionsHandler;
+		this.dimensionBitLength = dimensionBitLength;
 	}
 	
 	@Override
@@ -20,23 +20,23 @@ public class MultiNumeric extends Dimension {
 		long la = (long) a, lb = (long) b;
 		
 		//calculate mask
-		long mask = (long) Math.pow(2, bitLength) - 1;
+		long mask = (long) Math.pow(2, dimensionBitLength) - 1;
 		
 		//set up dissimilarities result table
-		double[] dissimilarites = new double[dimensions.length * 2];
+		double[] dissimilarites = new double[subDimensionsHandler.length * 2];
 		
-		for(int i = 0; i < dimensions.length; i++) {
+		for(int i = 0; i < subDimensionsHandler.length; i++) {
 			//get dimension value
 			long tmpa = la & mask;
 			long tmpb = lb & mask;
 
 			
 			//shift bits
-			la >>= bitLength;
-			lb >>= bitLength;
+			la >>= dimensionBitLength;
+			lb >>= dimensionBitLength;
 			
 			//calculate dissimilarity
-			double[] res = dimensions[i].dissimilarity(tmpa, tmpb);
+			double[] res = subDimensionsHandler[i].dissimilarity(tmpa, tmpb);
 			
 			//add to results
 			dissimilarites[i*2] = res[0];
