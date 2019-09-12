@@ -35,8 +35,8 @@ public class Main {
 	private static Cluster<UserProfile> _Profiles;
 	private static ProfileReader profileReader;
 	private static ProfileWriter profileWriter;
-	private static String STMM_Host = "localhost";
-	private static String STMM_Port = "8077";
+	private static String STMM_HOST = "localhost";
+	private static String STMM_PORT = "8077";
 
 	private static String DB_HOST = "localhost";
 	private static String DB_PORT = "8077";
@@ -76,11 +76,11 @@ public class Main {
 		}
 
 		if(System.getenv("STMM_HOST") != null) {
-			STMM_Host = System.getenv("STMM_HOST") ;
+			STMM_HOST = System.getenv("STMM_HOST") ;
 		}
 		
 		if(System.getenv("STMM_PORT") != null) {
-			STMM_Port = System.getenv("STMM_PORT") ;
+			STMM_PORT = System.getenv("STMM_PORT") ;
 		}
 		
 		if(System.getenv("DB_HOST") != null) {
@@ -171,7 +171,7 @@ public class Main {
 		System.out.println("Inform stmm via http request");
         
 		//inform stmm runtime via http request
-		StmmWriter stmmWriter = new StmmWriter("http://"+STMM_Host+":"+STMM_Port+"/EasyTV_STMM_Restful_WS/clusters", generalized); 
+		StmmWriter stmmWriter = new StmmWriter("http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/clusters", generalized); 
 		stmmWriter.write();
 		
 		/*       System.out.println("--------");
