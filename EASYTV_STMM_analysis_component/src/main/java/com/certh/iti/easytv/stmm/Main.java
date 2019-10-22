@@ -1,6 +1,8 @@
 package com.certh.iti.easytv.stmm;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,6 +16,8 @@ import com.certh.iti.easytv.stmm.clustering.Config;
 import com.certh.iti.easytv.stmm.clustering.iCluster;
 import com.certh.iti.easytv.stmm.io.DBProfileReader;
 import com.certh.iti.easytv.stmm.io.DirectoryProfileReader;
+import com.certh.iti.easytv.stmm.io.HbmmJSWriter;
+import com.certh.iti.easytv.stmm.io.StmmJSWriter;
 import com.certh.iti.easytv.stmm.io.ProfileReader;
 import com.certh.iti.easytv.stmm.io.ProfileWriter;
 import com.certh.iti.easytv.stmm.io.StmmWriter;
@@ -63,13 +67,7 @@ public class Main {
 			_ConfigFile = new File(pwd + File.separator + "config.ini");
             System.out.println("Could not find profiles directory, reverted to :'" + _ConfigFile.getAbsolutePath() + "'");
 		}
-		
-		if(_OutputDirectory == null && _ProfilesDirectory != null) {
-			String pwd = System.getProperty("user.dir");
-			_OutputDirectory = new File(_ProfilesDirectory.getAbsolutePath() + File.separator + "StatisticalMatchMakerData.js");
-            System.out.println("Could not find profiles directory, reverted to :'" + _OutputDirectory.getAbsolutePath() + "'");
-		}
-		
+			
 		if(!_ConfigFile.exists()) {
 			System.err.println("CRITICAL: Profiles directory ('" + _ConfigFile.getAbsolutePath() + "') does not exist.");
 			System.exit(-1);
@@ -102,6 +100,19 @@ public class Main {
 		if(System.getenv("DB_PASSWORD") != null) {
 			DB_PASSWORD = System.getenv("DB_PASSWORD") ;
 		}
+		
+		if(System.getenv("DB_PASSWORD_FILE") != null) {
+			String line = "";
+			BufferedReader reader = new BufferedReader(new FileReader(System.getenv("DB_PASSWORD_FILE")));
+			StringBuffer buff = new StringBuffer();
+			
+			while((line = reader.readLine()) != null) 
+				buff.append(line);
+			
+			buff.trimToSize();
+			
+			DB_PASSWORD = buff.toString();
+		}
 	
 		//Read config
 		Config.getInstance().ReadConfiguration(_ConfigFile);
@@ -114,11 +125,12 @@ public class Main {
 		if(_ProfilesDirectory != null && _ProfilesDirectory.exists()) {
 			profileReader = new DirectoryProfileReader(_ProfilesDirectory);
 			_Profiles = profileReader.readProfiles();
-		}
+		} else {
 
-		//Load profiles from db
-		DBProfileReader dbReader = new DBProfileReader(DB_HOST + ":"+DB_PORT+"/"+DB_NAME, DB_USER, DB_PASSWORD);
-		_Profiles = dbReader.readProfiles();
+			//Load profiles from db
+			DBProfileReader dbReader = new DBProfileReader(DB_HOST + ":"+DB_PORT+"/"+DB_NAME, DB_USER, DB_PASSWORD);
+			_Profiles = dbReader.readProfiles();
+		}
 		
         System.out.println("--------");
         System.out.println("Finished loading " + _Profiles.getPoints().size() + " profiles.");
@@ -131,7 +143,7 @@ public class Main {
         //start with all profile as first cluster
         clusteres.add(_Profiles);
 
-        //run clustering algorithms
+        //run all clustering algorithms
     	List<Cluster<UserProfile>> tmp = new ArrayList<Cluster<UserProfile>>();
         for(iCluster clusterer : Config.getInstance().Config) {
 
@@ -150,9 +162,15 @@ public class Main {
         	tmp.clear();
         }
         
+        //Don't proceed if no clusters produced
+        if(clusteres.isEmpty()) {
+			return ;
+        }
+        
         //Start processing
         List<UserProfile> generalized = new ArrayList<UserProfile>();
         
+        //Generalize clusters
         //TO-DO replace all dimensions distance measurement with a proper distance for finding the cluster center
         DistanceMeasure allDimensionsDistance = DistanceMeasureFactory.getInstance(new String[] {"ALL"});
         for(Cluster<UserProfile> aCluster : clusteres) {
@@ -162,24 +180,34 @@ public class Main {
         	//Find the cluster center
         	Abstracts.FindCenter(allDimensionsDistance, aCluster, clusterCenter, distances);
         	
-        	//TO-DO generilize cluster
+        	//TO-DO generalize cluster
         	//Generalized.Add(Preferences.GeneralizeProfile(center, distances, _Profiles))
+        	
+        	
         	generalized.add(clusterCenter);
         }
-
-        System.out.println("--------");
-		System.out.println("Inform stmm via http request");
         
-		//inform stmm runtime via http request
-		StmmWriter stmmWriter = new StmmWriter("http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/clusters", generalized); 
-		stmmWriter.write();
+        System.out.println("--------");
+		if(_OutputDirectory != null && _ProfilesDirectory != null) {
 		
-		/*       System.out.println("--------");
-		System.out.println("write JS file to "+_OutputDirectory.getAbsolutePath());
-		
-        //Write JS
-		profileWriter = new JSWriter(_OutputDirectory, generalized); 
-		profileWriter.write();*/
+			System.out.println("Write dimensions handlers and clutering data JS files.");
+
+	        //Write JS
+			profileWriter = new StmmJSWriter(_OutputDirectory, generalized); 
+			profileWriter.write();
+			
+			profileWriter = new HbmmJSWriter(_OutputDirectory, generalized); 
+			profileWriter.write();
+			
+		} else {
+			System.out.println("Inform stmm via: " + "http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters");
+	        
+			//inform stmm runtime via http request
+			StmmWriter stmmWriter = new StmmWriter("http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters", generalized); 
+			stmmWriter.write();
+		}
+        
+
 	}
 
 }
