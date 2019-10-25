@@ -6,8 +6,10 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
+import org.json.JSONException;
 
 import com.certh.iti.easytv.user.UserProfile;
+import com.certh.iti.easytv.user.UserProfileParsingException;
 
 public class DirectoryProfileReader implements ProfileReader {
 	
@@ -34,7 +36,7 @@ public class DirectoryProfileReader implements ProfileReader {
 		//read profiles
 		try {
 			ReadProfilesFrom(profilesDirector, profiles);
-		} catch (IOException e) {
+		} catch (IOException | JSONException | UserProfileParsingException e) {
 			e.printStackTrace();
 		}
 
@@ -68,8 +70,10 @@ public class DirectoryProfileReader implements ProfileReader {
 	 * 
 	 * @param directory
 	 * @throws IOException
+	 * @throws UserProfileParsingException 
+	 * @throws JSONException 
 	 */
-	private void ReadProfilesFrom(File directory, Cluster<UserProfile> profiles) throws IOException {
+	private void ReadProfilesFrom(File directory, Cluster<UserProfile> profiles) throws IOException, JSONException, UserProfileParsingException {
 		if (directory == null || !directory.exists())
 			return;
 

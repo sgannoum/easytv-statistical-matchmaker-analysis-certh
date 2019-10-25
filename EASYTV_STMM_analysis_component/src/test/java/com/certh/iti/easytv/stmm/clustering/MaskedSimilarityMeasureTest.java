@@ -10,116 +10,161 @@ import com.certh.iti.easytv.stmm.similarity.DimensionsGenerator;
 import com.certh.iti.easytv.stmm.similarity.MaskGenerator;
 import com.certh.iti.easytv.stmm.similarity.MaskedSimilarityMeasure;
 import com.certh.iti.easytv.user.UserProfile;
+import com.certh.iti.easytv.user.UserProfileParsingException;
 import com.certh.iti.easytv.user.preference.Preference;
 import com.certh.iti.easytv.user.preference.attributes.Attribute;
 
 public class MaskedSimilarityMeasureTest {
-	JSONObject jsonProfile1 = new JSONObject("{\"user_preferences\": {\"default\": {\"preferences\": {\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/audioSubtitles\": false,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/audio/track\": \"CA\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/speed\": 38,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/accessibility/textDetection\": false,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/backgroundColor\": \"#ee6243\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/subtitles\": \"EN\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/font/color\": \"#b23b41\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/accessibility/imageMagnification/scale\": 94,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/language\": \"EN\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/signLanguage\": \"EN\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/content/audio/language\": \"GR\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/fontColor\": \"#39dc2\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/font/type\": \"serif\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/background\": \"#18d4dc\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/language\": \"ES\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/displayContrast\": 52,\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/volume\": 24,\r\n" + 
-			"    \"http://registry.easytv.eu/common/content/audio/volume\": 80,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/audio/volume\": 39,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/fontSize\": 58,\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/font/size\": 19,\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/audioQuality\": 90,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/accessibility/faceDetection\": false,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/audio/audioDescription\": false\r\n" + 
+	JSONObject jsonProfile1 = new JSONObject("{\"user_preferences\": {\"default\": {\"preferences\": {" + 
+			"\"http://registry.easytv.eu/common/volume\": 22," + 
+			"\"http://registry.easytv.eu/common/contrast\": 100," + 
+			"\"http://registry.easytv.eu/application/control/voice\": true," + 
+			"\"http://registry.easytv.eu/application/cs/audio/track\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/ui/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/audio/volume\": 22," + 
+			"\"http://registry.easytv.eu/application/cs/ui/text/size\": \"16\"," + 
+			"\"http://registry.easytv.eu/application/tts/audio/speed\": 3," + 
+			"\"http://registry.easytv.eu/application/tts/audio/voice\": \"male\"," + 
+			"\"http://registry.easytv.eu/application/cs/audio/eq/bass\": 0," + 
+			"\"http://registry.easytv.eu/application/cs/audio/eq/mids\": 0," + 
+			"\"http://registry.easytv.eu/application/tts/audio/volume\": 32," + 
+			"\"http://registry.easytv.eu/application/cs/audio/eq/highs\": 0," + 
+			"\"http://registry.easytv.eu/common/content/audio/language\": \"gr\"," + 
+			"\"http://registry.easytv.eu/application/tts/audio/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/cc/audio/subtitle\": false," + 
+			"\"http://registry.easytv.eu/application/cs/ui/vibration/touch\": false," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/font/size\": 12," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/font/color\": \"#ffffff\"," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/sign/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/ui/text/magnification/scale\": false," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/detection/text\": false," + 
+			"\"http://registry.easytv.eu/application/cs/ui/audioAssistanceBasedOnTTS\": false," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": false," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/background/color\": \"#000000\"," + 
+			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size\": 1," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/audio/description\": false," + 
+			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/color\": \"#ffffff\"," + 
+			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlType\": \"gesture_control\"," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/detection/character\": false," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/magnification/scale\": 2," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/enhancement/image/type\": \"none\"," + 
+			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiLanguage\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiTextSize\": 1"+
 			"}}}}");
 	
-	JSONObject jsonProfile2 = new JSONObject("{\"user_preferences\": {\"default\": {\"preferences\": {\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/audioSubtitles\": false,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/audio/track\": \"CA\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/speed\": 36,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/accessibility/textDetection\": false,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/backgroundColor\": \"#62f0ef\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/subtitles\": \"EN\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/font/color\": \"#49d234\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/accessibility/imageMagnification/scale\": 69,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/language\": \"IT\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/signLanguage\": \"GR\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/content/audio/language\": \"CA\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/fontColor\": \"#ffffff\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/font/type\": \"sans-serif\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/background\": \"#f9c315\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/language\": \"EN\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/displayContrast\": 27,\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/volume\": 77,\r\n" + 
-			"    \"http://registry.easytv.eu/common/content/audio/volume\": 96,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/audio/volume\": 81,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/fontSize\": 49,\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/font/size\": 25,\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/audioQuality\": 30,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/accessibility/faceDetection\": false,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/audio/audioDescription\": false\r\n" + 
+	JSONObject jsonProfile2 = new JSONObject("{\"user_preferences\": {\"default\": {\"preferences\": {" + 
+			"\"http://registry.easytv.eu/common/volume\": 90," + 
+			"\"http://registry.easytv.eu/common/contrast\": 100," + 
+			"\"http://registry.easytv.eu/application/control/voice\": true," + 
+			"\"http://registry.easytv.eu/application/cs/audio/track\": \"ca\"," + 
+			"\"http://registry.easytv.eu/application/cs/ui/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/audio/volume\": 33," + 
+			"\"http://registry.easytv.eu/application/cs/ui/text/size\": \"20\"," + 
+			"\"http://registry.easytv.eu/application/tts/audio/speed\": 0," + 
+			"\"http://registry.easytv.eu/application/tts/audio/voice\": \"male\"," + 
+			"\"http://registry.easytv.eu/application/cs/audio/eq/bass\": -4," + 
+			"\"http://registry.easytv.eu/application/cs/audio/eq/mids\": 5," + 
+			"\"http://registry.easytv.eu/application/tts/audio/volume\": 90," + 
+			"\"http://registry.easytv.eu/application/cs/audio/eq/highs\": -12," + 
+			"\"http://registry.easytv.eu/common/content/audio/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/tts/audio/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/cc/audio/subtitle\": false," + 
+			"\"http://registry.easytv.eu/application/cs/ui/vibration/touch\": true," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/font/size\": 12," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/font/color\": \"#ffffff\"," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/sign/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/ui/text/magnification/scale\": true," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/detection/text\": true," + 
+			"\"http://registry.easytv.eu/application/cs/ui/audioAssistanceBasedOnTTS\": true," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": true," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/background/color\": \"#000000\"," + 
+			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size\": 1," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/audio/description\": false," + 
+			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/color\": \"#ffffff\"," + 
+			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlType\": \"gesture_control\"," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/detection/character\": true," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/magnification/scale\": 2," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/enhancement/image/type\": \"face-detection\"," + 
+			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiLanguage\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiTextSize\": 1"+
 			"}}}}");
 	
-	JSONObject jsonProfile3 = new JSONObject("{\"user_preferences\": {\"default\": {\"preferences\": {\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/audioSubtitles\": false,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/audio/track\": \"ES\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/speed\": 27,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/accessibility/textDetection\": false,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/backgroundColor\": \"#a27b52\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/subtitles\": \"ES\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/font/color\": \"#79ff8\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/accessibility/imageMagnification/scale\": 88,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/language\": \"GR\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/signLanguage\": \"IT\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/content/audio/language\": \"IT\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/fontColor\": \"#d8a0af\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/font/type\": \"sans-serif\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/background\": \"#9f54e5\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/language\": \"CA\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/displayContrast\": 11,\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/volume\": 25,\r\n" + 
-			"    \"http://registry.easytv.eu/common/content/audio/volume\": 61,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/audio/volume\": 64,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/fontSize\": 6,\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/font/size\": 24,\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/audioQuality\": 79,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/accessibility/faceDetection\": false,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/audio/audioDescription\": false\r\n" + 
+	JSONObject jsonProfile3 = new JSONObject("{\"user_preferences\": {\"default\": {\"preferences\": {" + 
+			"\"http://registry.easytv.eu/common/volume\": 13," + 
+			"\"http://registry.easytv.eu/common/contrast\": 100," + 
+			"\"http://registry.easytv.eu/application/control/voice\": true," + 
+			"\"http://registry.easytv.eu/application/cs/audio/track\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/ui/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/audio/volume\": 13," + 
+			"\"http://registry.easytv.eu/application/cs/ui/text/size\": \"16\"," + 
+			"\"http://registry.easytv.eu/application/tts/audio/speed\": 0," + 
+			"\"http://registry.easytv.eu/application/tts/audio/voice\": \"male\"," + 
+			"\"http://registry.easytv.eu/application/cs/audio/eq/bass\": 0," + 
+			"\"http://registry.easytv.eu/application/cs/audio/eq/mids\": 0," + 
+			"\"http://registry.easytv.eu/application/tts/audio/volume\": 13," + 
+			"\"http://registry.easytv.eu/application/cs/audio/eq/highs\": 0," + 
+			"\"http://registry.easytv.eu/common/content/audio/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/tts/audio/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/cc/audio/subtitle\": false," + 
+			"\"http://registry.easytv.eu/application/cs/ui/vibration/touch\": false," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/font/size\": 12," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/font/color\": \"#ffffff\"," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/sign/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/ui/text/magnification/scale\": false," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/detection/text\": true," + 
+			"\"http://registry.easytv.eu/application/cs/ui/audioAssistanceBasedOnTTS\": false," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": true," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/background/color\": \"#000000\"," + 
+			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size\": 1," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/audio/description\": false," + 
+			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/color\": \"#ffffff\"," + 
+			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlType\": \"gesture_control\"," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/detection/character\": true," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/magnification/scale\": 2.5," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/enhancement/image/type\": \"image-magnification\"," + 
+			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiLanguage\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiTextSize\": 1"+
 			"}}}}");
 	
-	JSONObject jsonProfile4 = new JSONObject("{\"user_preferences\": {\"default\": {\"preferences\": {\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/audioSubtitles\": false,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/audio/track\": \"EN\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/speed\": 72,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/accessibility/textDetection\": false,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/backgroundColor\": \"#e2dc73\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/subtitles\": \"GR\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/font/color\": \"#8c099\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/accessibility/imageMagnification/scale\": 74,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/language\": \"GR\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/signLanguage\": \"CA\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/content/audio/language\": \"IT\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/fontColor\": \"#c3cfce\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/font/type\": \"fantasy\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/background\": \"#42aa57\",\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/language\": \"IT\",\r\n" + 
-			"    \"http://registry.easytv.eu/common/displayContrast\": 3,\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/volume\": 61,\r\n" + 
-			"    \"http://registry.easytv.eu/common/content/audio/volume\": 15,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/audio/volume\": 49,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/cc/subtitles/fontSize\": 6,\r\n" + 
-			"    \"http://registry.easytv.eu/common/display/screen/enhancement/font/size\": 35,\r\n" + 
-			"    \"http://registry.easytv.eu/application/tts/audioQuality\": 60,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/accessibility/faceDetection\": false,\r\n" + 
-			"    \"http://registry.easytv.eu/application/cs/audio/audioDescription\": false\r\n" + 
+	JSONObject jsonProfile4 = new JSONObject("{\"user_preferences\": {\"default\": {\"preferences\": {" + 
+			"\"http://registry.easytv.eu/common/volume\": 27," + 
+			"\"http://registry.easytv.eu/common/contrast\": 100," + 
+			"\"http://registry.easytv.eu/application/control/voice\": true," + 
+			"\"http://registry.easytv.eu/application/cs/audio/track\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/ui/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/audio/volume\": 27," + 
+			"\"http://registry.easytv.eu/application/cs/ui/text/size\": \"16\"," + 
+			"\"http://registry.easytv.eu/application/tts/audio/speed\": 0," + 
+			"\"http://registry.easytv.eu/application/tts/audio/voice\": \"male\"," + 
+			"\"http://registry.easytv.eu/application/cs/audio/eq/bass\": 0," + 
+			"\"http://registry.easytv.eu/application/cs/audio/eq/mids\": 0," + 
+			"\"http://registry.easytv.eu/application/tts/audio/volume\": 27," + 
+			"\"http://registry.easytv.eu/application/cs/audio/eq/highs\": 0," + 
+			"\"http://registry.easytv.eu/common/content/audio/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/tts/audio/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/cc/audio/subtitle\": false," + 
+			"\"http://registry.easytv.eu/application/cs/ui/vibration/touch\": false," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/font/size\": 12," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/font/color\": \"#ffffff\"," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/sign/language\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/cs/ui/text/magnification/scale\": false," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/detection/text\": false," + 
+			"\"http://registry.easytv.eu/application/cs/ui/audioAssistanceBasedOnTTS\": false," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": false," + 
+			"\"http://registry.easytv.eu/application/cs/cc/subtitles/background/color\": \"#000000\"," + 
+			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size\": 1," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/audio/description\": false," + 
+			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/color\": \"#ffffff\"," + 
+			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlType\": \"gesture_control\"," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/detection/character\": false," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/magnification/scale\": 2," + 
+			"\"http://registry.easytv.eu/application/cs/accessibility/enhancement/image/type\": \"none\"," + 
+			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiLanguage\": \"en\"," + 
+			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiTextSize\": 1"+
 			"}}}}");
 
 	
@@ -130,7 +175,7 @@ public class MaskedSimilarityMeasureTest {
 	private UserProfile[] userProfiles = new UserProfile[4];
 	
 	@BeforeTest
-	public void beforeTest() throws IOException {
+	public void beforeTest() throws IOException, UserProfileParsingException {
 		//Read profiles
 		userProfiles[0] = new UserProfile(jsonProfile1);
 		userProfiles[1] = new UserProfile(jsonProfile2);
@@ -146,7 +191,7 @@ public class MaskedSimilarityMeasureTest {
 		UserProfile profile1 = userProfiles[0];
 		UserProfile profile2 = userProfiles[1];
 		
-		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/content/audio/volume"});
+		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/volume"});
 				
 		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getDimensions());
 		
@@ -158,7 +203,7 @@ public class MaskedSimilarityMeasureTest {
 		UserProfile profile1 = userProfiles[0];
 		UserProfile profile2 = userProfiles[1];
 		
-		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/content/audio/language"});
+		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/volume"});
 				
 		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getDimensions());
 		
@@ -170,7 +215,7 @@ public class MaskedSimilarityMeasureTest {
 		UserProfile profile1 = userProfiles[0];
 		UserProfile profile2 = userProfiles[1];
 		
-		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/content/audio/language"});
+		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/volume"});
 				
 		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getDimensions());
 		
@@ -182,8 +227,8 @@ public class MaskedSimilarityMeasureTest {
 		UserProfile profile1 = userProfiles[0];
 		UserProfile profile2 = userProfiles[1];
 		
-		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/content/audio/volume", 
-															  "http://registry.easytv.eu/common/content/audio/language"});
+		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/volume", 
+															  "http://registry.easytv.eu/common/volume"});
 				
 		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getDimensions());
 		
