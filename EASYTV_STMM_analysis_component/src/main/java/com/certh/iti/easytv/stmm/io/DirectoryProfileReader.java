@@ -4,14 +4,18 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.json.JSONException;
 
-import com.certh.iti.easytv.user.UserProfile;
-import com.certh.iti.easytv.user.UserProfileParsingException;
+import com.certh.iti.easytv.user.Profile;
+import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 
 public class DirectoryProfileReader implements ProfileReader {
+	
+	private final static Logger logger = Logger.getLogger(DirectoryProfileReader.class.getName());
+
 	
 	private File profilesDirector;
 	
@@ -20,49 +24,20 @@ public class DirectoryProfileReader implements ProfileReader {
 	}
 	
 	
-	public Cluster<UserProfile> readProfiles() {
-		Cluster<UserProfile> profiles = new Cluster<UserProfile>();
+	public Cluster<Profile> readProfiles() {
+		Cluster<Profile> profiles = new Cluster<Profile>();
 		
-		//preprocess
-/*		try {
-			PreprocessFrom(profilesDirector, generatedDirectory);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-*/
-        System.out.println("--------");
-        System.out.println("Reading files from:" + profilesDirector.getAbsolutePath());
+       // logger.info("--------");
+        logger.info("Reading files from:" + profilesDirector.getAbsolutePath());
         
 		//read profiles
 		try {
-			ReadProfilesFrom(profilesDirector, profiles);
+			readProfiles(profilesDirector, profiles);
 		} catch (IOException | JSONException | UserProfileParsingException e) {
 			e.printStackTrace();
 		}
 
 		return profiles;
-	}
-	
-	/**
-	 * @brief Process files from the given directory
-	 * 
-	 * @param directory
-	 * @param generatedDirectory
-	 * @throws IOException
-	 */
-	private void PreprocessFrom(File directory, File generatedDirectory) throws IOException {
-		if (directory == null || !directory.exists())
-			return;
-
-		class dirFileFilter implements FileFilter {
-			public boolean accept(File dir) {
-				return dir.isDirectory();
-			}
-		}
-
-		File[] directories = directory.listFiles(new dirFileFilter());
-		for (int i = 0; i < directories.length; i++)
-			PreprocessFrom(directories[i], generatedDirectory);
 	}
 
 	/**
@@ -73,7 +48,7 @@ public class DirectoryProfileReader implements ProfileReader {
 	 * @throws UserProfileParsingException 
 	 * @throws JSONException 
 	 */
-	private void ReadProfilesFrom(File directory, Cluster<UserProfile> profiles) throws IOException, JSONException, UserProfileParsingException {
+	private void readProfiles(File directory, Cluster<Profile> profiles) throws IOException, JSONException, UserProfileParsingException {
 		if (directory == null || !directory.exists())
 			return;
 
@@ -86,8 +61,8 @@ public class DirectoryProfileReader implements ProfileReader {
 
 		File[] iniFiles = directory.listFiles(new IniFileFilter());
 		for (int i = 0; i < iniFiles.length; i++) {
-			System.out.println("Reading file: " +iniFiles[i].getPath());
-			profiles.addPoint(new UserProfile(iniFiles[i]));
+			logger.info("Reading file: " +iniFiles[i].getPath());
+			profiles.addPoint(new Profile(iniFiles[i]));
 		}
 
 		class dirFileFilter implements FileFilter {
@@ -98,7 +73,7 @@ public class DirectoryProfileReader implements ProfileReader {
 
 		File[] directories = directory.listFiles(new dirFileFilter());
 		for (int i = 0; i < directories.length; i++)
-			ReadProfilesFrom(directories[i], profiles);
+			readProfiles(directories[i], profiles);
 	}
 
 }

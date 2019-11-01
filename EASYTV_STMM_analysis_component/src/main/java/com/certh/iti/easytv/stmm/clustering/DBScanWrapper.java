@@ -1,13 +1,17 @@
 package com.certh.iti.easytv.stmm.clustering;
 
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 import org.apache.commons.math3.ml.clustering.Clusterer;
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
+
 import com.certh.iti.easytv.stmm.similarity.DistanceMeasureFactory;
-import com.certh.iti.easytv.user.UserProfile;
+import com.certh.iti.easytv.user.Profile;
 
 public class DBScanWrapper implements iCluster{
+	
+	private final static Logger logger = Logger.getLogger(DBScanWrapper.class.getName());
 	
 	private double eps = 155;
 	private int minPts = 4;
@@ -31,15 +35,15 @@ public class DBScanWrapper implements iCluster{
 		dbscan.distanceMeasure = distanceMeasure;
 		dbscan.compareMode = Arrays.copyOf(compareMode, compareMode.length);
 
-		System.out.println(dbscan.toString());
+		logger.info(dbscan.toString());
 		
 		//Call clustering algorithm
 		return dbscan;
 	}
 
 	@Override
-	public Clusterer<UserProfile> getClusterer() {
-		return new DBSCANClusterer<UserProfile>(eps, minPts, DistanceMeasureFactory.getInstance(compareMode));
+	public Clusterer<Profile> getClusterer() {
+		return new DBSCANClusterer<Profile>(eps, minPts, DistanceMeasureFactory.getInstance(compareMode));
 	}
 	
 	@Override

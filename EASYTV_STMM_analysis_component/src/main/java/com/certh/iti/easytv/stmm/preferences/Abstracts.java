@@ -1,13 +1,13 @@
 package com.certh.iti.easytv.stmm.preferences;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.TreeMap;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
 
-import com.certh.iti.easytv.user.UserProfile;
+import com.certh.iti.easytv.user.Profile;
+import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 
 public class Abstracts {
 	
@@ -21,44 +21,50 @@ public class Abstracts {
 	 * @param distances a map of distance and point that represent the distance of the current profile from all others
 	 * @param resultMeanDistance The center mean distance from all cluster profiles.
 	 * @return The mean distance of the center profile.
+	 * @throws UserProfileParsingException 
 	 */
-	public static double FindCenter(DistanceMeasure distFunction, Cluster<UserProfile> cluster, UserProfile resultProfile, TreeMap<Double, HashSet<UserProfile>> distances, Double resultMeanDistance) {
-		Double curMeanDistance = null, distance;
-		TreeMap<Double, HashSet<UserProfile>> curDistances;
-		HashSet<UserProfile> curDistancesSub = null;
+	public static double FindCenter(DistanceMeasure distFunction, Cluster<Profile> cluster, Profile resultProfile, TreeMap<Double, HashSet<Profile>> distances, Double resultMeanDistance) throws UserProfileParsingException {
+		Double curMeanDist = null, distance;
+		TreeMap<Double, HashSet<Profile>> curDistances;
+		HashSet<Profile> curDistancesSub = null;
+		int clusterSize = cluster.getPoints().size();
 		
-		for(UserProfile candidateCenter : cluster.getPoints()) {
+		//compare each cluster with all others
+		for(Profile candidateCenter : cluster.getPoints()) {
 			
-			curMeanDistance = 0.0;
-			curDistances = new TreeMap<Double, HashSet<UserProfile>>();
+			curMeanDist = 0.0;
+			curDistances = new TreeMap<Double, HashSet<Profile>>();
 			
-			for(UserProfile other : cluster.getPoints()) {
+			for(Profile other : cluster.getPoints()) {
+				
+				//dont compare with itself
 				if(candidateCenter.equals(other)) 
 					continue;
 
+				//compute distance
 				distance = distFunction.compute(candidateCenter.getPoint(), other.getPoint());				
 				if((curDistancesSub = curDistances.get(distance)) == null) {
-                    curDistancesSub = new HashSet<UserProfile>();
+                    curDistancesSub = new HashSet<Profile>();
                     curDistances.put(distance, curDistancesSub);
 				}
 				
                 curDistancesSub.add(other);
-                curMeanDistance += distance;
+                curMeanDist += distance;
 			}
 			
-			curMeanDistance /= cluster.getPoints().size();
-			if(curMeanDistance < resultMeanDistance) {
-				resultProfile.setUserPreferences(candidateCenter.getUserPreferences());
+			curMeanDist /= clusterSize;
+			if(curMeanDist < resultMeanDistance) {
+				resultProfile.setJSONObject(candidateCenter.getJSONObject());
 
-                resultMeanDistance = curMeanDistance;
+                resultMeanDistance = curMeanDist;
                 distances.putAll(curDistances);
 			}
 		}
 
-		return curMeanDistance;
+		return curMeanDist;
 	}
 	
-	public static double FindCenter(DistanceMeasure distFunction, Cluster<UserProfile> cluster, UserProfile resultProfile, TreeMap<Double, HashSet<UserProfile>> distances) {
+	public static double FindCenter(DistanceMeasure distFunction, Cluster<Profile> cluster, Profile resultProfile, TreeMap<Double, HashSet<Profile>> distances) throws UserProfileParsingException {
 		return FindCenter(distFunction, cluster, resultProfile, distances, Double.MAX_VALUE);
 	}
 	

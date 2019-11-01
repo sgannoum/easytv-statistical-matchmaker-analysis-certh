@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.certh.iti.easytv.user.UserProfile;
+import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.preference.Preference;
 import com.certh.iti.easytv.user.preference.attributes.AsymmetricBinaryAttribute;
 import com.certh.iti.easytv.user.preference.attributes.Attribute;
@@ -23,11 +23,11 @@ import com.certh.iti.easytv.user.preference.attributes.SymmetricBinaryAttribute;
 
 public class StmmJSWriter implements ProfileWriter{
 	
-	protected List<UserProfile> clusters;
+	protected List<Profile> clusters;
 	protected File outputDirectory;
 	protected Date now;
 	
-	public StmmJSWriter(File outputDirectory, List<UserProfile> clusters) {
+	public StmmJSWriter(File outputDirectory, List<Profile> clusters) {
 		this.clusters = clusters;
 		this.outputDirectory = outputDirectory;
 		now = new Date();
@@ -107,7 +107,7 @@ public class StmmJSWriter implements ProfileWriter{
 	 * @param clusters
 	 * @throws IOException
 	 */
-	private void WriteJavaScript(List<UserProfile> clusters, File outputDirectory) throws IOException {
+	private void WriteJavaScript(List<Profile> clusters, File outputDirectory) throws IOException {
 		
 		File _stmmOutputFile = new File(outputDirectory.getAbsolutePath()+ File.separatorChar + "StatisticalMatchMakerData.js");
 		if(!_stmmOutputFile.exists())

@@ -3,14 +3,18 @@ package com.certh.iti.easytv.stmm.io;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.logging.Logger;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.json.JSONObject;
 
-import com.certh.iti.easytv.user.UserProfile;
+import com.certh.iti.easytv.user.Profile;
 
 public class DBProfileReader implements ProfileReader{
 
+	private final static Logger logger = Logger.getLogger(DBProfileReader.class.getName());
+	
 	private String Url;
 	private String userName;
 	private String Password;
@@ -22,32 +26,46 @@ public class DBProfileReader implements ProfileReader{
 		this.Password = Password;
 	}
 
-	public Cluster<UserProfile> readProfiles() {
-		Cluster<UserProfile> profiles = new Cluster<UserProfile>();
-		System.out.println("Try to connect with db : "+ "jdbc:mysql://"+ Url);
+	public Cluster<Profile> readProfiles() {
+		Cluster<Profile> profiles = new Cluster<Profile>();
+		logger.info("Try to connect with db : "+ "jdbc:mysql://"+ Url);
+		
 		try 
 		{			
 			con = DriverManager.getConnection("jdbc:mysql://"+ Url, userName, Password);
 			
-			System.out.println("Connection success....");
+			logger.info("Connection success....");
 			
 			// here sonoo is database name, root is username and password
-			java.sql.Statement stmt = con.createStatement();
+			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("select userModel from userModels");
+			
+			logger.info("Parse user profiles...");
 			
 			while (rs.next()) {
 				
-				JSONObject json =  new JSONObject(rs.getString(1));
-				profiles.addPoint(new UserProfile(new JSONObject(rs.getString(1))));
+				//convert to json
+				JSONObject user_profile =  new JSONObject(rs.getString(1));
 				
-				System.out.println("Reading file: " + json.toString());
+				//add a pseudo id and user profile
+				JSONObject json = new JSONObject()
+										.put("user_id", 0)
+										.put("user_profile", user_profile);
+				
+				
+				Profile profile = new Profile(json);
+				
+				//add to profile list
+				profiles.addPoint(profile);
+				
+				logger.info("Reading profile: " + json.toString());
 			}
 			
 			//close
 			con.close();
 			
 		} catch (Exception e) {
-			System.out.println("Connection failed....");
+			logger.info("Connection failed....");
 			e.printStackTrace();
 		}
 		

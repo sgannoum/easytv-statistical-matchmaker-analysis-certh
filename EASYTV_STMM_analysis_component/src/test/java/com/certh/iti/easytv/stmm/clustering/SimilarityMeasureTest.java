@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 import com.certh.iti.easytv.stmm.similarity.DimensionsGenerator;
 import com.certh.iti.easytv.stmm.similarity.SimilarityMeasure;
 import com.certh.iti.easytv.user.UserProfile;
-import com.certh.iti.easytv.user.UserProfileParsingException;
+import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 import com.certh.iti.easytv.user.preference.Preference;
 import com.certh.iti.easytv.user.preference.attributes.Attribute;
 import com.certh.iti.easytv.user.preference.attributes.NumericAttribute;

@@ -16,14 +16,14 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONArray;
 
-import com.certh.iti.easytv.user.UserProfile;
+import com.certh.iti.easytv.user.Profile;
 
 public class StmmWriter implements ProfileWriter{
 	
-	private List<UserProfile> clusters;
+	private List<Profile> clusters;
 	private String url;
 	
-	public StmmWriter(String url, List<UserProfile> clusters) throws IOException {
+	public StmmWriter(String url, List<Profile> clusters) throws IOException {
 		this.clusters = clusters;
 		this.url = url;
 	}
@@ -69,7 +69,7 @@ public class StmmWriter implements ProfileWriter{
 		EntityBuilder entity = EntityBuilder.create();
 		
 		JSONArray profiles = new JSONArray();
-		Iterator<UserProfile> iter = clusters.iterator();
+		Iterator<Profile> iter = clusters.iterator();
 		while(iter.hasNext()) {
 			profiles.put(iter.next().getJSONObject());
 		}

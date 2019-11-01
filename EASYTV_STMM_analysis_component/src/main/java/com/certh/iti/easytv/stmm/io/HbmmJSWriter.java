@@ -3,13 +3,10 @@ package com.certh.iti.easytv.stmm.io;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.certh.iti.easytv.user.UserProfile;
+import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.preference.Preference;
 import com.certh.iti.easytv.user.preference.attributes.AsymmetricBinaryAttribute;
 import com.certh.iti.easytv.user.preference.attributes.Attribute;
@@ -24,7 +21,7 @@ import com.certh.iti.easytv.user.preference.attributes.SymmetricBinaryAttribute;
 public class HbmmJSWriter extends StmmJSWriter{
 	
 	
-	public HbmmJSWriter(File outputDirectory, List<UserProfile> clusters) {
+	public HbmmJSWriter(File outputDirectory, List<Profile> clusters) {
 		super(outputDirectory, clusters);
 	}
 	
@@ -52,7 +49,7 @@ public class HbmmJSWriter extends StmmJSWriter{
 	 * @param clusters
 	 * @throws IOException
 	 */
-	private void WriteJavaScript(List<UserProfile> clusters, File outputDirectory) throws IOException {
+	private void WriteJavaScript(List<Profile> clusters, File outputDirectory) throws IOException {
 		
 		File _hbmmOutputFile = new File(outputDirectory.getAbsolutePath()+ File.separatorChar + "HybridMatchMakerData.js");
 		if(!_hbmmOutputFile.exists())

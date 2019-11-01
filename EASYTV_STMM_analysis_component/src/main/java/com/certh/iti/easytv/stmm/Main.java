@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
@@ -17,15 +18,18 @@ import com.certh.iti.easytv.stmm.clustering.iCluster;
 import com.certh.iti.easytv.stmm.io.DBProfileReader;
 import com.certh.iti.easytv.stmm.io.DirectoryProfileReader;
 import com.certh.iti.easytv.stmm.io.HbmmJSWriter;
-import com.certh.iti.easytv.stmm.io.StmmJSWriter;
 import com.certh.iti.easytv.stmm.io.ProfileReader;
 import com.certh.iti.easytv.stmm.io.ProfileWriter;
+import com.certh.iti.easytv.stmm.io.StmmJSWriter;
 import com.certh.iti.easytv.stmm.io.StmmWriter;
 import com.certh.iti.easytv.stmm.preferences.Abstracts;
 import com.certh.iti.easytv.stmm.similarity.DistanceMeasureFactory;
-import com.certh.iti.easytv.user.UserProfile;
+import com.certh.iti.easytv.user.Profile;
+import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 
 public class Main {
+
+	private final static Logger logger = Logger.getLogger(Main.class.getName());
 
 	// Arguments
 	private static final String _ArgConfigFile = "-c";
@@ -36,7 +40,7 @@ public class Main {
 	private static File _ConfigFile = null;
 	private static File _OutputDirectory = null;
 	private static File _ProfilesDirectory = null;
-	private static Cluster<UserProfile> _Profiles;
+	private static Cluster<Profile> _Profiles;
 	private static ProfileReader profileReader;
 	private static ProfileWriter profileWriter;
 	private static String STMM_HOST = "localhost";
@@ -48,7 +52,12 @@ public class Main {
 	private static String DB_USER = "easytv";
 	private static String DB_PASSWORD = "easytv";
 	
-	public static void main(String[] args) throws NumberFormatException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, IOException {	
+	public static void main(String[] args) 
+			throws NumberFormatException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, 
+				   SecurityException, IOException, UserProfileParsingException 
+	{	
+		
+		
 		//Parse arguments
 		int argn = args.length;
 		for(int i = 0; i < argn; i+=2 ) {
@@ -65,7 +74,7 @@ public class Main {
 		if(_ConfigFile == null || !_ConfigFile.exists() ) {
 			String pwd = System.getProperty("user.dir");
 			_ConfigFile = new File(pwd + File.separator + "config.ini");
-            System.out.println("Could not find profiles directory, reverted to :'" + _ConfigFile.getAbsolutePath() + "'");
+            logger.info("Could not find profiles directory, reverted to :'" + _ConfigFile.getAbsolutePath() + "'");
 		}
 			
 		if(!_ConfigFile.exists()) {
@@ -132,30 +141,30 @@ public class Main {
 			_Profiles = dbReader.readProfiles();
 		}
 		
-        System.out.println("--------");
-        System.out.println("Finished loading " + _Profiles.getPoints().size() + " profiles.");
-        System.out.println("--------");
-        System.out.println("Clustering...");
+      //  logger.info("--------");
+        logger.info("Finished loading " + _Profiles.getPoints().size() + " profiles.");
+      //  logger.info("--------");
+        logger.info("Clustering...");
         
         //clusters
-        List<Cluster<UserProfile>> clusteres = new ArrayList<Cluster<UserProfile>>();
+        List<Cluster<Profile>> clusteres = new ArrayList<Cluster<Profile>>();
         
         //start with all profile as first cluster
         clusteres.add(_Profiles);
 
         //run all clustering algorithms
-    	List<Cluster<UserProfile>> tmp = new ArrayList<Cluster<UserProfile>>();
+    	List<Cluster<Profile>> tmp = new ArrayList<Cluster<Profile>>();
         for(iCluster clusterer : Config.getInstance().Config) {
 
-        	System.out.println("["+clusterer.get_Name()+"] "+ clusterer.toString());
+        	logger.info("["+clusterer.get_Name()+"] "+ clusterer.toString());
         	
         	//cluster each cluster
-        	for(Cluster<UserProfile> cluster : clusteres) 
+        	for(Cluster<Profile> cluster : clusteres) 
         		tmp.addAll(clusterer.getClusterer().cluster(cluster.getPoints()));
         			
-            System.out.println("\tClusters generated... " + tmp.size());
+            logger.info("Clusters generated... " + tmp.size());
             for(int i = 0; i < tmp.size(); i++)
-            	System.out.println("\tcluster_" + (i + 1) + " : "+ tmp.get(i).getPoints().size());
+            	logger.info("cluster_" + (i + 1) + " : "+ tmp.get(i).getPoints().size());
 
         	clusteres.clear();
         	clusteres.addAll(tmp);
@@ -168,14 +177,14 @@ public class Main {
         }
         
         //Start processing
-        List<UserProfile> generalized = new ArrayList<UserProfile>();
+        List<Profile> generalized = new ArrayList<Profile>();
         
         //Generalize clusters
         //TO-DO replace all dimensions distance measurement with a proper distance for finding the cluster center
         DistanceMeasure allDimensionsDistance = DistanceMeasureFactory.getInstance(new String[] {"ALL"});
-        for(Cluster<UserProfile> aCluster : clusteres) {
-        	UserProfile clusterCenter = new UserProfile();
-        	TreeMap<Double, HashSet<UserProfile>> distances = new TreeMap<Double, HashSet<UserProfile>>();
+        for(Cluster<Profile> aCluster : clusteres) {
+        	Profile clusterCenter = new Profile();
+        	TreeMap<Double, HashSet<Profile>> distances = new TreeMap<Double, HashSet<Profile>>();
         	
         	//Find the cluster center
         	Abstracts.FindCenter(allDimensionsDistance, aCluster, clusterCenter, distances);
@@ -187,10 +196,10 @@ public class Main {
         	generalized.add(clusterCenter);
         }
         
-        System.out.println("--------");
+        logger.info("--------");
 		if(_OutputDirectory != null && _ProfilesDirectory != null) {
 		
-			System.out.println("Write dimensions handlers and clutering data JS files.");
+			logger.info("Write dimensions handlers and clutering data JS files.");
 
 	        //Write JS
 			profileWriter = new StmmJSWriter(_OutputDirectory, generalized); 
@@ -200,7 +209,7 @@ public class Main {
 			profileWriter.write();
 			
 		} else {
-			System.out.println("Inform stmm via: " + "http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters");
+			logger.info("Inform stmm via: " + "http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters");
 	        
 			//inform stmm runtime via http request
 			StmmWriter stmmWriter = new StmmWriter("http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters", generalized); 

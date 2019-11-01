@@ -10,7 +10,7 @@ import com.certh.iti.easytv.stmm.similarity.DimensionsGenerator;
 import com.certh.iti.easytv.stmm.similarity.MaskGenerator;
 import com.certh.iti.easytv.stmm.similarity.MaskedSimilarityMeasure;
 import com.certh.iti.easytv.user.UserProfile;
-import com.certh.iti.easytv.user.UserProfileParsingException;
+import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 import com.certh.iti.easytv.user.preference.Preference;
 import com.certh.iti.easytv.user.preference.attributes.Attribute;
 
