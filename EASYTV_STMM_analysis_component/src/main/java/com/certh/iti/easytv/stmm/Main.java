@@ -5,9 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
@@ -17,7 +15,6 @@ import com.certh.iti.easytv.stmm.clustering.Config;
 import com.certh.iti.easytv.stmm.clustering.iCluster;
 import com.certh.iti.easytv.stmm.io.DBProfileReader;
 import com.certh.iti.easytv.stmm.io.DirectoryProfileReader;
-import com.certh.iti.easytv.stmm.io.HbmmJSWriter;
 import com.certh.iti.easytv.stmm.io.ProfileReader;
 import com.certh.iti.easytv.stmm.io.ProfileWriter;
 import com.certh.iti.easytv.stmm.io.StmmJSWriter;
@@ -118,6 +115,10 @@ public class Main {
 			while((line = reader.readLine()) != null) 
 				buff.append(line);
 			
+			//close
+			reader.close();
+			
+			//trim
 			buff.trimToSize();
 			
 			DB_PASSWORD = buff.toString();
@@ -141,9 +142,9 @@ public class Main {
 			_Profiles = dbReader.readProfiles();
 		}
 		
-      //  logger.info("--------");
+      //logger.info("--------");
         logger.info("Finished loading " + _Profiles.getPoints().size() + " profiles.");
-      //  logger.info("--------");
+      //logger.info("--------");
         logger.info("Clustering...");
         
         //clusters
@@ -171,27 +172,24 @@ public class Main {
         	tmp.clear();
         }
         
-        //Don't proceed if no clusters produced
-        if(clusteres.isEmpty()) {
+        //When no clusters produced, don't proceed
+        if(clusteres.isEmpty()) 
 			return ;
-        }
+        
         
         //Start processing
         List<Profile> generalized = new ArrayList<Profile>();
         
         //Generalize clusters
-        //TO-DO replace all dimensions distance measurement with a proper distance for finding the cluster center
         DistanceMeasure allDimensionsDistance = DistanceMeasureFactory.getInstance(new String[] {"ALL"});
         for(Cluster<Profile> aCluster : clusteres) {
         	Profile clusterCenter = new Profile();
-        	TreeMap<Double, HashSet<Profile>> distances = new TreeMap<Double, HashSet<Profile>>();
         	
         	//Find the cluster center
-        	Abstracts.FindCenter(allDimensionsDistance, aCluster, clusterCenter, distances);
+        	Abstracts.FindCenter(allDimensionsDistance, aCluster, clusterCenter);
         	
         	//TO-DO generalize cluster
         	//Generalized.Add(Preferences.GeneralizeProfile(center, distances, _Profiles))
-        	
         	
         	generalized.add(clusterCenter);
         }
@@ -203,9 +201,6 @@ public class Main {
 
 	        //Write JS
 			profileWriter = new StmmJSWriter(_OutputDirectory, generalized); 
-			profileWriter.write();
-			
-			profileWriter = new HbmmJSWriter(_OutputDirectory, generalized); 
 			profileWriter.write();
 			
 		} else {

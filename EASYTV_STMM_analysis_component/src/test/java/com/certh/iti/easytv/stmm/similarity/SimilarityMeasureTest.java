@@ -1,5 +1,10 @@
 package com.certh.iti.easytv.stmm.similarity;
 
+import java.io.IOException;
+import java.util.Arrays;
+
+import org.apache.commons.math3.ml.distance.DistanceMeasure;
+import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -8,6 +13,9 @@ import com.certh.iti.easytv.stmm.similarity.dimension.Dimension;
 import com.certh.iti.easytv.stmm.similarity.dimension.Nominal;
 import com.certh.iti.easytv.stmm.similarity.dimension.Numeric;
 import com.certh.iti.easytv.stmm.similarity.dimension.Ordinal;
+import com.certh.iti.easytv.user.Profile;
+import com.certh.iti.easytv.config.Config;
+import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 
 public class SimilarityMeasureTest {
 	
@@ -109,7 +117,25 @@ public class SimilarityMeasureTest {
 				Assert.assertEquals(actualValues[i][j], expectedValues[i][j]);
 			}
 		}
+	}
+	
+	
+	@Test
+	public void test_profiles_similarities() throws IOException, UserProfileParsingException {
 		
+		JSONObject profile = Config.getProfile("profile_with_context_1.json");
+		
+		Profile profile1 = new Profile(profile);
+		
+		DistanceMeasure dist = DistanceMeasureFactory.getInstance(new String[] {"all"});
+
+		double[] points1 = Arrays.copyOf(profile1.getPoint(), profile1.getPoint().length);
+		double[] points2 = Arrays.copyOf(profile1.getPoint(), profile1.getPoint().length);
+
+		Assert.assertEquals(dist.compute(points1, points2), 1.0);
+		
+		points1[0] = 33;
+		Assert.assertEquals(dist.compute(points1, points2), dist.compute(points2, points1));
 	}
 
 }
