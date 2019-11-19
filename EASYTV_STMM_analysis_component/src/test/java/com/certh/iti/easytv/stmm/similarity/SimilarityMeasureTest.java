@@ -127,7 +127,7 @@ public class SimilarityMeasureTest {
 		
 		Profile profile1 = new Profile(profile);
 		
-		DistanceMeasure dist = DistanceMeasureFactory.getInstance(new String[] {"all"});
+		DistanceMeasure dist = DistanceMeasureFactory.getInstance();
 
 		double[] points1 = Arrays.copyOf(profile1.getPoint(), profile1.getPoint().length);
 		double[] points2 = Arrays.copyOf(profile1.getPoint(), profile1.getPoint().length);
