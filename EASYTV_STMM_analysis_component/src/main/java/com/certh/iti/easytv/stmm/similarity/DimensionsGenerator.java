@@ -1,35 +1,42 @@
 package com.certh.iti.easytv.stmm.similarity;
 
+import java.util.logging.Logger;
+
 import com.certh.iti.easytv.stmm.similarity.dimension.AsymmetricBinary;
 import com.certh.iti.easytv.stmm.similarity.dimension.Dimension;
+import com.certh.iti.easytv.stmm.similarity.dimension.MultiNominal;
 import com.certh.iti.easytv.stmm.similarity.dimension.MultiNumeric;
 import com.certh.iti.easytv.stmm.similarity.dimension.Nominal;
 import com.certh.iti.easytv.stmm.similarity.dimension.Numeric;
 import com.certh.iti.easytv.stmm.similarity.dimension.Ordinal;
 import com.certh.iti.easytv.stmm.similarity.dimension.SymmetricBinary;
+import com.certh.iti.easytv.stmm.similarity.dimension.Time;
 import com.certh.iti.easytv.user.preference.attributes.AsymmetricBinaryAttribute;
 import com.certh.iti.easytv.user.preference.attributes.Attribute;
 import com.certh.iti.easytv.user.preference.attributes.ColorAttribute;
+import com.certh.iti.easytv.user.preference.attributes.MultiNominalAttribute;
 import com.certh.iti.easytv.user.preference.attributes.NominalAttribute;
 import com.certh.iti.easytv.user.preference.attributes.NumericAttribute;
 import com.certh.iti.easytv.user.preference.attributes.OrdinalAttribute;
 import com.certh.iti.easytv.user.preference.attributes.SymmetricBinaryAttribute;
+import com.certh.iti.easytv.user.preference.attributes.TimeAttribute;
 
 public class DimensionsGenerator {
 
+	private final static Logger logger = Logger.getLogger(DimensionsGenerator.class.getName());
+
 	protected Dimension[] dimensions;
+	protected String[] lables;
 	
-	public DimensionsGenerator(Attribute[] operands) {
-		int i = 0;
-		
+	public DimensionsGenerator(String[] lable, Attribute[] operands) {
+		this.lables = lable;
 		dimensions = new Dimension[operands.length];
-		for (Attribute operand : operands) {
+		String msg = "\n";
+
+		for (int i = 0; i < operands.length; i++) {
+			Attribute operand = operands[i];
 			
 			if(ColorAttribute.class.isInstance(operand)) {
-				/**
-				 * Color dimension is RGB value as double.
-				 * It is handled as a three dimensional value.
-				 */
 				ColorAttribute colorAttribute = (ColorAttribute) operand;
 				Numeric[] subDimensions = new Numeric[colorAttribute.getDimensions().length];
 
@@ -37,31 +44,52 @@ public class DimensionsGenerator {
 				for (NumericAttribute attribte : colorAttribute.getDimensions()) 
 					subDimensions[index++] = new Numeric(attribte.getOperandMissingValue(), attribte.getMaxValue(), attribte.getMinValue());
 				
-				dimensions[i++] = new MultiNumeric(subDimensions, 8);
+				dimensions[i] = new MultiNumeric(subDimensions, 8);
 				
 			} else if (NumericAttribute.class.isInstance(operand)) {
 				NumericAttribute numeric = (NumericAttribute) operand;
-				dimensions[i++] = new Numeric(numeric.getOperandMissingValue(), numeric.getMaxValue(), numeric.getMinValue());
+				dimensions[i] = new Numeric(numeric.getOperandMissingValue(), numeric.getMaxValue(), numeric.getMinValue());
 				
 			} else if (OrdinalAttribute.class.isInstance(operand)) {
 				OrdinalAttribute ordinal = (OrdinalAttribute) operand;
-				dimensions[i++] = new Ordinal(ordinal.getStates().length - 1, ordinal.getMaxValue(), ordinal.getMinValue());
+				dimensions[i] = new Ordinal(ordinal.getStates().length - 1, ordinal.getMaxValue(), ordinal.getMinValue());
+				
+			} else if (MultiNominalAttribute.class.isInstance(operand)) {
+				MultiNominalAttribute multi = (MultiNominalAttribute) operand;
+				dimensions[i] = new MultiNominal(multi.getStates().length, multi.getOperandMissingValue());
 				
 			} else if (NominalAttribute.class.isInstance(operand)) {
-				dimensions[i++] = new Nominal(operand.getOperandMissingValue());
+				dimensions[i] = new Nominal(operand.getOperandMissingValue());
 				
 			} else if (SymmetricBinaryAttribute.class.isInstance(operand)) {
-				dimensions[i++] = new SymmetricBinary(operand.getOperandMissingValue());
+				dimensions[i] = new SymmetricBinary(operand.getOperandMissingValue());
 
 			} else if (AsymmetricBinaryAttribute.class.isInstance(operand)) {
-				dimensions[i++] = new AsymmetricBinary();
+				dimensions[i] = new AsymmetricBinary();
+				
+			} else if(TimeAttribute.class.isInstance(operand)) {
+				dimensions[i] = new Time();
+				
+			} else {
+				throw new IllegalStateException("Unknown operand type: "+operand.toString()+" associated with dimension: "+ lable[i]);
 			}
 			
+			
+			msg +=  String.format("%s\t%s => %s\n", lable[i], operand.getClass().getSimpleName(), dimensions[i].getClass().getSimpleName());
+			
 		}
+		
+		
+		logger.info("Dimensions lables are..." + msg);
+
 	}
 	
 	public Dimension[] getDimensions() {
 		return dimensions;
+	}
+	
+	public String[] getLables() {
+		return lables;
 	}
 
 }

@@ -142,38 +142,38 @@ public class Main {
 			_Profiles = dbReader.readProfiles();
 		}
 		
-      //logger.info("--------");
-        logger.info("Finished loading " + _Profiles.getPoints().size() + " profiles.");
-      //logger.info("--------");
-        logger.info("Clustering...");
-        
+
+		logger.info("Finished loading " + _Profiles.getPoints().size() + " profiles.");
+		logger.info(Profile.getStatistics());
+		logger.info("Start clustering...");
+		
         //clusters
-        List<Cluster<Profile>> clusteres = new ArrayList<Cluster<Profile>>();
-        
+        List<Cluster<Profile>> foundedClusters = new ArrayList<Cluster<Profile>>();
+    	List<Cluster<Profile>> tmp = new ArrayList<Cluster<Profile>>();
+
         //start with all profile as first cluster
-        clusteres.add(_Profiles);
+        foundedClusters.add(_Profiles);
 
         //run all clustering algorithms
-    	List<Cluster<Profile>> tmp = new ArrayList<Cluster<Profile>>();
-        for(iCluster clusterer : Config.getInstance().Config) {
+        for(iCluster clusterer : Config.getInstance().Clusteres) {
 
         	logger.info("["+clusterer.get_Name()+"] "+ clusterer.toString());
         	
         	//cluster each cluster
-        	for(Cluster<Profile> cluster : clusteres) 
+        	for(Cluster<Profile> cluster : foundedClusters) 
         		tmp.addAll(clusterer.getClusterer().cluster(cluster.getPoints()));
         			
             logger.info("Clusters generated... " + tmp.size());
             for(int i = 0; i < tmp.size(); i++)
             	logger.info("cluster_" + (i + 1) + " : "+ tmp.get(i).getPoints().size());
 
-        	clusteres.clear();
-        	clusteres.addAll(tmp);
+        	foundedClusters.clear();
+        	foundedClusters.addAll(tmp);
         	tmp.clear();
         }
         
         //When no clusters produced, don't proceed
-        if(clusteres.isEmpty()) 
+        if(foundedClusters.isEmpty()) 
 			return ;
         
         
@@ -181,8 +181,8 @@ public class Main {
         List<Profile> generalized = new ArrayList<Profile>();
         
         //Generalize clusters
-        DistanceMeasure allDimensionsDistance = DistanceMeasureFactory.getInstance(new String[] {"ALL"});
-        for(Cluster<Profile> aCluster : clusteres) {
+        DistanceMeasure allDimensionsDistance = DistanceMeasureFactory.getInstance();
+        for(Cluster<Profile> aCluster : foundedClusters) {
         	Profile clusterCenter = new Profile();
         	
         	//Find the cluster center

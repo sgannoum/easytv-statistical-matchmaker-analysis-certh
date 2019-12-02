@@ -1,7 +1,5 @@
 package com.certh.iti.easytv.stmm.similarity;
 
-import com.certh.iti.easytv.user.preference.attributes.Attribute;
-
 public class MaskGenerator {
 		
 	/**
@@ -10,7 +8,7 @@ public class MaskGenerator {
 	 * @param categories
 	 * @return a mask of the specified categories
 	 */
-	public static long getMask(final String[] uris, final Attribute[] attributes, String[] categories) {
+	public static long getMask(final String[] uris, String[] categories) {
 		long mask = 0;
 		for(int i = 0; i < uris.length; i++) {
 			String uri = uris[i];

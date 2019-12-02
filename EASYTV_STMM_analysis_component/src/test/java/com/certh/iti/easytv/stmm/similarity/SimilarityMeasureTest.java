@@ -25,13 +25,14 @@ public class SimilarityMeasureTest {
 		
 		Dimension[] dimensions = new Dimension[1];
 		dimensions[0] = new Numeric(64.0, 22.0);
+		String[] lable = new String[] {"Numeric"};
 		
 		double[][] data = { {45},
 							{22},
 							{64},
 							{28}};
 
-		SimilarityMeasure useProfileSimilarityMeasure = new SimilarityMeasure(dimensions);
+		SimilarityMeasure useProfileSimilarityMeasure = new SimilarityMeasure(lable, dimensions);
 		
 		double[][] expectedValues = {{0, 0, 0, 0},
 									{0.45238095238095233,  0, 0, 0},
@@ -58,13 +59,14 @@ public class SimilarityMeasureTest {
 		
 		Dimension[] dimensions = new Dimension[1];
 		dimensions[0] = new Ordinal(2, 2, 0);
-		
+		String[] lable = new String[] {"Ordinal"};
+
 		double[][] data = { {2},
 							{0},
 							{1},
 							{2}};
 
-		SimilarityMeasure useProfileSimilarityMeasure = new SimilarityMeasure(dimensions);
+		SimilarityMeasure useProfileSimilarityMeasure = new SimilarityMeasure(lable, dimensions);
 		
 		double[][] expectedValues = {{0, 0, 0, 0},
 									{0.0,  0, 0, 0},
@@ -94,13 +96,14 @@ public class SimilarityMeasureTest {
 		dimensions[0] = new Nominal();
 		dimensions[1] = new Ordinal(2, 2, 0);
 		dimensions[2] = new Numeric(64.0, 22.0);
+		String[] lable = new String[] {"Nominal", "Ordinal", "Numeric"};
 		
 		double[][] data = { {0, 2, 45},
 							{1, 0, 22},
 							{2, 1, 64},
 							{0, 2, 28}};
 		
-		SimilarityMeasure useProfileSimilarityMeasure = new SimilarityMeasure(dimensions);
+		SimilarityMeasure useProfileSimilarityMeasure = new SimilarityMeasure(lable, dimensions);
 		
 		double[][] expectedValues = {{0, 0, 0, 0},
 									{0.1507936507936508,  0, 0, 0},

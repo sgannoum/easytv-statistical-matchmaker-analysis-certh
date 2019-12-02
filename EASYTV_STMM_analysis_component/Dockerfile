@@ -26,4 +26,6 @@ RUN crontab cronJob.txt
 #Show crond output
 CMD ["crond", "-f"]
 
+#docker build --tag stmm:v1 .
+#docker image save -o C:\Users\salgan\Desktop\Docker_Images\stmm_v1.tar stmm:v1
 # docker run -it --rm anapsix/alpine-java java -version

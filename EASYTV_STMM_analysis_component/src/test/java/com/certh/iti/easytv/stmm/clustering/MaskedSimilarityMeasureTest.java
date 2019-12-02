@@ -9,10 +9,9 @@ import org.testng.annotations.Test;
 import com.certh.iti.easytv.stmm.similarity.DimensionsGenerator;
 import com.certh.iti.easytv.stmm.similarity.MaskGenerator;
 import com.certh.iti.easytv.stmm.similarity.MaskedSimilarityMeasure;
+import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.UserProfile;
 import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
-import com.certh.iti.easytv.user.preference.Preference;
-import com.certh.iti.easytv.user.preference.attributes.Attribute;
 
 public class MaskedSimilarityMeasureTest {
 	JSONObject jsonProfile1 = new JSONObject("{\"user_preferences\": {\"default\": {\"preferences\": {" + 
@@ -21,7 +20,7 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/control/voice\": true," + 
 			"\"http://registry.easytv.eu/application/cs/audio/track\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/cs/ui/language\": \"en\"," + 
-			"\"http://registry.easytv.eu/application/cs/audio/volume\": 22," + 
+			"\"http://registry.easytv.eu/application/cs/audio/volume\": 2," + 
 			"\"http://registry.easytv.eu/application/cs/ui/text/size\": \"15\"," + 
 			"\"http://registry.easytv.eu/application/tts/audio/speed\": 3," + 
 			"\"http://registry.easytv.eu/application/tts/audio/voice\": \"male\"," + 
@@ -169,8 +168,6 @@ public class MaskedSimilarityMeasureTest {
 
 	
 	
-	private String[] uris = Preference.getUris();
-	private Attribute[] attribute = Preference.getOperands();
 	private DimensionsGenerator dimensionsGenerator;
 	private UserProfile[] userProfiles = new UserProfile[4];
 	
@@ -183,7 +180,7 @@ public class MaskedSimilarityMeasureTest {
 		userProfiles[3] = new UserProfile(jsonProfile4);
 		
 		//Get corresponding dimensions
-		dimensionsGenerator = new DimensionsGenerator(Preference.getOperands());
+		dimensionsGenerator = new DimensionsGenerator(Profile.getUris(), Profile.getOperands());
 	}
 	
 	@Test
@@ -191,9 +188,9 @@ public class MaskedSimilarityMeasureTest {
 		UserProfile profile1 = userProfiles[0];
 		UserProfile profile2 = userProfiles[1];
 		
-		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/volume"});
+		long mask = MaskGenerator.getMask(dimensionsGenerator.getLables(), new String[] {"http://registry.easytv.eu/common/volume"});
 				
-		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getDimensions());
+		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 		
 		System.out.println(dist.compute(profile1.getPoint(), profile2.getPoint()));
 	}
@@ -203,9 +200,9 @@ public class MaskedSimilarityMeasureTest {
 		UserProfile profile1 = userProfiles[0];
 		UserProfile profile2 = userProfiles[1];
 		
-		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/volume"});
+		long mask = MaskGenerator.getMask(dimensionsGenerator.getLables(), new String[] {"http://registry.easytv.eu/common/volume"});
 				
-		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getDimensions());
+		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 		
 		System.out.println(dist.compute(profile1.getPoint(), profile2.getPoint()));
 	}
@@ -215,9 +212,9 @@ public class MaskedSimilarityMeasureTest {
 		UserProfile profile1 = userProfiles[0];
 		UserProfile profile2 = userProfiles[1];
 		
-		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/volume"});
+		long mask = MaskGenerator.getMask(dimensionsGenerator.getLables(), new String[] {"http://registry.easytv.eu/common/volume"});
 				
-		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getDimensions());
+		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 		
 		System.out.println(dist.compute(profile1.getPoint(), profile2.getPoint()));
 	}
@@ -227,10 +224,10 @@ public class MaskedSimilarityMeasureTest {
 		UserProfile profile1 = userProfiles[0];
 		UserProfile profile2 = userProfiles[1];
 		
-		long mask = MaskGenerator.getMask(uris, attribute, new String[] {"http://registry.easytv.eu/common/volume", 
+		long mask = MaskGenerator.getMask(dimensionsGenerator.getLables(), new String[] {"http://registry.easytv.eu/common/volume", 
 															  "http://registry.easytv.eu/common/volume"});
 				
-		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getDimensions());
+		DistanceMeasure dist = new MaskedSimilarityMeasure(mask, dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 		
 		System.out.println(dist.compute(profile1.getPoint(), profile2.getPoint()));
 	}

@@ -95,7 +95,7 @@ public class SimilarityMeasureTest {
 
 	
 	
-	private DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(Preference.getOperands());
+	private DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(Preference.getUris(), Preference.getOperands());
 	
 	@Test
 	public void test_profile_distance() throws IOException, UserProfileParsingException {
@@ -124,7 +124,7 @@ public class SimilarityMeasureTest {
 
 		}
 		
-		DistanceMeasure dist = new SimilarityMeasure(dimensionsGenerator.getDimensions());
+		DistanceMeasure dist = new SimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 		
 		System.out.println(dist.compute(profile1.getPoint(), profile2.getPoint()));
 

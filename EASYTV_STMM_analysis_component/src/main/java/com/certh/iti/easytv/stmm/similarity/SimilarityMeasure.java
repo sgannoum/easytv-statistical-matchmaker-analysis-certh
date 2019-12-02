@@ -12,10 +12,12 @@ public class SimilarityMeasure implements DistanceMeasure{
 	 */
 	private static final long serialVersionUID = 1L;
 	private Dimension[] dimensions;
+	private String[] uris;
 	
 	
-	public SimilarityMeasure(Dimension[] dimensions) {
+	public SimilarityMeasure(String[] uris, Dimension[] dimensions) {
 		this.dimensions = dimensions;
+		this.uris = uris;
 	}
 	
 	@Override

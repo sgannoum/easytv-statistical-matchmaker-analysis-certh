@@ -18,6 +18,7 @@ import com.certh.iti.easytv.user.preference.attributes.Attribute;
 import com.certh.iti.easytv.user.preference.attributes.ColorAttribute;
 import com.certh.iti.easytv.user.preference.attributes.DoubleAttribute;
 import com.certh.iti.easytv.user.preference.attributes.IntegerAttribute;
+import com.certh.iti.easytv.user.preference.attributes.MultiNominalAttribute;
 import com.certh.iti.easytv.user.preference.attributes.NominalAttribute;
 import com.certh.iti.easytv.user.preference.attributes.NumericAttribute;
 import com.certh.iti.easytv.user.preference.attributes.OrdinalAttribute;
@@ -203,33 +204,34 @@ public class StmmJSWriter implements ProfileWriter{
 		String handlerInstance = "";
 		
     	if(ColorAttribute.class.isInstance(operand)) {
+    		
 			ColorAttribute colorAttribute = (ColorAttribute) operand;
 			
 			for (NumericAttribute attribte : colorAttribute.getDimensions()) 
 				handlerInstance += String.format("new IntegerNumeric(%.1f, %.1f, %.1f), ", attribte.getMaxValue(), 
-																					 attribte.getMinValue(), 
-																					 attribte.getOperandMissingValue());
+																					 	   attribte.getMinValue(), 
+																					 	   attribte.getOperandMissingValue());
 			handlerInstance = handlerInstance.substring(0, handlerInstance.length() - 1 );
 			handlerInstance = String.format("new Color(%s)", handlerInstance);
 			
-		}
-    	else if (IntegerAttribute.class.isInstance(operand)) {
+		} else if (IntegerAttribute.class.isInstance(operand)) {
+			
     		IntegerAttribute intNumeric = (IntegerAttribute) operand;
 				
     		handlerInstance = String.format("new IntegerNumeric(%.1f, %.1f, %.1f)", intNumeric.getMaxValue(), 
-    																		  intNumeric.getMinValue(), 
-    																		  intNumeric.getOperandMissingValue());
+    																		  		intNumeric.getMinValue(), 
+    																		  		intNumeric.getOperandMissingValue());
 				
-			}
-    	else if (DoubleAttribute.class.isInstance(operand)) {
+		} else if (DoubleAttribute.class.isInstance(operand)) {
+			
     		DoubleAttribute doubleNumeric = (DoubleAttribute) operand;
 			
-    		handlerInstance = String.format("new IntegerNumeric(%.1f, %.1f, %.1f)", doubleNumeric.getMaxValue(), 
-    																		  doubleNumeric.getMinValue(), 
-    																		  doubleNumeric.getOperandMissingValue());
+    		handlerInstance = String.format("new DoubleNumeric(%.1f, %.1f, %.1f)", doubleNumeric.getMaxValue(), 
+    																		  	   doubleNumeric.getMinValue(), 
+    																		       doubleNumeric.getOperandMissingValue());
 
-		} 
-    	else if (OrdinalAttribute.class.isInstance(operand)) {
+		} else if (OrdinalAttribute.class.isInstance(operand)) {
+			
 			OrdinalAttribute ordinal = (OrdinalAttribute) operand;
 			
 			String states = "";
@@ -239,15 +241,25 @@ public class StmmJSWriter implements ProfileWriter{
 			states = states.substring(0, states.length() - 1).toLowerCase();
 			
     		handlerInstance = String.format("new Ordinal([%s], %.1f, %.1f, %.1f)", states, 
-    																		ordinal.getMaxValue(), 
-    																		ordinal.getMinValue(), 
-    																		ordinal.getOperandMissingValue());
-
+    																				ordinal.getMaxValue(), 
+    																				ordinal.getMinValue(), 
+    																				ordinal.getOperandMissingValue());
 			
-		} 
-    	else if (NominalAttribute.class.isInstance(operand)) {
+		} else if (MultiNominalAttribute.class.isInstance(operand)) {
+			
+    		MultiNominalAttribute nominal = (MultiNominalAttribute) operand;
+			
+			String states = "";
+			for(String state : nominal.getStates())
+				states += "\""+state+"\",";
+			
+			states = states.substring(0, states.length() - 1).toLowerCase();
+			
+    		handlerInstance = String.format("new MultiNominal([%s], %.1f)", states, 
+    																		operand.getOperandMissingValue());
+		} else if (NominalAttribute.class.isInstance(operand)) {
+			
 			NominalAttribute nominal = (NominalAttribute) operand;
-			
 			
 			String states = "";
 			for(String state : nominal.getStates())
@@ -256,17 +268,15 @@ public class StmmJSWriter implements ProfileWriter{
 			states = states.substring(0, states.length() - 1).toLowerCase();
 			
     		handlerInstance = String.format("new Nominal([%s], %.1f)", states, 
-    																operand.getOperandMissingValue());
+    																	operand.getOperandMissingValue());
 			
-		} 
-    	else if (SymmetricBinaryAttribute.class.isInstance(operand)) {
+		} else if (SymmetricBinaryAttribute.class.isInstance(operand)) {
+    		
     		handlerInstance = String.format("new SymmetricBinary(%.1f)", operand.getOperandMissingValue());
-		} 
-    	else if (AsymmetricBinaryAttribute.class.isInstance(operand)) {
+		} else if (AsymmetricBinaryAttribute.class.isInstance(operand)) {
 			//TODO
     		//handlerInstance = new AsymmetricBinary();
-		} 
-    	else if(TimeAttribute.class.isInstance(operand)) {
+		} else if(TimeAttribute.class.isInstance(operand)) {
     		//TODO
     	}
     	

@@ -8,11 +8,15 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Config {
 	
+	private final static Logger logger = Logger.getLogger(Config.class.getName());
+
+	
 	private static Config instance = null;
-	public List<iCluster> Config;
+	public final List<iCluster> Clusteres;
 	private final List<iCluster> _Clusterers;
 	
 	private enum ParseMode{
@@ -21,7 +25,7 @@ public class Config {
 	};
 	
 	private Config() {
-		Config = new ArrayList<iCluster>();
+		Clusteres = new ArrayList<iCluster>();
 		_Clusterers = new ArrayList<iCluster>();
 		_Clusterers.add(new DBScanWrapper());
 		_Clusterers.add(new KMeansPlusPlusWrapper());
@@ -61,7 +65,7 @@ public class Config {
 				
 				//Clone the previous algorithm
 				if(_CurrentClusterer != null) 
-					instance.Config.add(_CurrentClusterer.Clone());
+					instance.Clusteres.add(_CurrentClusterer.Clone());
 				
 				for(iCluster clusterer : instance._Clusterers) {
 					if(line.toLowerCase().equals("["+clusterer.get_Name().toLowerCase()+"]")) {
@@ -104,8 +108,15 @@ public class Config {
 		}
 		
         //clone
-		instance.Config.add(_CurrentClusterer.Clone());
+		instance.Clusteres.add(_CurrentClusterer.Clone());
 		
 		reader.close();
+		
+		String msg = "";
+		for(iCluster clusterer: instance.Clusteres) 
+			msg += "["+clusterer.get_Name()+"] "+ clusterer.toString();
+		
+		logger.info("Clusterers...\n"+msg);
+		
 	}
 }

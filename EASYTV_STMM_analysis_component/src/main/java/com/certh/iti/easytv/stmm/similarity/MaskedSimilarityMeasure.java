@@ -13,10 +13,11 @@ public class MaskedSimilarityMeasure implements DistanceMeasure {
 	private static final long serialVersionUID = 1L;
 	private long mask;
 	private Dimension[] dimensions;
-
+	private String[] uris;
 	
-	public MaskedSimilarityMeasure(long mask, Dimension[] dimensions) {
+	public MaskedSimilarityMeasure(long mask, String[] uris, Dimension[] dimensions) {
 		this.dimensions = dimensions;
+		this.uris = uris;
 		this.mask = mask;
 	}
 
