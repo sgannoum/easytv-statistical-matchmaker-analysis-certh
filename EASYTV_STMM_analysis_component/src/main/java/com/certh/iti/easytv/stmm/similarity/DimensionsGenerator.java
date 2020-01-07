@@ -1,5 +1,6 @@
 package com.certh.iti.easytv.stmm.similarity;
 
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import com.certh.iti.easytv.stmm.similarity.dimension.AsymmetricBinary;
@@ -28,13 +29,14 @@ public class DimensionsGenerator {
 	protected Dimension[] dimensions;
 	protected String[] lables;
 	
-	public DimensionsGenerator(String[] lable, Attribute[] operands) {
-		this.lables = lable;
-		dimensions = new Dimension[operands.length];
+	public DimensionsGenerator(Vector<String> lable, Vector<Attribute> operands) {
+		this.lables = new String[operands.size()];
+		this.dimensions = new Dimension[operands.size()];
 		String msg = "\n";
 
-		for (int i = 0; i < operands.length; i++) {
-			Attribute operand = operands[i];
+		for (int i = 0; i < operands.size(); i++) {
+			Attribute operand = operands.get(i);
+			this.lables[i] = lable.get(i);
 			
 			if(ColorAttribute.class.isInstance(operand)) {
 				ColorAttribute colorAttribute = (ColorAttribute) operand;
@@ -71,11 +73,11 @@ public class DimensionsGenerator {
 				dimensions[i] = new Time();
 				
 			} else {
-				throw new IllegalStateException("Unknown operand type: "+operand.toString()+" associated with dimension: "+ lable[i]);
+				throw new IllegalStateException("Unknown operand type: "+operand.toString()+" associated with dimension: "+ lable.get(i));
 			}
 			
 			
-			msg +=  String.format("%s\t%s => %s\n", lable[i], operand.getClass().getSimpleName(), dimensions[i].getClass().getSimpleName());
+			msg +=  String.format("%s\t%s => %s\n", lable.get(i), operand.getClass().getSimpleName(), dimensions[i].getClass().getSimpleName());
 			
 		}
 		

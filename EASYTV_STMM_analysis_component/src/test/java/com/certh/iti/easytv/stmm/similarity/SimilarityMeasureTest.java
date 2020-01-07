@@ -127,7 +127,7 @@ public class SimilarityMeasureTest {
 	public void test_profiles_similarities() throws IOException, UserProfileParsingException {
 		
 		JSONObject profile = Config.getProfile("profile_with_context_1.json");
-		
+				
 		Profile profile1 = new Profile(profile);
 		
 		DistanceMeasure dist = DistanceMeasureFactory.getInstance();

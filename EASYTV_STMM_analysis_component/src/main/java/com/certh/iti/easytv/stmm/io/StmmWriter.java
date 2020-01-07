@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,9 +17,13 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONArray;
 
+import com.certh.iti.easytv.stmm.association.analysis.RuleRefiner;
 import com.certh.iti.easytv.user.Profile;
 
 public class StmmWriter implements ProfileWriter{
+	
+	private final static Logger logger = Logger.getLogger(StmmWriter.class.getName());
+
 	
 	private List<Profile> clusters;
 	private String url;
@@ -30,6 +35,8 @@ public class StmmWriter implements ProfileWriter{
 
 	@Override
 	public void write() {
+		
+		logger.info("Post newly generated profiles to " + url);
 		
 		HttpClient client = HttpClientBuilder.create().build();
 		HttpPost post = new HttpPost(url);
@@ -43,7 +50,7 @@ public class StmmWriter implements ProfileWriter{
 		try {
 				
 			HttpResponse response = client.execute(post);
-			System.out.println("Response Code : " 
+			logger.info("Response Code : " 
 		                + response.getStatusLine().getStatusCode());
 	
 			BufferedReader rd = new BufferedReader(
@@ -55,13 +62,12 @@ public class StmmWriter implements ProfileWriter{
 				result.append(line);
 			}
 		
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (UnsupportedOperationException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			rd.close();
+			
+		} 
+		catch (UnsupportedEncodingException e) { e.printStackTrace();} 
+		catch (UnsupportedOperationException e) { e.printStackTrace();} 
+		catch (IOException e) { e.printStackTrace();}
 		
 	}
 	

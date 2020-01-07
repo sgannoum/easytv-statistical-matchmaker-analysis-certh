@@ -17,7 +17,7 @@
         "http://registry.easytv.eu/application/cs/accessibility/detection/text": true,
         "http://registry.easytv.eu/application/tts/audio/language": "en",
         "http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiLanguage": "ca",
-        "http://registry.easytv.eu/application/cs/audio/volume": 27,
+        "http://registry.easytv.eu/application/cs/audio/volume": 2,
         "http://registry.easytv.eu/application/cs/accessibility/enhancement/image/type": "face-detection",
         "http://registry.easytv.eu/application/cs/cc/subtitles/font/size": 12,
         "http://registry.easytv.eu/application/cs/cc/subtitles/font/color": "#ffffff",
@@ -26,7 +26,7 @@
         "http://registry.easytv.eu/application/cs/cc/subtitles/language": "ca",
         "http://registry.easytv.eu/application/control/csGazeAndGestureControlType": "gaze_control",
         "http://registry.easytv.eu/application/cs/ui/vibration/touch": true,
-        "http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiTextSize": 1.5,
+        "http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiTextSize": 2.0,
         "http://registry.easytv.eu/application/cs/audio/eq/highs": 5,
         "http://registry.easytv.eu/application/cs/cc/subtitles/background/color": "#000000",
         "http://registry.easytv.eu/application/cs/accessibility/sign/language": "es",
@@ -37,7 +37,18 @@
         "http://registry.easytv.eu/common/volume": 36
     }}}},
     "user_context": {
-        "http://registry.easytv.eu/context/location": "ca",
-        "http://registry.easytv.eu/context/time": "2019-05-30T09:47:47.619Z"
+	    "http://registry.easytv.eu/context/device": "pc",
+	    "http://registry.easytv.eu/context/light": 10,
+	    "http://registry.easytv.eu/context/proximity": 20,
+        "http://registry.easytv.eu/context/location": "es",
+        "http://registry.easytv.eu/context/time": "09:47:00"
+    },
+    "user_content": {
+        "http://registry.easytv.eu/application/cs/accessibility/detection/text": true,
+        "http://registry.easytv.eu/application/cs/accessibility/detection/face": true,
+        "http://registry.easytv.eu/application/cs/accessibility/detection/sound": true,
+        "http://registry.easytv.eu/application/cs/accessibility/detection/character": true,
+        "http://registry.easytv.eu/application/cs/cc/subtitles/language": ["ca", "gr", "it"],
+        "http://registry.easytv.eu/application/cs/audio/track": ["ca"]
     }
 }

@@ -9,20 +9,18 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
-import org.apache.commons.math3.ml.distance.DistanceMeasure;
 
+import com.certh.iti.easytv.stmm.clustering.Clustere;
 import com.certh.iti.easytv.stmm.clustering.Config;
-import com.certh.iti.easytv.stmm.clustering.iCluster;
 import com.certh.iti.easytv.stmm.io.DBProfileReader;
 import com.certh.iti.easytv.stmm.io.DirectoryProfileReader;
 import com.certh.iti.easytv.stmm.io.ProfileReader;
 import com.certh.iti.easytv.stmm.io.ProfileWriter;
 import com.certh.iti.easytv.stmm.io.StmmJSWriter;
 import com.certh.iti.easytv.stmm.io.StmmWriter;
-import com.certh.iti.easytv.stmm.preferences.Abstracts;
-import com.certh.iti.easytv.stmm.similarity.DistanceMeasureFactory;
 import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
+
 
 public class Main {
 
@@ -48,6 +46,8 @@ public class Main {
 	private static String DB_NAME = "easytv";
 	private static String DB_USER = "easytv";
 	private static String DB_PASSWORD = "easytv";
+	private static double minSupport = 0.9;
+	private static double minConfidence = 0.9;
 	
 	public static void main(String[] args) 
 			throws NumberFormatException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, 
@@ -123,7 +123,14 @@ public class Main {
 			
 			DB_PASSWORD = buff.toString();
 		}
+		
+		if(System.getenv("minSupport") != null)
+			minSupport = Double.valueOf(System.getenv("minSupport")).doubleValue();
+		
+		if(System.getenv("minConfidence") != null)
+			minConfidence = Double.valueOf(System.getenv("minConfidence")).doubleValue();
 	
+		
 		//Read config
 		Config.getInstance().ReadConfiguration(_ConfigFile);
 				
@@ -131,69 +138,39 @@ public class Main {
 		if(_ConfigFile == null || !_ConfigFile.exists())
 			throw new IllegalStateException("Config File not set.");
 		
-		//Read profiles from directory
+		/**
+		 *	READ PROFILES
+		 */
 		if(_ProfilesDirectory != null && _ProfilesDirectory.exists()) {
+			//From directory
 			profileReader = new DirectoryProfileReader(_ProfilesDirectory);
 			_Profiles = profileReader.readProfiles();
 		} else {
-
-			//Load profiles from db
+			//From DB
 			DBProfileReader dbReader = new DBProfileReader(DB_HOST + ":"+DB_PORT+"/"+DB_NAME, DB_USER, DB_PASSWORD);
 			_Profiles = dbReader.readProfiles();
 		}
-		
-
 		logger.info("Finished loading " + _Profiles.getPoints().size() + " profiles.");
 		logger.info(Profile.getStatistics());
-		logger.info("Start clustering...");
 		
-        //clusters
-        List<Cluster<Profile>> foundedClusters = new ArrayList<Cluster<Profile>>();
-    	List<Cluster<Profile>> tmp = new ArrayList<Cluster<Profile>>();
+		
+		/**
+		 *	CLUSTERING
+		 */
+        logger.info("Start clustering...");
+        List<Cluster<Profile>> foundedClusters = new ArrayList<Cluster<Profile>>();    	
 
         //start with all profile as first cluster
         foundedClusters.add(_Profiles);
+               
+        //Cluster user profiles
+        Clustere clutere = new Clustere(Config.getInstance().Clusteres);
+        List<Profile> generalized = clutere.getGeneralizedClusters(foundedClusters);
+        
 
-        //run all clustering algorithms
-        for(iCluster clusterer : Config.getInstance().Clusteres) {
-
-        	logger.info("["+clusterer.get_Name()+"] "+ clusterer.toString());
-        	
-        	//cluster each cluster
-        	for(Cluster<Profile> cluster : foundedClusters) 
-        		tmp.addAll(clusterer.getClusterer().cluster(cluster.getPoints()));
-        			
-            logger.info("Clusters generated... " + tmp.size());
-            for(int i = 0; i < tmp.size(); i++)
-            	logger.info("cluster_" + (i + 1) + " : "+ tmp.get(i).getPoints().size());
-
-        	foundedClusters.clear();
-        	foundedClusters.addAll(tmp);
-        	tmp.clear();
-        }
-        
-        //When no clusters produced, don't proceed
-        if(foundedClusters.isEmpty()) 
-			return ;
-        
-        
-        //Start processing
-        List<Profile> generalized = new ArrayList<Profile>();
-        
-        //Generalize clusters
-        DistanceMeasure allDimensionsDistance = DistanceMeasureFactory.getInstance();
-        for(Cluster<Profile> aCluster : foundedClusters) {
-        	Profile clusterCenter = new Profile();
-        	
-        	//Find the cluster center
-        	Abstracts.FindCenter(allDimensionsDistance, aCluster, clusterCenter);
-        	
-        	//TO-DO generalize cluster
-        	//Generalized.Add(Preferences.GeneralizeProfile(center, distances, _Profiles))
-        	
-        	generalized.add(clusterCenter);
-        }
-        
+		/**
+		 *	WRITE JS FILES
+		 */
         logger.info("--------");
 		if(_OutputDirectory != null && _ProfilesDirectory != null) {
 		

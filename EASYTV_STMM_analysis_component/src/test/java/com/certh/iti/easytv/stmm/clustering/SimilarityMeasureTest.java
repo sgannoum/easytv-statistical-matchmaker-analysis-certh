@@ -23,13 +23,13 @@ public class SimilarityMeasureTest {
 			"                        \"http://registry.easytv.eu/application/control/voice\": true,\r\n" + 
 			"                        \"http://registry.easytv.eu/application/cs/audio/track\": \"en\",\r\n" + 
 			"                        \"http://registry.easytv.eu/application/cs/ui/language\": \"en\",\r\n" + 
-			"                        \"http://registry.easytv.eu/application/cs/audio/volume\": 27,\r\n" + 
+			"                        \"http://registry.easytv.eu/application/cs/audio/volume\": 7,\r\n" + 
 			"                        \"http://registry.easytv.eu/application/cs/ui/text/size\": \"15\",\r\n" + 
 			"                        \"http://registry.easytv.eu/application/tts/audio/speed\": 0,\r\n" + 
 			"                        \"http://registry.easytv.eu/application/tts/audio/voice\": \"male\",\r\n" + 
 			"                        \"http://registry.easytv.eu/application/cs/audio/eq/bass\": 0,\r\n" + 
 			"                        \"http://registry.easytv.eu/application/cs/audio/eq/mids\": 0,\r\n" + 
-			"                        \"http://registry.easytv.eu/application/tts/audio/volume\": 27,\r\n" + 
+			"                        \"http://registry.easytv.eu/application/tts/audio/volume\": 7,\r\n" + 
 			"                        \"http://registry.easytv.eu/application/cs/audio/eq/highs\": 0,\r\n" + 
 			"                        \"http://registry.easytv.eu/common/content/audio/language\": \"en\",\r\n" + 
 			"                        \"http://registry.easytv.eu/application/tts/audio/language\": \"en\",\r\n" + 
@@ -61,7 +61,7 @@ public class SimilarityMeasureTest {
 			"                        \"http://registry.easytv.eu/application/control/voice\": true,\r\n" + 
 			"                        \"http://registry.easytv.eu/application/cs/audio/track\": \"ca\",\r\n" + 
 			"                        \"http://registry.easytv.eu/application/cs/ui/language\": \"en\",\r\n" + 
-			"                        \"http://registry.easytv.eu/application/cs/audio/volume\": 33,\r\n" + 
+			"                        \"http://registry.easytv.eu/application/cs/audio/volume\": 3,\r\n" + 
 			"                        \"http://registry.easytv.eu/application/cs/ui/text/size\": \"20\",\r\n" + 
 			"                        \"http://registry.easytv.eu/application/tts/audio/speed\": 0,\r\n" + 
 			"                        \"http://registry.easytv.eu/application/tts/audio/voice\": \"male\",\r\n" + 

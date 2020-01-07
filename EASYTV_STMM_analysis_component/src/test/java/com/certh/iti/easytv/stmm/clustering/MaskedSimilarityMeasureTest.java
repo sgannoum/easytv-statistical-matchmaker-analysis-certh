@@ -58,7 +58,7 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/control/voice\": true," + 
 			"\"http://registry.easytv.eu/application/cs/audio/track\": \"ca\"," + 
 			"\"http://registry.easytv.eu/application/cs/ui/language\": \"en\"," + 
-			"\"http://registry.easytv.eu/application/cs/audio/volume\": 33," + 
+			"\"http://registry.easytv.eu/application/cs/audio/volume\": 3," + 
 			"\"http://registry.easytv.eu/application/cs/ui/text/size\": \"20\"," + 
 			"\"http://registry.easytv.eu/application/tts/audio/speed\": 0," + 
 			"\"http://registry.easytv.eu/application/tts/audio/voice\": \"male\"," + 
@@ -134,13 +134,13 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/control/voice\": true," + 
 			"\"http://registry.easytv.eu/application/cs/audio/track\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/cs/ui/language\": \"en\"," + 
-			"\"http://registry.easytv.eu/application/cs/audio/volume\": 27," + 
+			"\"http://registry.easytv.eu/application/cs/audio/volume\": 7," + 
 			"\"http://registry.easytv.eu/application/cs/ui/text/size\": \"15\"," + 
 			"\"http://registry.easytv.eu/application/tts/audio/speed\": 0," + 
 			"\"http://registry.easytv.eu/application/tts/audio/voice\": \"male\"," + 
 			"\"http://registry.easytv.eu/application/cs/audio/eq/bass\": 0," + 
 			"\"http://registry.easytv.eu/application/cs/audio/eq/mids\": 0," + 
-			"\"http://registry.easytv.eu/application/tts/audio/volume\": 27," + 
+			"\"http://registry.easytv.eu/application/tts/audio/volume\": 7," + 
 			"\"http://registry.easytv.eu/application/cs/audio/eq/highs\": 0," + 
 			"\"http://registry.easytv.eu/common/content/audio/language\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/tts/audio/language\": \"en\"," + 
