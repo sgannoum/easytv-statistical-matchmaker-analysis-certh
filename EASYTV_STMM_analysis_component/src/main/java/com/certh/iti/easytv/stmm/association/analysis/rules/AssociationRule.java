@@ -64,7 +64,7 @@ public class AssociationRule implements Comparable<AssociationRule>{
 																		 body.toString(), body.getWeight(), 
 																		 union.toString(), union.getWeight(), 
 																		 confidence);*/
-		return String.format("{%-5s} => {%-5s} conf: %.2f", head.toString(), body.toString(), confidence);
+		return String.format("{%-5s} => {%-5s} conf: %.2f", body.toString(), head.toString(), confidence);
 	}
 	
 	@Override

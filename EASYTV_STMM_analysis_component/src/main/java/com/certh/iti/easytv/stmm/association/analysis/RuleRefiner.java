@@ -1,53 +1,37 @@
 package com.certh.iti.easytv.stmm.association.analysis;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.EntityBuilder;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.json.JSONArray;
-
-import com.certh.iti.easytv.stmm.Main;
 import com.certh.iti.easytv.stmm.association.analysis.fpgrowth.FPGrowthWrapper;
 import com.certh.iti.easytv.stmm.association.analysis.fpgrowth.Itemset;
 import com.certh.iti.easytv.stmm.association.analysis.rules.AssociationRule;
 import com.certh.iti.easytv.stmm.association.analysis.rules.AssociationRuleConverter;
 import com.certh.iti.easytv.stmm.association.analysis.rules.AssociationRuleGenerator;
 import com.certh.iti.easytv.stmm.association.analysis.rules.AssociationRuleWrapper;
+import com.certh.iti.easytv.stmm.association.analysis.rules.RbmmRuleWrapper;
+import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper;
 import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.preference.attributes.Attribute.Bin;
 
 public class RuleRefiner {
 	
 	private final static Logger logger = Logger.getLogger(RuleRefiner.class.getName());
-
 	
-	private AssociationAnalyzer fpgrowth;
-	private AssociationRuleGenerator ruleGenerator;
-	private AssociationRuleConverter rulesConverter;
-	
+	private Vector<Bin> bins;
 	private Vector<Itemset> frequentItemset;
 	private Vector<AssociationRule> associationRules;
-	private Vector<AssociationRuleWrapper> associationRulesWrapper;
+	private Vector<RuleWrapper> associationRulesWrapper;
 
 	private double minSupport = 0, minConfidence = 0;
 
 	
-	public RuleRefiner(List<Profile> profiles, Vector<Bin> bins) {
-		fpgrowth = new FPGrowthWrapper(profiles, bins);
-		ruleGenerator = new AssociationRuleGenerator(fpgrowth.getItemsets());
-		rulesConverter = new AssociationRuleConverter(bins);
+	public RuleRefiner(Vector<Bin> bins) {
+		this.bins = bins;
 	}
 	
 	public double getMinSupport() {
@@ -66,95 +50,121 @@ public class RuleRefiner {
 		return associationRules;
 	}
 	
-	public Vector<AssociationRuleWrapper> generatedRules(double minSupport, double minConfidence) {
+	/**
+	 * Given the set of user profiles and the 
+	 * @param profiles a collection of user profiles 
+	 * @param rbmmRules rbmms set of rules
+	 * @param minSupport minimum support for itemset
+	 * @param minConfidence minimum confidence for rules
+	 * @return a collection of refined rules
+	 */
+	public Vector<RuleWrapper> refineRules(List<Profile> profiles, Vector<RbmmRuleWrapper> rbmmRules, double minSupport, double minConfidence) {
 		
 		this.minSupport = minSupport;
 		this.minConfidence = minConfidence;
 		
-		logger.info(String.format("Generate rules with  Minimume support: %.1f, Minimume confidence: %.1f", minSupport, minConfidence));
+		//Create fp-growth instance and get profiles itemsets
+		AssociationAnalyzer fpgrowth = new FPGrowthWrapper(profiles, bins);
 		
-		//Generate frequent itemsets
+		//Association rules generator
+		AssociationRuleGenerator ruleGenerator = new AssociationRuleGenerator(fpgrowth.getItemsets());
+		
+		//Assocation rule converter
+		AssociationRuleConverter rulesConverter = new AssociationRuleConverter(bins);
+		
+		logger.info(String.format("Generate rules with  Minimume support: %.1f, Minimume confidence: %.1f", minSupport, minConfidence));
 		frequentItemset = fpgrowth.getFrequentItemsets(minSupport);
 		
-		logger.info(String.format("Found %d frequent itemsets with minSupport:%f", frequentItemset.size(), minSupport));
-
-		//Generate association rules
+		logger.info(String.format("Found %d frequent itemsets with minSupport: %f", frequentItemset.size(), minSupport));
 		associationRules = ruleGenerator.findAssociationRules(frequentItemset, minConfidence);
 		
-		logger.info(String.format("Found %d rules with minConfidence:%f", associationRules.size(), minConfidence));
-
-		//Convert rules
-		return rulesConverter.getRules(associationRules);
-	}	
-	
-	private String postRBMMRules(String url) {
+		logger.info(String.format("Found %d rules with minConfidence: %f", associationRules.size(), minConfidence));
+		Vector<AssociationRuleWrapper> asRules = rulesConverter.convert(associationRules);
 		
-		logger.info("Post newly generated rules to " + url);
+		//refine rules
+		associationRulesWrapper = RuleRefiner.refineRules(asRules, rbmmRules);
 		
-		HttpClient client = HttpClientBuilder.create().build();
-		HttpPost post = new HttpPost(url);
-		StringBuffer result = new StringBuffer();
-		
-		EntityBuilder entity = EntityBuilder.create();
-		JSONArray rules = new JSONArray();
-		Vector<AssociationRuleWrapper> associationRuleWrappers = rulesConverter.getRules(associationRules);
-		for(AssociationRuleWrapper associationRuleWrapper : associationRuleWrappers) 
-			rules.put(associationRuleWrapper.getJSONObject());
-						
-		entity.setContentType(ContentType.APPLICATION_JSON);
-		entity.setText(rules.toString());
-		
-		//set http post content
-		post.setEntity(entity.build());
-		
-		try {
-				
-			HttpResponse response = client.execute(post);
-			logger.info("Response Code : "+ response.getStatusLine().getStatusCode());
-	
-			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-			
-			String line = "";
-			while ((line = rd.readLine()) != null) 
-				result.append(line);
-			
-			rd.close();
-			
-		} 
-		catch (UnsupportedEncodingException e) { e.printStackTrace();} 
-		catch (UnsupportedOperationException e) { e.printStackTrace();} 
-		catch (IOException e) { e.printStackTrace();}
-		
-		return result.toString();
+		//Refine rules
+		return associationRulesWrapper;
 	}
 	
-	private String getRBMMRules(String url) {
+	/**
+	 * Given two lists of rules find out their combination outcome 
+	 * @param asRules
+	 * @param rbmmRules
+	 * @return
+	 */
+	public static  Vector<RuleWrapper> refineRules(Vector<AssociationRuleWrapper> asRules, Vector<RbmmRuleWrapper> rbmmRules){
+		//Classify rules cases into the results of set actions between the two sets
+		HashMap<RuleWrapper, ArrayList<RuleWrapper>> maps = new HashMap<RuleWrapper, ArrayList<RuleWrapper>>();
 		
-		logger.info("Get RBMM rules from " + url);
-		
-		HttpClient client = HttpClientBuilder.create().build();
-		HttpGet get = new HttpGet(url);
-		StringBuffer result = new StringBuffer();
-		
-		try {
+		//Add association rules first
+		for(int i = 0; i < asRules.size(); i++) {
+			RuleWrapper rule = asRules.get(i);
+			ArrayList<RuleWrapper> list;
+			if(maps.containsKey(rule)) {
+				list = maps.get(rule);
+				RuleWrapper rule1 = list.get(0);
 				
-			HttpResponse response = client.execute(get);
-			logger.info("Response Code : "+ response.getStatusLine().getStatusCode());
-	
-			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-			
-			String line = "";
-			while ((line = rd.readLine()) != null) 
-				result.append(line);
-			
-			rd.close();
-			
-		} 
-		catch (UnsupportedEncodingException e) { e.printStackTrace();} 
-		catch (UnsupportedOperationException e) { e.printStackTrace();} 
-		catch (IOException e) { e.printStackTrace();}
+				//Merge the two rules heads
+				rule1.merge(rule.getHead());
+			} else {
+				list = new ArrayList<RuleWrapper>();
+				list.add(rule);
+				maps.put(rule, list);
+			}
+		}
 		
-		return result.toString();
-	}
+		//Then add rbmm rules
+		for(int i = 0; i < rbmmRules.size(); i++) {
+			RuleWrapper rule = rbmmRules.get(i);
+			ArrayList<RuleWrapper> list;
+			if(maps.containsKey(rule)) {
+				list = maps.get(rule);
+				list.add(rule);
+			} else {
+				list = new ArrayList<RuleWrapper>();
+				list.add(rule);
+				maps.put(rule, list);
+			}
+		}
+		
+		//Handle rules
+		Vector<RuleWrapper> resutls = new Vector<RuleWrapper>();
+		for(Entry<RuleWrapper, ArrayList<RuleWrapper>> entry : maps.entrySet()) {
+			RuleWrapper key = entry.getKey();
+			ArrayList<RuleWrapper> list = entry.getValue();
+			
+			if(AssociationRuleWrapper.class.isInstance(key)) {
+				
+				//Check for two cases: 
+				//	Case A: adding a rule when only one association rule instance exists
+				//	Case B: updating a rule when two instances of different classes exists.
+				
+				if(list.size() == 1) {
+					AssociationRuleWrapper as = (AssociationRuleWrapper) list.get(0);
 
+					resutls.add(as);
+					logger.info(String.format("Association rule to be added %s", as.getJSONObject().toString()));
+
+				} else if(list.size() == 2) {
+					AssociationRuleWrapper as = (AssociationRuleWrapper) list.get(0);
+					RbmmRuleWrapper rb = (RbmmRuleWrapper) list.get(1); 
+					resutls.add(as);
+					logger.info(String.format("RBMM rule to be updated %s", rb.getJSONObject().toString()));
+
+				} else if(list.size() > 2) { 
+					throw new IllegalStateException("More than two rules are matched..."+ list.toString());
+				}
+				
+			} else if (RbmmRuleWrapper.class.isInstance(key)) {
+				 //Rule to be deleted from rbmm
+				logger.info(String.format("RBMM rule to be deleted %s", key.getJSONObject().toString()));
+			} else 
+				throw new IllegalStateException("Unkown class type " + key.getClass().getName());	
+		}
+		
+		return resutls;
+	}
+	
 }

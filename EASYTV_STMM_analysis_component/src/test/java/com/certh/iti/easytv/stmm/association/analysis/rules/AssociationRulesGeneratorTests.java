@@ -10,7 +10,7 @@ import com.certh.iti.easytv.stmm.association.analysis.fpgrowth.Itemset;
 
 import junit.framework.Assert;
 
-public class RulesGeneratorTests {
+public class AssociationRulesGeneratorTests {
 	
 	private FPGrowth fpg;
 	private Vector<Itemset> itemsets;

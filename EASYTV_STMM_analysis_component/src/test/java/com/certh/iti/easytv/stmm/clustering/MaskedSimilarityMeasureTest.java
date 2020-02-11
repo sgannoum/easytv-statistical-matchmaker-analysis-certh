@@ -24,10 +24,7 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/cs/ui/text/size\": \"15\"," + 
 			"\"http://registry.easytv.eu/application/tts/audio/speed\": 3," + 
 			"\"http://registry.easytv.eu/application/tts/audio/voice\": \"male\"," + 
-			"\"http://registry.easytv.eu/application/cs/audio/eq/bass\": 0," + 
-			"\"http://registry.easytv.eu/application/cs/audio/eq/mids\": 0," + 
 			"\"http://registry.easytv.eu/application/tts/audio/volume\": 32," + 
-			"\"http://registry.easytv.eu/application/cs/audio/eq/highs\": 0," + 
 			"\"http://registry.easytv.eu/common/content/audio/language\": \"gr\"," + 
 			"\"http://registry.easytv.eu/application/tts/audio/language\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/cs/cc/audio/subtitle\": false," + 
@@ -41,7 +38,7 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/cs/ui/audioAssistanceBasedOnTTS\": false," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": false," + 
 			"\"http://registry.easytv.eu/application/cs/cc/subtitles/background/color\": \"#000000\"," + 
-			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size\": 1," + 
+			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/size\": 1," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/audio/description\": false," + 
 			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/color\": \"#ffffff\"," + 
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlType\": \"gesture_control\"," + 
@@ -62,10 +59,7 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/cs/ui/text/size\": \"20\"," + 
 			"\"http://registry.easytv.eu/application/tts/audio/speed\": 0," + 
 			"\"http://registry.easytv.eu/application/tts/audio/voice\": \"male\"," + 
-			"\"http://registry.easytv.eu/application/cs/audio/eq/bass\": -4," + 
-			"\"http://registry.easytv.eu/application/cs/audio/eq/mids\": 5," + 
 			"\"http://registry.easytv.eu/application/tts/audio/volume\": 90," + 
-			"\"http://registry.easytv.eu/application/cs/audio/eq/highs\": -12," + 
 			"\"http://registry.easytv.eu/common/content/audio/language\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/tts/audio/language\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/cs/cc/audio/subtitle\": false," + 
@@ -79,7 +73,7 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/cs/ui/audioAssistanceBasedOnTTS\": true," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": true," + 
 			"\"http://registry.easytv.eu/application/cs/cc/subtitles/background/color\": \"#000000\"," + 
-			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size\": 1," + 
+			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/size\": 1," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/audio/description\": false," + 
 			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/color\": \"#ffffff\"," + 
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlType\": \"gesture_control\"," + 
@@ -100,10 +94,7 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/cs/ui/text/size\": \"15\"," + 
 			"\"http://registry.easytv.eu/application/tts/audio/speed\": 0," + 
 			"\"http://registry.easytv.eu/application/tts/audio/voice\": \"male\"," + 
-			"\"http://registry.easytv.eu/application/cs/audio/eq/bass\": 0," + 
-			"\"http://registry.easytv.eu/application/cs/audio/eq/mids\": 0," + 
 			"\"http://registry.easytv.eu/application/tts/audio/volume\": 13," + 
-			"\"http://registry.easytv.eu/application/cs/audio/eq/highs\": 0," + 
 			"\"http://registry.easytv.eu/common/content/audio/language\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/tts/audio/language\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/cs/cc/audio/subtitle\": false," + 
@@ -117,7 +108,7 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/cs/ui/audioAssistanceBasedOnTTS\": false," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": true," + 
 			"\"http://registry.easytv.eu/application/cs/cc/subtitles/background/color\": \"#000000\"," + 
-			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size\": 1," + 
+			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/size\": 1," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/audio/description\": false," + 
 			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/color\": \"#ffffff\"," + 
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlType\": \"gesture_control\"," + 
@@ -138,10 +129,7 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/cs/ui/text/size\": \"15\"," + 
 			"\"http://registry.easytv.eu/application/tts/audio/speed\": 0," + 
 			"\"http://registry.easytv.eu/application/tts/audio/voice\": \"male\"," + 
-			"\"http://registry.easytv.eu/application/cs/audio/eq/bass\": 0," + 
-			"\"http://registry.easytv.eu/application/cs/audio/eq/mids\": 0," + 
 			"\"http://registry.easytv.eu/application/tts/audio/volume\": 7," + 
-			"\"http://registry.easytv.eu/application/cs/audio/eq/highs\": 0," + 
 			"\"http://registry.easytv.eu/common/content/audio/language\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/tts/audio/language\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/cs/cc/audio/subtitle\": false," + 
@@ -155,7 +143,7 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/cs/ui/audioAssistanceBasedOnTTS\": false," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": false," + 
 			"\"http://registry.easytv.eu/application/cs/cc/subtitles/background/color\": \"#000000\"," + 
-			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size\": 1," + 
+			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/size\": 1," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/audio/description\": false," + 
 			"\"http://registry.easytv.eu/common/display/screen/enhancement/cursor/color\": \"#ffffff\"," + 
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlType\": \"gesture_control\"," + 

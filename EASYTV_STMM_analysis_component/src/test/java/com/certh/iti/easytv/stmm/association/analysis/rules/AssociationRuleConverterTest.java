@@ -9,7 +9,7 @@ import com.certh.iti.easytv.stmm.association.analysis.fpgrowth.Itemset;
 import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.preference.attributes.Attribute.Bin;
 
-public class RuleConverterTest {
+public class AssociationRuleConverterTest {
 	
 	private Vector<Bin> bins;
 	private AssociationRuleConverter rulesConverter;
@@ -22,10 +22,9 @@ public class RuleConverterTest {
 
 	@Test
 	public void test1() {
-		Vector<AssociationRule> associationRule = new Vector<AssociationRule>();
-		associationRule.add(new AssociationRule(new Itemset(new int[] {100,200,300}), new Itemset(new int[] {55})));	
+		AssociationRule associationRule = new AssociationRule(new Itemset(new int[] {100,200,300}), new Itemset(new int[] {55}));
 		
-		System.out.println(rulesConverter.getRules(associationRule).get(0));
+		System.out.println(rulesConverter.convert(associationRule));
 	}
 
 }

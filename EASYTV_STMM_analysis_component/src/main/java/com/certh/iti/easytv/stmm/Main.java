@@ -6,18 +6,21 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 
+import com.certh.iti.easytv.stmm.association.analysis.RuleRefiner;
+import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper;
 import com.certh.iti.easytv.stmm.clustering.Clustere;
 import com.certh.iti.easytv.stmm.clustering.Config;
 import com.certh.iti.easytv.stmm.io.DBProfileReader;
 import com.certh.iti.easytv.stmm.io.DirectoryProfileReader;
 import com.certh.iti.easytv.stmm.io.ProfileReader;
 import com.certh.iti.easytv.stmm.io.ProfileWriter;
-import com.certh.iti.easytv.stmm.io.StmmJSWriter;
-import com.certh.iti.easytv.stmm.io.StmmWriter;
+import com.certh.iti.easytv.stmm.io.JsFileWriter;
+import com.certh.iti.easytv.stmm.io.HttpHandler;
 import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 
@@ -46,8 +49,8 @@ public class Main {
 	private static String DB_NAME = "easytv";
 	private static String DB_USER = "easytv";
 	private static String DB_PASSWORD = "easytv";
-	private static double minSupport = 0.9;
-	private static double minConfidence = 0.9;
+	private static double minSupport = 0.6;
+	private static double minConfidence = 0.6;
 	
 	public static void main(String[] args) 
 			throws NumberFormatException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, 
@@ -68,7 +71,7 @@ public class Main {
 				_OutputDirectory = new File(value.trim());
 		}
 		
-		if(_ConfigFile == null || !_ConfigFile.exists() ) {
+		if		(_ConfigFile == null || !_ConfigFile.exists() ) {
 			String pwd = System.getProperty("user.dir");
 			_ConfigFile = new File(pwd + File.separator + "config.ini");
             logger.info("Could not find profiles directory, reverted to :'" + _ConfigFile.getAbsolutePath() + "'");
@@ -150,10 +153,43 @@ public class Main {
 			DBProfileReader dbReader = new DBProfileReader(DB_HOST + ":"+DB_PORT+"/"+DB_NAME, DB_USER, DB_PASSWORD);
 			_Profiles = dbReader.readProfiles();
 		}
-		logger.info("Finished loading " + _Profiles.getPoints().size() + " profiles.");
-		logger.info(Profile.getStatistics());
+		
+		logger.info("Finished loading " + _Profiles.getPoints().size() + " profiles.\n\n");
+		
+		logger.info("Print profiles itemsets: ");
+		for(Profile profile :_Profiles.getPoints()) {
+			System.out.print("[");
+
+			for(int item : profile.getAsItemSet())
+				System.out.print(String.format("%d, ", item));
+			
+			System.out.println("]");
+		}
 		
 		
+		logger.info("\nPrint statistics: ");
+		logger.info("\n"+Profile.getStatistics());
+		
+		
+		/**
+		 *	ASSOCIATION ANALYSIS
+		 */
+		
+		//TODO read rules from RBMM
+/*		
+  		logger.info("Start assocation analysis...");
+        RuleRefiner ruleRefiner = new RuleRefiner(_Profiles.getPoints(), Profile.getBins());
+        Vector<AssociationRuleWrapper> rules =  ruleRefiner.generatedRules(minSupport, minConfidence);
+
+        //Print out frequent item sets
+        for(AssociationRuleWrapper rule : rules) { 
+        	logger.info(rule.toString());
+        	logger.info(rule.getJSONObject().toString(4));
+        }
+*/
+		
+		//TODO write rules in RBMM
+        
 		/**
 		 *	CLUSTERING
 		 */
@@ -177,18 +213,16 @@ public class Main {
 			logger.info("Write dimensions handlers and clutering data JS files.");
 
 	        //Write JS
-			profileWriter = new StmmJSWriter(_OutputDirectory, generalized); 
-			profileWriter.write();
+			profileWriter = new JsFileWriter(_OutputDirectory); 
+			profileWriter.write(generalized);
 			
 		} else {
 			logger.info("Inform stmm via: " + "http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters");
 	        
 			//inform stmm runtime via http request
-			StmmWriter stmmWriter = new StmmWriter("http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters", generalized); 
-			stmmWriter.write();
+			HttpHandler stmmWriter = new HttpHandler("http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters"); 
+			stmmWriter.write(generalized);
 		}
-        
-
 	}
 
 }

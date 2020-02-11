@@ -1,0 +1,29 @@
+{
+    "user_content": {
+        "http://registry.easytv.eu/application/cs/audio/track": [
+            "gr",
+            "it",
+            "es"
+        ],
+        "http://registry.easytv.eu/application/cs/accessibility/detection/text": false,
+        "http://registry.easytv.eu/application/cs/accessibility/detection/sound": false,
+        "http://registry.easytv.eu/application/cs/cc/subtitles/language": ["ca"],
+        "http://registry.easytv.eu/application/cs/accessibility/detection/face": false,
+        "http://registry.easytv.eu/application/cs/accessibility/detection/character": false
+    },
+    "user_id": 6,
+    "user_profile": {"user_preferences": {"default": {"preferences": {
+		"http://registry.easytv.eu/application/cs/accessibility/detection/sound": false,
+		"http://registry.easytv.eu/common/volume": 10,
+		"http://registry.easytv.eu/application/cs/audio/eq": true,
+		"http://registry.easytv.eu/application/cs/ui/text/size": "23",
+		"http://registry.easytv.eu/application/cs/accessibility/magnification/scale": 3.5
+    }}}},
+    "user_context": {
+        "http://registry.easytv.eu/context/device": "pc",
+        "http://registry.easytv.eu/context/light": 28,
+        "http://registry.easytv.eu/context/location": "ca",
+        "http://registry.easytv.eu/context/proximity": 68,
+        "http://registry.easytv.eu/context/time": "07:40:42"
+    }
+}

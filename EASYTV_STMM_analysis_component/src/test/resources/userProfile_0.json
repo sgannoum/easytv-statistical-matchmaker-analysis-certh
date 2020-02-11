@@ -1,0 +1,33 @@
+{
+    "user_content": {
+        "http://registry.easytv.eu/application/cs/audio/track": [
+            "ca",
+            "es"
+        ],
+        "http://registry.easytv.eu/application/cs/accessibility/detection/text": true,
+        "http://registry.easytv.eu/application/cs/accessibility/detection/sound": true,
+        "http://registry.easytv.eu/application/cs/cc/subtitles/language": [
+            "ca",
+            "gr",
+            "it"
+        ],
+        "http://registry.easytv.eu/application/cs/accessibility/detection/face": true,
+        "http://registry.easytv.eu/application/cs/accessibility/detection/character": true
+    },
+    "user_id": 0,
+    "user_profile": {"user_preferences": {"default": {"preferences": {
+		"http://registry.easytv.eu/application/cs/accessibility/detection/sound": true,
+		"http://registry.easytv.eu/common/volume": 0,
+		"http://registry.easytv.eu/application/cs/audio/eq": true,
+		"http://registry.easytv.eu/application/cs/ui/text/size": "23",
+		"http://registry.easytv.eu/application/cs/accessibility/magnification/scale": 3.5
+		
+    }}}},
+    "user_context": {
+        "http://registry.easytv.eu/context/device": "tablet",
+        "http://registry.easytv.eu/context/light": 30,
+        "http://registry.easytv.eu/context/location": "es",
+        "http://registry.easytv.eu/context/proximity": 98,
+        "http://registry.easytv.eu/context/time": "10:16:52"
+    }
+}
