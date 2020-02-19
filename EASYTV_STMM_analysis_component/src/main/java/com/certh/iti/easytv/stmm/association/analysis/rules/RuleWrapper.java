@@ -1,5 +1,9 @@
 package com.certh.iti.easytv.stmm.association.analysis.rules;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.json.JSONArray;
@@ -357,6 +361,20 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 	
 	public RuleWrapper(JSONObject json) {
 		this.setJSONObject(json);
+	}
+	
+	public RuleWrapper(File file) throws IOException {		
+		String line;
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		StringBuffer buff = new StringBuffer();
+		
+		while((line = reader.readLine()) != null) 
+			buff.append(line);
+
+		//close file
+		reader.close();
+		
+		this.setJSONObject( new JSONObject(buff.toString()));
 	}
 	
 	public JSONObject getJSONObject() {

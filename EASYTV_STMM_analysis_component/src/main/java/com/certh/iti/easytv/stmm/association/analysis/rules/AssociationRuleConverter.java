@@ -1,15 +1,15 @@
 package com.certh.iti.easytv.stmm.association.analysis.rules;
 
-import java.lang.reflect.MalformedParametersException;
 import java.util.Arrays;
-import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import com.certh.iti.easytv.stmm.association.analysis.fpgrowth.Itemset;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.BodyRuleConditions;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.HeadRuleConditions;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.RuleCondition;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.RuleCondition.Argument;
+import com.certh.iti.easytv.user.preference.Preference;
 import com.certh.iti.easytv.user.preference.attributes.Attribute.Bin;
 
 /**
@@ -17,6 +17,9 @@ import com.certh.iti.easytv.user.preference.attributes.Attribute.Bin;
  *
  */
 public class AssociationRuleConverter {
+	
+	private final static Logger logger = Logger.getLogger(AssociationRuleConverter.class.getName());
+
 	
 	private Vector<Bin> bins;
 	private Vector<AssociationRuleWrapper> rules = new  Vector<AssociationRuleWrapper>();
@@ -32,6 +35,19 @@ public class AssociationRuleConverter {
 	 */
 	public Vector<AssociationRuleWrapper> convert(Vector<AssociationRule> rules) {
 		
+		//get preference maximum item value
+		int maxItem = Preference.getBinNumber();
+		
+		//keep only rules that have preferences item in their head section
+		AssociationRuleFilter.filter(rules, maxItem);
+		logger.info(String.format("%d rules remains after filtering rules with non preferences items in their head section", rules.size()));
+
+		
+		//filter out rules
+		AssociationRuleFilter.filter(rules);
+		logger.info(String.format("%d rules remains after filtering generic association rules", rules.size()));
+
+		
 		for(AssociationRule associationRule : rules) {
 			AssociationRuleWrapper rule = convert(associationRule);
 			this.rules.add(rule);
@@ -46,44 +62,30 @@ public class AssociationRuleConverter {
 	 * @return
 	 */
 	public AssociationRuleWrapper convert(AssociationRule associationRule) {
-		
+
 		//handle head
 		Itemset head = associationRule.getHead();
 		RuleCondition[] heads = new RuleCondition[head.size()];
 		for(int i = 0; i < head.size(); i++) {
-			Bin bin = bins.get(head.get(i));
+			int item = head.get(i);
+			Bin bin = bins.get(item);
 			
-			StringTokenizer stok = new StringTokenizer(bin.label, " -,", false);
-			if(stok.countTokens() == 0 || stok.countTokens() > 3)
-				throw new MalformedParametersException(bin.label);
-			
-			heads[i] = new RuleCondition(stok.nextToken(), "EQ" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(), 
-																							   bin.center)});
+			heads[i] = new RuleCondition(bin.label, "EQ" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(), bin.center)});
 		}
-		
 		
 		//handle body
 		Itemset body = associationRule.getBody();
 		RuleCondition[] bodies= new RuleCondition[body.size() * 2];
 		int index = 0;
 		for(int i = 0; i < body.size(); i++) {
-			Bin bin = bins.get(body.get(i));
-			
-			StringTokenizer stok = new StringTokenizer(bin.label, " -,", false);
-			if(stok.countTokens() == 0 || stok.countTokens() > 3)
-				throw new MalformedParametersException(bin.label);
-			
-			String uri = stok.nextToken();
+			int item = body.get(i);
+			Bin bin = bins.get(item);
 			
 			if(bin.range.length == 1)
-				bodies[index++] = new RuleCondition(uri, "EQ" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(), 
-																							 bin.range[0])});
+				bodies[index++] = new RuleCondition(bin.label, "EQ" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(),  bin.range[0])});
 			else if(bin.range.length == 2) {
-				System.out.println(bin.range[0]+" "+bin.range[1]);
-				bodies[index++] = new RuleCondition(uri, "GE" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(), 
-																							 bin.range[0])});
-				bodies[index++] = new RuleCondition(uri, "LE" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(), 
-																							 bin.range[1])});
+				bodies[index++] = new RuleCondition(bin.label, "GE" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(),  bin.range[0])});
+				bodies[index++] = new RuleCondition(bin.label, "LE" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(),  bin.range[1])});
 			}
 		}
 		
@@ -94,4 +96,5 @@ public class AssociationRuleConverter {
 
 		return new AssociationRuleWrapper(bodyRuleConditions, headRuleConditions);
 	}
+
 }

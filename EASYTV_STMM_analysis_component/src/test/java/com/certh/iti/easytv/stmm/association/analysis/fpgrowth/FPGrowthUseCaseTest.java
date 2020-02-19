@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 import junit.framework.Assert;
 
 
-public class FPGrowthTest2 {
+public class FPGrowthUseCaseTest {
 	
 	private FPGrowth fpg;
 	private Vector<Itemset> itemsets;

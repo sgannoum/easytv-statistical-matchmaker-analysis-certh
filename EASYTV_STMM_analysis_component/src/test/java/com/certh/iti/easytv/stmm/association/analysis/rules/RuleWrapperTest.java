@@ -634,9 +634,6 @@ public class RuleWrapperTest {
 		Assert.assertNotEquals(as1, as2);
 	}
 
-	/**
-	 * Test that hashing returns right values
-	 */
 	@Test
 	public void test_rule_hashing() {
 
@@ -723,6 +720,109 @@ public class RuleWrapperTest {
 		rules.add(as4);
 
 		Assert.assertEquals(3, rules.size());
+	}
+	
+	@Test
+	public void test_merge_rules() {
+		JSONObject rule1 = new JSONObject("{" + 
+				"    \"head\": ["+
+				"	  {" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"value\": 1.5" + 
+				"        }]," + 
+				"        \"preference\": \"1\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }," +
+				"	 {" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"value\": 1.5" + 
+				"        }]," + 
+				"        \"preference\": \"2\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }]," + 
+				"    \"body\": [{" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"value\": 1.6" + 
+				"        }]," + 
+				"        \"preference\": \"http://1\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }]" + 
+				"}");
+		
+		JSONObject rule2 = new JSONObject("{" + 
+				"    \"head\": ["+
+				"	  {" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"value\": 1.5" + 
+				"        }]," + 
+				"        \"preference\": \"1\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }," +
+				"	 {" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"value\": 1.5" + 
+				"        }]," + 
+				"        \"preference\": \"3\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }]," + 
+				"    \"body\": [{" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"value\": 1.6" + 
+				"        }]," + 
+				"        \"preference\": \"http://1\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }]" + 
+				"}");
+		
+		JSONObject rule3 = new JSONObject("{" + 
+				"    \"head\": ["+
+				"	  {" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"value\": 1.5" + 
+				"        }]," + 
+				"        \"preference\": \"1\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }," +
+				"	 {" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"value\": 1.5" + 
+				"        }]," + 
+				"        \"preference\": \"2\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }," + 
+				"	 {" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"value\": 1.5" + 
+				"        }]," + 
+				"        \"preference\": \"3\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }]," + 
+				"    \"body\": [{" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"value\": 1.6" + 
+				"        }]," + 
+				"        \"preference\": \"http://1\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }]" + 
+				"}");
+		
+		RuleWrapper rl1 = new RuleWrapper(rule1);
+		RuleWrapper rl2 = new RuleWrapper(rule2);
+		RuleWrapper rl3 = new RuleWrapper(rule3);
+
+		rl1.merge(rl2.getHead());
+		
+		Assert.assertEquals(rl1, rl3);
 	}
 
 }

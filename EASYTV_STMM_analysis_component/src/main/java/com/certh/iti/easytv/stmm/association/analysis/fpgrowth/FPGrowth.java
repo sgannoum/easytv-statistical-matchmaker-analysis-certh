@@ -2,6 +2,7 @@ package com.certh.iti.easytv.stmm.association.analysis.fpgrowth;
 
 import java.util.Arrays;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 /**
  * <p>
@@ -9,6 +10,9 @@ import java.util.Vector;
  * </p>
  */
 public class FPGrowth {
+	
+	private final static Logger logger = Logger.getLogger(FPGrowth.class.getName());
+	
 	private Vector<Itemset> input;
 	private FPTree fpt;
 	
@@ -54,10 +58,10 @@ public class FPGrowth {
 
 		// finally we mine the FPTree using the FP-growth algorithm
 		if (fpt != null) {
-			System.out.println("<FPgrowth>: Weight "+min_weight+" FPTree has " + fpt.getCountNodes() + " nodes");
+			logger.info("<FPgrowth>: Weight "+min_weight+" FPTree has " + fpt.getCountNodes() + " nodes");
 			fpt.fp_growth(new Itemset());
 		} else
-			System.out.println("<FPgrowth>: FPTree is empty");
+			logger.info("<FPgrowth>: FPTree is empty");
 
 		// there will usually be 2 passes unless there are
 		// no frequent items, in which case we do only 1 pass

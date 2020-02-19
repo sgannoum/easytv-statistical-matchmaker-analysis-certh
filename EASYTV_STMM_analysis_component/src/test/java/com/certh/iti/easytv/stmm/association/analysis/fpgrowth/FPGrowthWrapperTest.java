@@ -2,13 +2,18 @@ package com.certh.iti.easytv.stmm.association.analysis.fpgrowth;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.json.JSONObject;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.certh.iti.easytv.user.Profile;
+import com.certh.iti.easytv.user.UserContent;
+import com.certh.iti.easytv.user.UserContext;
 import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 import com.certh.iti.easytv.user.preference.Preference;
 import com.certh.iti.easytv.user.preference.attributes.Attribute;
@@ -24,15 +29,11 @@ import com.certh.iti.easytv.user.preference.attributes.SymmetricBinaryAttribute;
 
 public class FPGrowthWrapperTest {
 		
+	private Map<String, Attribute> initialAttributes, initialContextAttribute, initialContentAttribute;
+	private Map<String, Attribute> contextAttributes  =  new LinkedHashMap<String, Attribute>();
+	private Map<String, Attribute> contentAttributes  =  new LinkedHashMap<String, Attribute>();
+
 	private JSONObject profile_0 = new JSONObject("{" + 
-			"    \"user_content\": {" + 
-			"        \"http://registry.easytv.eu/application/cs/audio/track\": [\"ca\",\"es\"]," + 
-			"        \"http://registry.easytv.eu/application/cs/accessibility/detection/text\": true," + 
-			"        \"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": true," + 
-			"        \"http://registry.easytv.eu/application/cs/cc/subtitles/language\": [\"ca\",\"gr\",\"it\"]," + 
-			"        \"http://registry.easytv.eu/application/cs/accessibility/detection/face\": true," + 
-			"        \"http://registry.easytv.eu/application/cs/accessibility/detection/character\": true" + 
-			"    }," + 
 			"    \"user_id\": 0," + 
 			"    \"user_profile\": {\"user_preferences\": {\"default\": {\"preferences\": {" + 
 			"		\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": false," + 
@@ -41,15 +42,21 @@ public class FPGrowthWrapperTest {
 			"		\"http://registry.easytv.eu/application/cs/ui/text/size\": \"23\"," + 
 			"		\"http://registry.easytv.eu/application/cs/accessibility/magnification/scale\": 3.5" + 
 			"		" + 
-			"    }}}}," + 
-			"    \"user_context\": {" + 
-			"        \"http://registry.easytv.eu/context/device\": \"tablet\"," + 
-			"        \"http://registry.easytv.eu/context/light\": 30," + 
-			"        \"http://registry.easytv.eu/context/location\": \"es\"," + 
-			"        \"http://registry.easytv.eu/context/proximity\": 98," + 
-			"        \"http://registry.easytv.eu/context/time\": \"10:16:52\"" + 
-			"    }" + 
+			"    }}}}" + 
 			"}");
+	
+	
+	@BeforeClass
+	public void beforeTest() {
+		initialAttributes = Preference.getAttributes();
+		initialContextAttribute = UserContext.getAttributes();
+		initialContentAttribute = UserContent.getAttributes();
+	}
+	 
+	@AfterClass
+	public void afterTest() {		
+		Profile.setAttributes(initialAttributes, initialContextAttribute, initialContentAttribute);
+	}
 
 	/**
 	 * Check that with no bining preference information remains 
@@ -70,9 +77,8 @@ public class FPGrowthWrapperTest {
 	    }};
 	    
 		//set new preferences attributes
-	    Preference.setAttributes(preferencesAttributes);
+	    Profile.setAttributes(preferencesAttributes, contextAttributes, contentAttributes);
 	    Vector<Bin> bins = Profile.getBins();
-		
 		
 		JSONObject expected = new JSONObject("{" + 
 				"		\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": false," + 
@@ -89,7 +95,6 @@ public class FPGrowthWrapperTest {
 			String uri = preference.nextToken();
 			Assert.assertEquals(uri, expected.get(uri), bin.center);
 		}
-		
 	}
 	
 	@Test
@@ -106,9 +111,8 @@ public class FPGrowthWrapperTest {
 	    }};
 	    
 		//set new preferences attributes
-	    Preference.setAttributes(preferencesAttributes);
+	    Profile.setAttributes(preferencesAttributes, contextAttributes, contentAttributes);
 	    Vector<Bin> bins = Profile.getBins();
-		
 		
 		JSONObject expected = new JSONObject("{" + 
 				"		\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": false," + 
@@ -125,7 +129,6 @@ public class FPGrowthWrapperTest {
 			String uri = preference.nextToken();
 			Assert.assertEquals(uri, expected.get(uri), bin.center);
 		}
-		
 	}
 	
 	/**
@@ -148,9 +151,8 @@ public class FPGrowthWrapperTest {
 	    }};
 	    
 		//set new preferences attributes
-	    Preference.setAttributes(preferencesAttributes);
+	    Profile.setAttributes(preferencesAttributes, contextAttributes, contentAttributes);
 	    Vector<Bin> bins = Profile.getBins();
-		
 		
 		JSONObject expected = new JSONObject("{" + 
 				"		\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": false," + 
@@ -167,7 +169,6 @@ public class FPGrowthWrapperTest {
 			String uri = preference.nextToken();
 			Assert.assertEquals(uri, expected.get(uri), bin.center);
 		}
-		
 	}
 
 }

@@ -10,8 +10,10 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
+import org.json.JSONArray;
 
 import com.certh.iti.easytv.stmm.association.analysis.RuleRefiner;
+import com.certh.iti.easytv.stmm.association.analysis.rules.RbmmRuleWrapper;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper;
 import com.certh.iti.easytv.stmm.clustering.Clustere;
 import com.certh.iti.easytv.stmm.clustering.Config;
@@ -33,24 +35,30 @@ public class Main {
 	private static final String _ArgConfigFile = "-c";
 	private static final String _ArgProfilesDirectory = "-p";
 	private static final String _ArgOutputDirectory = "-o";
+	private static final String _ArgRbmmRulesFile = "-r";
 	
 	// Profiles
 	private static File _ConfigFile = null;
 	private static File _OutputDirectory = null;
 	private static File _ProfilesDirectory = null;
+	private static File _rbmmRulesFile = null;
 	private static Cluster<Profile> _Profiles;
 	private static ProfileReader profileReader;
 	private static ProfileWriter profileWriter;
 	private static String STMM_HOST = "localhost";
 	private static String STMM_PORT = "8077";
+	private static String RBMM_HOST = "localhost";
+	private static String RBMM_PORT = "8080";
 
 	private static String DB_HOST = "localhost";
 	private static String DB_PORT = "8077";
 	private static String DB_NAME = "easytv";
 	private static String DB_USER = "easytv";
 	private static String DB_PASSWORD = "easytv";
-	private static double minSupport = 0.6;
-	private static double minConfidence = 0.6;
+	
+	private static Vector<RbmmRuleWrapper> rbmmRules;
+	private static double minSupport = 0.8;
+	private static double minConfidence = 0.9;
 	
 	public static void main(String[] args) 
 			throws NumberFormatException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, 
@@ -69,6 +77,8 @@ public class Main {
 				_ConfigFile = new File(value.trim());
 			else if (arg.equals(_ArgOutputDirectory)) 
 				_OutputDirectory = new File(value.trim());
+			else if (arg.equals(_ArgRbmmRulesFile)) 
+				_rbmmRulesFile = new File(value.trim());
 		}
 		
 		if		(_ConfigFile == null || !_ConfigFile.exists() ) {
@@ -88,6 +98,14 @@ public class Main {
 		
 		if(System.getenv("STMM_PORT") != null) {
 			STMM_PORT = System.getenv("STMM_PORT") ;
+		}
+		
+		if(System.getenv("RBMM_HOST") != null) {
+			RBMM_HOST = System.getenv("RBMM_HOST") ;
+		}
+		
+		if(System.getenv("RBMM_PORT") != null) {
+			RBMM_PORT = System.getenv("RBMM_PORT") ;
 		}
 		
 		if(System.getenv("DB_HOST") != null) {
@@ -155,44 +173,64 @@ public class Main {
 		}
 		
 		logger.info("Finished loading " + _Profiles.getPoints().size() + " profiles.\n\n");
-		
-		logger.info("Print profiles itemsets: ");
-		for(Profile profile :_Profiles.getPoints()) {
-			System.out.print("[");
-
-			for(int item : profile.getAsItemSet())
-				System.out.print(String.format("%d, ", item));
-			
-			System.out.println("]");
-		}
-		
-		
 		logger.info("\nPrint statistics: ");
-		logger.info("\n"+Profile.getStatistics());
-		
+		//logger.info("\n"+Profile.getStatistics());
+		//System.in.read();
 		
 		/**
 		 *	ASSOCIATION ANALYSIS
 		 */
-		
-		//TODO read rules from RBMM
-/*		
-  		logger.info("Start assocation analysis...");
-        RuleRefiner ruleRefiner = new RuleRefiner(_Profiles.getPoints(), Profile.getBins());
-        Vector<AssociationRuleWrapper> rules =  ruleRefiner.generatedRules(minSupport, minConfidence);
-
-        //Print out frequent item sets
-        for(AssociationRuleWrapper rule : rules) { 
-        	logger.info(rule.toString());
-        	logger.info(rule.getJSONObject().toString(4));
-        }
-*/
-		
-		//TODO write rules in RBMM
-        
+		RULES_RFINEMENT();
+		        
 		/**
 		 *	CLUSTERING
 		 */
+		CLUSTERING_ANALYSIS();
+	}
+	
+	
+	public static void RULES_RFINEMENT() throws IOException {
+		logger.info("Start rules refinement...");
+		if(_rbmmRulesFile != null) {
+			logger.info("Read RBMM rules from file " + _rbmmRulesFile.getAbsolutePath());
+			
+			rbmmRules = new Vector<RbmmRuleWrapper>();
+			
+			String line;
+			BufferedReader reader = new BufferedReader(new FileReader(_rbmmRulesFile));
+			StringBuffer buff = new StringBuffer();
+			
+			while((line = reader.readLine()) != null) 
+				buff.append(line);
+
+			//close file
+			reader.close();
+			
+			JSONArray rules = new JSONArray(buff.toString());
+			for(int i = 0; i < rules.length(); i++)
+				rbmmRules.add(new RbmmRuleWrapper(rules.getJSONObject(i)));
+		}
+		else {
+			logger.info("Get RBMM rules from "+"http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules");
+			rbmmRules = HttpHandler.readRules("http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules");
+		}
+		
+		logger.info(rbmmRules.size()+" rules have been received.");
+		
+        RuleRefiner ruleRefiner = new RuleRefiner(Profile.getBins());
+        Vector<RuleWrapper> rules =  ruleRefiner.refineRules(_Profiles.getPoints(), rbmmRules, minSupport, minConfidence);
+
+        if(!rules.isEmpty()) {
+	        for(RuleWrapper rule : rules)  
+	        	logger.info(rule.getJSONObject().toString(4));
+	
+			//write rules to RBMM
+			HttpHandler.writeRules("http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules", rules);
+        }
+	}
+	
+	
+	public static void CLUSTERING_ANALYSIS() throws UserProfileParsingException, IOException {
         logger.info("Start clustering...");
         List<Cluster<Profile>> foundedClusters = new ArrayList<Cluster<Profile>>();    	
 

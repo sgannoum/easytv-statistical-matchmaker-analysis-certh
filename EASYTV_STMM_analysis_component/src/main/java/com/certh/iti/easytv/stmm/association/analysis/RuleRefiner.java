@@ -64,9 +64,11 @@ public class RuleRefiner {
 		this.minConfidence = minConfidence;
 		
 		//Create fp-growth instance and get profiles itemsets
+		logger.info("Start association analysis");
 		AssociationAnalyzer fpgrowth = new FPGrowthWrapper(profiles, bins);
 		
 		//Association rules generator
+		logger.info("Start association rules generating process");
 		AssociationRuleGenerator ruleGenerator = new AssociationRuleGenerator(fpgrowth.getItemsets());
 		
 		//Assocation rule converter
@@ -75,13 +77,13 @@ public class RuleRefiner {
 		logger.info(String.format("Generate rules with  Minimume support: %.1f, Minimume confidence: %.1f", minSupport, minConfidence));
 		frequentItemset = fpgrowth.getFrequentItemsets(minSupport);
 		
-		logger.info(String.format("Found %d frequent itemsets with minSupport: %f", frequentItemset.size(), minSupport));
+		logger.info(String.format("Found %d frequent itemsets with minSupport: %f and minConfidence: %f", frequentItemset.size(), minSupport, minConfidence));
 		associationRules = ruleGenerator.findAssociationRules(frequentItemset, minConfidence);
 		
-		logger.info(String.format("Found %d rules with minConfidence: %f", associationRules.size(), minConfidence));
+		logger.info(String.format("Found %d association rules", associationRules.size()));
 		Vector<AssociationRuleWrapper> asRules = rulesConverter.convert(associationRules);
 		
-		//refine rules
+		logger.info(String.format("Refine converted %d association rules with RBMM %d rules...", asRules.size(), rbmmRules.size()));
 		associationRulesWrapper = RuleRefiner.refineRules(asRules, rbmmRules);
 		
 		//Refine rules
@@ -89,7 +91,11 @@ public class RuleRefiner {
 	}
 	
 	/**
-	 * Given two lists of rules find out their combination outcome 
+	 * Given two lists of rules find:
+	 * 	- RBMM rules is to updated
+	 * 	- RBMM rules to be removed
+	 * 	- Association rules to be added
+	 * 
 	 * @param asRules
 	 * @param rbmmRules
 	 * @return

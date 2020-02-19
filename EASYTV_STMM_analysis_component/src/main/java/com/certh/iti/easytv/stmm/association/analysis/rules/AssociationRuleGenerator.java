@@ -109,7 +109,7 @@ public class AssociationRuleGenerator {
 			head.setWeight(head_counts);
 			body.setWeight(body_counts);
 			if(body.size() != 0 && confidence >= minConfidence) 
-				rules.add(new AssociationRule(head, body, union, confidence));
+				rules.add(new AssociationRule(body, head, union, confidence));
 		}
 		
 		return rules;

@@ -62,7 +62,12 @@ public class DirectoryProfileReader implements ProfileReader {
 		File[] iniFiles = directory.listFiles(new IniFileFilter());
 		for (int i = 0; i < iniFiles.length; i++) {
 			logger.info("Reading file: " +iniFiles[i].getPath());
-			profiles.addPoint(new Profile(iniFiles[i]));
+			
+			try {
+				profiles.addPoint(new Profile(iniFiles[i]));
+			} catch(UserProfileParsingException e) {
+				logger.warning(e.getMessage());
+			}
 		}
 
 		class dirFileFilter implements FileFilter {

@@ -111,12 +111,12 @@ public class AssociationRulesGeneratorTests {
 	public void test_generateRules() {
 		
 		Vector<AssociationRule> expected = new Vector<AssociationRule>();
-		expected.add(new AssociationRule(new Itemset("1"), new Itemset("2,5")));
-		expected.add(new AssociationRule(new Itemset("2"), new Itemset("1,5")));
-		expected.add(new AssociationRule(new Itemset("5"), new Itemset("1,2")));
-		expected.add(new AssociationRule(new Itemset("1,2"), new Itemset("5")));
-		expected.add(new AssociationRule(new Itemset("1,5"), new Itemset("2")));
 		expected.add(new AssociationRule(new Itemset("2,5"), new Itemset("1")));
+		expected.add(new AssociationRule(new Itemset("1,5"), new Itemset("2")));
+		expected.add(new AssociationRule(new Itemset("1,2"), new Itemset("5")));
+		expected.add(new AssociationRule(new Itemset("5"), new Itemset("1,2")));
+		expected.add(new AssociationRule(new Itemset("2"), new Itemset("1,5")));
+		expected.add(new AssociationRule(new Itemset("1"), new Itemset("2,5")));
 
 		Assert.assertEquals(expected, rules);	
 	}
@@ -184,35 +184,35 @@ public class AssociationRulesGeneratorTests {
 		 */
 		
 		Vector<AssociationRule> expected = new Vector<AssociationRule>();
-		expected.add(new AssociationRule(new Itemset("2"), new Itemset("4")));
 		expected.add(new AssociationRule(new Itemset("4"), new Itemset("2")));
-		expected.add(new AssociationRule(new Itemset("2"), new Itemset("5")));
+		expected.add(new AssociationRule(new Itemset("2"), new Itemset("4")));
 		expected.add(new AssociationRule(new Itemset("5"), new Itemset("2")));
-		expected.add(new AssociationRule(new Itemset("1"), new Itemset("2,5")));
-		expected.add(new AssociationRule(new Itemset("2"), new Itemset("1,5")));
-		expected.add(new AssociationRule(new Itemset("5"), new Itemset("1,2")));
-		
-		expected.add(new AssociationRule(new Itemset("1,2"), new Itemset("5")));
-		expected.add(new AssociationRule(new Itemset("1,5"), new Itemset("2")));
+		expected.add(new AssociationRule(new Itemset("2"), new Itemset("5")));
 		expected.add(new AssociationRule(new Itemset("2,5"), new Itemset("1")));
-
-		expected.add(new AssociationRule(new Itemset("1"), new Itemset("5")));
-		expected.add(new AssociationRule(new Itemset("5"), new Itemset("1")));
-		expected.add(new AssociationRule(new Itemset("1"), new Itemset("2")));
-		expected.add(new AssociationRule(new Itemset("2"), new Itemset("1")));
-
-		expected.add(new AssociationRule(new Itemset("1"), new Itemset("2,3")));
-		expected.add(new AssociationRule(new Itemset("2"), new Itemset("1,3")));
-		expected.add(new AssociationRule(new Itemset("3"), new Itemset("1,2")));
-
-		expected.add(new AssociationRule(new Itemset("1,2"), new Itemset("3")));
-		expected.add(new AssociationRule(new Itemset("1,3"), new Itemset("2")));
-		expected.add(new AssociationRule(new Itemset("2,3"), new Itemset("1")));
+		expected.add(new AssociationRule(new Itemset("1,5"), new Itemset("2")));
+		expected.add(new AssociationRule(new Itemset("1,2"), new Itemset("5")));
 		
-		expected.add(new AssociationRule(new Itemset("1"), new Itemset("3")));
+		expected.add(new AssociationRule(new Itemset("5"), new Itemset("1,2")));
+		expected.add(new AssociationRule(new Itemset("2"), new Itemset("1,5")));
+		expected.add(new AssociationRule(new Itemset("1"), new Itemset("2,5")));
+
+		expected.add(new AssociationRule(new Itemset("5"), new Itemset("1")));
+		expected.add(new AssociationRule(new Itemset("1"), new Itemset("5")));
+		expected.add(new AssociationRule(new Itemset("2"), new Itemset("1")));
+		expected.add(new AssociationRule(new Itemset("1"), new Itemset("2")));
+
+		expected.add(new AssociationRule(new Itemset("2,3"), new Itemset("1")));
+		expected.add(new AssociationRule(new Itemset("1,3"), new Itemset("2")));
+		expected.add(new AssociationRule(new Itemset("1,2"), new Itemset("3")));
+
+		expected.add(new AssociationRule(new Itemset("3"), new Itemset("1,2")));
+		expected.add(new AssociationRule(new Itemset("2"), new Itemset("1,3")));
+		expected.add(new AssociationRule(new Itemset("1"), new Itemset("2,3")));
+		
 		expected.add(new AssociationRule(new Itemset("3"), new Itemset("1")));
-		expected.add(new AssociationRule(new Itemset("2"), new Itemset("3")));
+		expected.add(new AssociationRule(new Itemset("1"), new Itemset("3")));
 		expected.add(new AssociationRule(new Itemset("3"), new Itemset("2")));
+		expected.add(new AssociationRule(new Itemset("2"), new Itemset("3")));
 
 		Assert.assertEquals(expected, allRules);	
 	}

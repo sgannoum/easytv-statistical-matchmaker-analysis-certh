@@ -9,13 +9,13 @@ public class AssociationRule implements Comparable<AssociationRule>{
 	private Itemset union;
 	private double confidence = 0.0;
 	
-	public AssociationRule(Itemset head, Itemset body) {
+	public AssociationRule(Itemset body, Itemset head) {
 		this.setHead(head);
 		this.setBody(body);
 		union = Itemset.union(head, body);
 	}
 	
-	public AssociationRule(Itemset head, Itemset body, Itemset union, double confidence) {
+	public AssociationRule(Itemset body, Itemset head, Itemset union, double confidence) {
 		this.setHead(head);
 		this.setBody(body);
 		this.setUnion(union);
@@ -103,23 +103,13 @@ public class AssociationRule implements Comparable<AssociationRule>{
 		no			no			false
 	 */
 	public boolean canSubstituted(AssociationRule o) {
-		//A1 => B1
-		Itemset sub1 = Itemset.subtraction(head, o.head);
-		
-		//A2 => B2
-		Itemset sub2 = Itemset.subtraction(body, o.body);
-		
-		//all cases where no commons withe head or body 
-		if((sub1.size() == head.size()) || (sub2.size() == body.size()))
+		if(!o.head.isIncludedIn(head))
 			return false;
 		
-		boolean less1 = sub1.size() == 0 && head.size() < o.head.size();
-		boolean less2 = sub2.size() == 0 && body.size() < o.body.size();
+		if(!o.body.isIncludedIn(body))
+			return false;
 		
-		if(!less1 && !less2)
-			return true;
-		
-		return false;
+		return true;
 	}
 
 

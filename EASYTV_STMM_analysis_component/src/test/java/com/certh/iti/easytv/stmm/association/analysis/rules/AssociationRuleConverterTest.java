@@ -18,6 +18,7 @@ public class AssociationRuleConverterTest {
 	public void beforeTest() {
 		bins = Profile.getBins();
 		rulesConverter = new AssociationRuleConverter(bins);
+		System.out.println("Distinct items: " + bins.size());
 	}
 
 	@Test
