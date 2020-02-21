@@ -107,10 +107,12 @@ public class JsFileWriter implements ProfileWriter{
         writer.println();
         writer.println("var Numeric = require(\"./DimensionHandlers\").Numeric");
         writer.println("var IntegerNumeric = require(\"./DimensionHandlers\").IntegerNumeric");
+        writer.println("var DoubleNumeric = require(\"./DimensionHandlers\").DoubleNumeric");
         writer.println("var Nominal = require(\"./DimensionHandlers\").Nominal");
         writer.println("var Ordinal = require(\"./DimensionHandlers\").Ordinal");
         writer.println("var SymmetricBinary = require(\"./DimensionHandlers\").SymmetricBinary");
         writer.println("var Color = require(\"./DimensionHandlers\").Color");
+        writer.println("var MultiNominal = require(\"./DimensionHandlers\").MultiNominal");
         writer.println();
 		
         //entry count
@@ -209,7 +211,7 @@ public class JsFileWriter implements ProfileWriter{
 				handlerInstance += String.format("new IntegerNumeric(%.1f, %.1f, %.1f), ", attribte.getMaxValue(), 
 																					 	   attribte.getMinValue(), 
 																					 	   attribte.getOperandMissingValue());
-			handlerInstance = handlerInstance.substring(0, handlerInstance.length() - 1 );
+			handlerInstance = handlerInstance.substring(0, handlerInstance.length() - 2 );
 			handlerInstance = String.format("new Color(%s)", handlerInstance);
 			
 		} else if (IntegerAttribute.class.isInstance(operand)) {

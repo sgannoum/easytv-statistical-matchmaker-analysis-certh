@@ -84,11 +84,11 @@ public class Main {
 		if		(_ConfigFile == null || !_ConfigFile.exists() ) {
 			String pwd = System.getProperty("user.dir");
 			_ConfigFile = new File(pwd + File.separator + "config.ini");
-            logger.info("Could not find profiles directory, reverted to :'" + _ConfigFile.getAbsolutePath() + "'");
+            logger.info("\nCould not find profiles directory, reverted to :'" + _ConfigFile.getAbsolutePath() + "'");
 		}
 			
 		if(!_ConfigFile.exists()) {
-			System.err.println("CRITICAL: Profiles directory ('" + _ConfigFile.getAbsolutePath() + "') does not exist.");
+            logger.info("\nCRITICAL: Profiles directory ('" + _ConfigFile.getAbsolutePath() + "') does not exist.");
 			System.exit(-1);
 		}
 
@@ -172,10 +172,17 @@ public class Main {
 			_Profiles = dbReader.readProfiles();
 		}
 		
-		logger.info("Finished loading " + _Profiles.getPoints().size() + " profiles.\n\n");
+		
+		//exit when there are no profiles
+		if(_Profiles.getPoints().isEmpty()) {
+			logger.info("\nNo profiles loaded...exit");
+			return;
+		}
+		
+		logger.info("\nFinished loading " + _Profiles.getPoints().size() + " profiles.\n\n");
+		
 		logger.info("\nPrint statistics: ");
-		//logger.info("\n"+Profile.getStatistics());
-		//System.in.read();
+		logger.info("\n"+Profile.getStatistics());
 		
 		/**
 		 *	ASSOCIATION ANALYSIS
@@ -190,9 +197,9 @@ public class Main {
 	
 	
 	public static void RULES_RFINEMENT() throws IOException {
-		logger.info("Start rules refinement...");
+		logger.info("\nStart rules refinement...");
 		if(_rbmmRulesFile != null) {
-			logger.info("Read RBMM rules from file " + _rbmmRulesFile.getAbsolutePath());
+			logger.info("\nRead RBMM rules from file " + _rbmmRulesFile.getAbsolutePath());
 			
 			rbmmRules = new Vector<RbmmRuleWrapper>();
 			
@@ -211,11 +218,11 @@ public class Main {
 				rbmmRules.add(new RbmmRuleWrapper(rules.getJSONObject(i)));
 		}
 		else {
-			logger.info("Get RBMM rules from "+"http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules");
+			logger.info("\nGet RBMM rules from "+"http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules");
 			rbmmRules = HttpHandler.readRules("http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules");
 		}
 		
-		logger.info(rbmmRules.size()+" rules have been received.");
+		logger.info("\n"+rbmmRules.size()+" rules have been received.");
 		
         RuleRefiner ruleRefiner = new RuleRefiner(Profile.getBins());
         Vector<RuleWrapper> rules =  ruleRefiner.refineRules(_Profiles.getPoints(), rbmmRules, minSupport, minConfidence);
@@ -231,7 +238,7 @@ public class Main {
 	
 	
 	public static void CLUSTERING_ANALYSIS() throws UserProfileParsingException, IOException {
-        logger.info("Start clustering...");
+        logger.info("\nStart clustering...");
         List<Cluster<Profile>> foundedClusters = new ArrayList<Cluster<Profile>>();    	
 
         //start with all profile as first cluster
@@ -245,17 +252,17 @@ public class Main {
 		/**
 		 *	WRITE JS FILES
 		 */
-        logger.info("--------");
+        logger.info("\n--------");
 		if(_OutputDirectory != null && _ProfilesDirectory != null) {
 		
-			logger.info("Write dimensions handlers and clutering data JS files.");
+			logger.info("\nWrite dimensions handlers and clutering data JS files.");
 
 	        //Write JS
 			profileWriter = new JsFileWriter(_OutputDirectory); 
 			profileWriter.write(generalized);
 			
 		} else {
-			logger.info("Inform stmm via: " + "http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters");
+			logger.info("\nInform stmm via: " + "http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters");
 	        
 			//inform stmm runtime via http request
 			HttpHandler stmmWriter = new HttpHandler("http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters"); 
