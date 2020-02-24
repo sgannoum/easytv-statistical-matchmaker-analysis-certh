@@ -44,7 +44,6 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlType\": \"gesture_control\"," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/detection/character\": false," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/magnification/scale\": 2," + 
-			"\"http://registry.easytv.eu/application/cs/accessibility/enhancement/image/type\": \"none\"," + 
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiLanguage\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiTextSize\": 1"+
 			"}}}}");
@@ -79,7 +78,6 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlType\": \"gesture_control\"," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/detection/character\": true," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/magnification/scale\": 2," + 
-			"\"http://registry.easytv.eu/application/cs/accessibility/enhancement/image/type\": \"face-detection\"," + 
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiLanguage\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiTextSize\": 1"+
 			"}}}}");
@@ -114,7 +112,6 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlType\": \"gesture_control\"," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/detection/character\": true," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/magnification/scale\": 2.5," + 
-			"\"http://registry.easytv.eu/application/cs/accessibility/enhancement/image/type\": \"image-magnification\"," + 
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiLanguage\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiTextSize\": 1"+
 			"}}}}");
@@ -149,7 +146,6 @@ public class MaskedSimilarityMeasureTest {
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlType\": \"gesture_control\"," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/detection/character\": false," + 
 			"\"http://registry.easytv.eu/application/cs/accessibility/magnification/scale\": 2," + 
-			"\"http://registry.easytv.eu/application/cs/accessibility/enhancement/image/type\": \"none\"," + 
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiLanguage\": \"en\"," + 
 			"\"http://registry.easytv.eu/application/control/csGazeAndGestureControlCursorGuiTextSize\": 1"+
 			"}}}}");

@@ -21,7 +21,11 @@ import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 
 import junit.framework.Assert;
 /**
- * Test the whole rules refinement process, from association analysis to generated rules  
+ * Test the whole rules refinement process, from association analysis to generated rules
+ * the unit test will actually test the following conditions:
+ * 1-) generated rules
+ * 2-) rules with contextual conditions in their head section will be filtered out.
+ * 3-) rules merging case, where the most specific rules are kept 
  * @author salgan
  *
  */
