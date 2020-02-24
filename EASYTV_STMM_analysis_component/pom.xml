@@ -29,23 +29,11 @@
 			</plugin>
 
 			<!-- Make this jar executable -->
-<!-- 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.1</version>
-				<configuration>
-					DO NOT include log4j.properties file in your Jar
-					<excludes>
-						<exclude>**/log4j.properties</exclude>
-					</excludes>
-					<archive>
-						<manifest>
-							Jar file entry point
-							<mainClass>com.certh.iti.easytv.stmm.UserProfileGenratorMain</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin> -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId> 
+				<version>3.1.1</version> <configuration> DO NOT include log4j.properties 
+				file in your Jar <excludes> <exclude>**/log4j.properties</exclude> </excludes> 
+				<archive> <manifest> Jar file entry point <mainClass>com.certh.iti.easytv.stmm.UserProfileGenratorMain</mainClass> 
+				</manifest> </archive> </configuration> </plugin> -->
 
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -68,6 +56,19 @@
 					</descriptorRefs>
 				</configuration>
 			</plugin>
+
+			<!-- Maven testng plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M3</version>
+				<configuration>
+					<suiteXmlFiles>
+						<suiteXmlFile>./src/test/resources/testng.xml</suiteXmlFile>
+					</suiteXmlFiles>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
@@ -95,14 +96,14 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-		    <groupId>mysql</groupId>
-		    <artifactId>mysql-connector-java</artifactId>
-		    <version>8.0.17</version>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.17</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.httpcomponents</groupId>
-		    <artifactId>httpclient</artifactId>
-		    <version>4.5.9</version>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.9</version>
 		</dependency>
 	</dependencies>
 </project>
