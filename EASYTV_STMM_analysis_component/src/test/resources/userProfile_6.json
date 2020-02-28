@@ -21,7 +21,7 @@
     }}}},
     "user_context": {
         "http://registry.easytv.eu/context/device": "pc",
-        "http://registry.easytv.eu/context/light": 28,
+        "http://registry.easytv.eu/context/light": "iving room",
         "http://registry.easytv.eu/context/location": "ca",
         "http://registry.easytv.eu/context/proximity": 68,
         "http://registry.easytv.eu/context/time": "07:40:42"

@@ -20,7 +20,7 @@
     }}}},
     "user_context": {
         "http://registry.easytv.eu/context/device": "tablet",
-        "http://registry.easytv.eu/context/light": 80,
+        "http://registry.easytv.eu/context/light": "class",
         "http://registry.easytv.eu/context/location": "gr",
         "http://registry.easytv.eu/context/proximity": 86,
         "http://registry.easytv.eu/context/time": "03:11:06"

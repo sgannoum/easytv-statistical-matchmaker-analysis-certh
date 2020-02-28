@@ -21,7 +21,7 @@
     }}}},
     "user_context": {
         "http://registry.easytv.eu/context/device": "pc",
-        "http://registry.easytv.eu/context/light": 70,
+        "http://registry.easytv.eu/context/light": "sunrise",
         "http://registry.easytv.eu/context/location": "es",
         "http://registry.easytv.eu/context/proximity": 43,
         "http://registry.easytv.eu/context/time": "02:20:46"
