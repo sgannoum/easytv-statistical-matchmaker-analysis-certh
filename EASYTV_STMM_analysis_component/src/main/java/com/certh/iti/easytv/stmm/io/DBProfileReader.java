@@ -28,19 +28,19 @@ public class DBProfileReader implements ProfileReader{
 
 	public Cluster<Profile> readProfiles() {
 		Cluster<Profile> profiles = new Cluster<Profile>();
-		logger.info("\nTry to connect with db : "+ "jdbc:mysql://"+ Url);
+		logger.info("Try to connect with db : "+ "jdbc:mysql://"+ Url);
 		
 		try 
 		{			
 			con = DriverManager.getConnection("jdbc:mysql://"+ Url, userName, Password);
 			
-			logger.info("\nConnection success....");
+			logger.info("Connection success....");
 			
 			// here sonoo is database name, root is username and password
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("select userModel from userModels");
 			
-			logger.info("\nParse user profiles...");
+			logger.info("Parse user profiles...");
 			
 			while (rs.next()) {
 				
@@ -58,14 +58,14 @@ public class DBProfileReader implements ProfileReader{
 				//add to profile list
 				profiles.addPoint(profile);
 				
-				logger.info("\nReading profile user_id: " + profile.getUserId());
+				logger.info("Reading profile user_id: " + profile.getUserId());
 			}
 			
 			//close
 			con.close();
 			
 		} catch (Exception e) {
-			logger.info("\nConnection failed....\n"+e.getMessage());
+			logger.info("Connection failed...."+e.getMessage());
 			e.printStackTrace();
 		}
 		

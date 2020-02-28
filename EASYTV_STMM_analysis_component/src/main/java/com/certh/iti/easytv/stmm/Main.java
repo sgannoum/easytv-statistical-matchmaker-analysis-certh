@@ -4,10 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.json.JSONArray;
@@ -19,6 +23,7 @@ import com.certh.iti.easytv.stmm.clustering.Clustere;
 import com.certh.iti.easytv.stmm.clustering.Config;
 import com.certh.iti.easytv.stmm.io.DBProfileReader;
 import com.certh.iti.easytv.stmm.io.DirectoryProfileReader;
+import com.certh.iti.easytv.stmm.io.EmailHandler;
 import com.certh.iti.easytv.stmm.io.ProfileReader;
 import com.certh.iti.easytv.stmm.io.ProfileWriter;
 import com.certh.iti.easytv.stmm.io.JsFileWriter;
@@ -62,7 +67,7 @@ public class Main {
 	
 	public static void main(String[] args) 
 			throws NumberFormatException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, 
-				   SecurityException, IOException, UserProfileParsingException 
+				   SecurityException, IOException, UserProfileParsingException, AddressException, NoSuchAlgorithmException, MessagingException 
 	{	
 		
 		
@@ -84,11 +89,11 @@ public class Main {
 		if		(_ConfigFile == null || !_ConfigFile.exists() ) {
 			String pwd = System.getProperty("user.dir");
 			_ConfigFile = new File(pwd + File.separator + "config.ini");
-            logger.info("\nCould not find profiles directory, reverted to :'" + _ConfigFile.getAbsolutePath() + "'");
+            logger.info("Could not find profiles directory, reverted to :'" + _ConfigFile.getAbsolutePath() + "'");
 		}
 			
 		if(!_ConfigFile.exists()) {
-            logger.info("\nCRITICAL: Profiles directory ('" + _ConfigFile.getAbsolutePath() + "') does not exist.");
+            logger.info("CRITICAL: Profiles directory ('" + _ConfigFile.getAbsolutePath() + "') does not exist.");
 			System.exit(-1);
 		}
 
@@ -175,14 +180,14 @@ public class Main {
 		
 		//exit when there are no profiles
 		if(_Profiles.getPoints().isEmpty()) {
-			logger.info("\nNo profiles loaded...exit");
+			logger.info("No profiles loaded...exit");
 			return;
 		}
 		
-		logger.info("\nFinished loading " + _Profiles.getPoints().size() + " profiles.\n\n");
+		logger.info("Finished loading " + _Profiles.getPoints().size() + " profiles.");
 		
-		logger.info("\nPrint statistics: ");
-		logger.info("\n"+Profile.getStatistics());
+		logger.info("Send with statistics...");
+		EmailHandler.sendAttachmenentMail("noreply@easytvproject.eu", "salgan@iti.gr", Profile.getStatistics());
 		
 		/**
 		 *	ASSOCIATION ANALYSIS
@@ -197,9 +202,9 @@ public class Main {
 	
 	
 	public static void RULES_RFINEMENT() throws IOException {
-		logger.info("\nStart rules refinement...");
+		logger.info("Start rules refinement...");
 		if(_rbmmRulesFile != null) {
-			logger.info("\nRead RBMM rules from file " + _rbmmRulesFile.getAbsolutePath());
+			logger.info("Read RBMM rules from file " + _rbmmRulesFile.getAbsolutePath());
 			
 			rbmmRules = new Vector<RbmmRuleWrapper>();
 			
@@ -216,13 +221,12 @@ public class Main {
 			JSONArray rules = new JSONArray(buff.toString());
 			for(int i = 0; i < rules.length(); i++)
 				rbmmRules.add(new RbmmRuleWrapper(rules.getJSONObject(i)));
-		}
-		else {
-			logger.info("\nGet RBMM rules from "+"http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules");
+		} else {
+			logger.info("Get RBMM rules from "+"http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules");
 			rbmmRules = HttpHandler.readRules("http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules");
 		}
 		
-		logger.info("\n"+rbmmRules.size()+" rules have been received.");
+		logger.info(""+rbmmRules.size()+" rules have been received.");
 		
         RuleRefiner ruleRefiner = new RuleRefiner(Profile.getBins());
         Vector<RuleWrapper> rules =  ruleRefiner.refineRules(_Profiles.getPoints(), rbmmRules, minSupport, minConfidence);
@@ -238,7 +242,7 @@ public class Main {
 	
 	
 	public static void CLUSTERING_ANALYSIS() throws UserProfileParsingException, IOException {
-        logger.info("\nStart clustering...");
+        logger.info("Start clustering...");
         List<Cluster<Profile>> foundedClusters = new ArrayList<Cluster<Profile>>();    	
 
         //start with all profile as first cluster
@@ -248,21 +252,20 @@ public class Main {
         Clustere clutere = new Clustere(Config.getInstance().Clusteres);
         List<Profile> generalized = clutere.getGeneralizedClusters(foundedClusters);
         
-
 		/**
 		 *	WRITE JS FILES
 		 */
-        logger.info("\n--------");
+        logger.info("--------");
 		if(_OutputDirectory != null && _ProfilesDirectory != null) {
 		
-			logger.info("\nWrite dimensions handlers and clutering data JS files.");
+			logger.info("Write dimensions handlers and clutering data JS files.");
 
 	        //Write JS
 			profileWriter = new JsFileWriter(_OutputDirectory); 
 			profileWriter.write(generalized);
 			
 		} else {
-			logger.info("\nInform stmm via: " + "http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters");
+			logger.info("Inform stmm via: " + "http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters");
 	        
 			//inform stmm runtime via http request
 			HttpHandler stmmWriter = new HttpHandler("http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters"); 

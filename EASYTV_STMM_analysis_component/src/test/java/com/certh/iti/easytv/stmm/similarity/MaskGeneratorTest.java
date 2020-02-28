@@ -2,6 +2,7 @@ package com.certh.iti.easytv.stmm.similarity;
 
 import java.io.IOException;
 import java.util.Vector;
+
 import org.testng.annotations.Test;
 
 import com.certh.iti.easytv.user.preference.Preference;
@@ -11,7 +12,6 @@ import junit.framework.Assert;
 public class MaskGeneratorTest {
 	
 	Vector<String> uris = Preference.getUris();
-	
 	
 	@Test
 	public void test_mask_generato() throws IOException {
