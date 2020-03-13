@@ -186,7 +186,7 @@ public class Main {
 		
 		logger.info("Finished loading " + _Profiles.getPoints().size() + " profiles.");
 		
-		logger.info("Send with statistics...");
+		logger.info("Send email with statistics...");
 		EmailHandler.sendAttachmenentMail("noreply@easytvproject.eu", "salgan@iti.gr", Profile.getStatistics());
 		
 		/**

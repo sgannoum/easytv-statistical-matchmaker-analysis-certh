@@ -51,7 +51,8 @@ public class EmailHandler {
 		    protected PasswordAuthentication getPasswordAuthentication() {
 		        return new PasswordAuthentication(username, password);
 		    }
-		});*/
+		});
+*/
 		
 		Session session = Session.getInstance(prop);
 		
@@ -90,7 +91,7 @@ public class EmailHandler {
 
 			@Override
 			public String getName() {
-				return "resutls_"+df.format(date);
+				return "resutls_"+df.format(date)+".txt";
 			}
 
 			@Override
