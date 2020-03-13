@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Statistical matchmaker unit tests">
+  <test name="Test rule refinements preference only">
+    <classes>
+     <class name="com.certh.iti.easytv.stmm.association.analysis.RuleRefinerPreferencesOnlyTest"/>
+    </classes>
+  </test>
+  <test name="Test rule refinements">
+    <classes>
+     <class name="com.certh.iti.easytv.stmm.association.analysis.RuleRefinerTest"/>
+    </classes>
+  </test>
+  <test name="Clustering tests">
+    <classes>
+      <class name="com.certh.iti.easytv.stmm.clustering.DBScanTest"/>
+      <class name="com.certh.iti.easytv.stmm.similarity.SimilarityMeasureTest"/>
+      <!-- <class name="com.certh.iti.easytv.stmm.similarity.MaskGeneratorTest"/> -->
+      <class name="com.certh.iti.easytv.stmm.similarity.dimension.MultiNumericTest"/>
+    </classes>
+  </test>
+    <test name="FPGrowth tests">
+    <classes>
+      <class name="com.certh.iti.easytv.stmm.association.analysis.fpgrowth.FPGrowthTest"/>
+      <class name="com.certh.iti.easytv.stmm.association.analysis.fpgrowth.FPGrowthUseCaseTest"/>	   
+      <class name="com.certh.iti.easytv.stmm.association.analysis.fpgrowth.Itemset_Tests"/>
+    </classes>
+  </test>
+  <test name="Association rules tests">
+    <classes>
+      <class name="com.certh.iti.easytv.stmm.association.analysis.rules.AssociationRulesGeneratorTests"/>
+      <class name="com.certh.iti.easytv.stmm.association.analysis.rules.AssociationRuleTest"/>
+      <class name="com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapperTest"/>
+      <class name="com.certh.iti.easytv.stmm.association.analysis.rules.AssociationRuleConverterTest"/>
+      <class name="com.certh.iti.easytv.stmm.association.analysis.rules.AssociationRulesFilterTests"/>
+    </classes>
+  </test>
+
+</suite>
