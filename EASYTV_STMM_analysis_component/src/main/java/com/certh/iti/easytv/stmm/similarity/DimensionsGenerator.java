@@ -54,7 +54,7 @@ public class DimensionsGenerator {
 				
 			} else if (OrdinalAttribute.class.isInstance(operand)) {
 				OrdinalAttribute ordinal = (OrdinalAttribute) operand;
-				dimensions[i] = new Ordinal(ordinal.getStates().length - 1, ordinal.getMaxValue(), ordinal.getMinValue());
+				dimensions[i] = new Ordinal(ordinal.getStates().length, ordinal.getMaxValue(), ordinal.getMinValue());
 				
 			} else if (MultiNominalAttribute.class.isInstance(operand)) {
 				MultiNominalAttribute multi = (MultiNominalAttribute) operand;
