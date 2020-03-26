@@ -28,9 +28,14 @@ public class SimilarityMeasure implements DistanceMeasure{
 			double[] delta_d = dimensions[i].dissimilarity(a[i], b[i]);
 			
 			//Add dissimilarities of subDimensions
-			dividend += delta_d[0] * delta_d[1];
-			divisor += delta_d[0];
+			for(int j = 0; j < delta_d.length; j += 2) {
+				dividend += delta_d[j] * delta_d[j + 1];
+				divisor += delta_d[j];
+			}
 		}
+		
+		if(divisor == 0.0)
+			return 1.0;
 		
 		//return similarity
 		return 1.0 - (dividend/divisor);

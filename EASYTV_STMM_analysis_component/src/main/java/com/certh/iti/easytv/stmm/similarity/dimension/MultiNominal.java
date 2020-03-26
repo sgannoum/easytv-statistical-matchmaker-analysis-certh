@@ -14,7 +14,10 @@ public class MultiNominal extends Dimension {
 		this.length = length;
 	}
 
-	
+	/**
+	 * The similarity between two series of bits is calculated based on the common number 
+	 * of zero and ones between the two series
+	 */
 	@Override
 	public double[] dissimilarity(double a, double b) {	
 		
@@ -23,19 +26,26 @@ public class MultiNominal extends Dimension {
 			return new double[] {0.0, 0.0};
 		
 		long la = (long) a, lb = (long) b;
-		long common = la | lb;
-		int cindex = 0;
+		long or = la | lb;
+		long common = la & lb;
+		int cindex = 0, dindex = 0;
 		
 		//no commons
 		if(common == 0)
 			return new double[] {1.0, 1.0};
 		
-		for(int i =0; i < length && common != 0; common /=2, i++)
+		for(int i =0; i < length && common != 0; common /=2, i++) {
 			if((common & 1L) == 1) 
 				cindex++;
+		}
 		
+		for(int i = 0; i < length && or != 0; or /=2, i++) {
+			if((or & 1L) == 1) 
+				dindex++;
+		}
 
-		return new double[] {0.0, 1 - (cindex/length)};
+		double value = (double) cindex/ (double) dindex;
+		return new double[] {1.0, 1 - value};
 	}
 
 }
