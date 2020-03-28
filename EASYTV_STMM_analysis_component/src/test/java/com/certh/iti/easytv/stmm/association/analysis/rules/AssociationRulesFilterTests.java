@@ -46,6 +46,7 @@ public class AssociationRulesFilterTests {
 		
 		Vector<AssociationRule> expected = new Vector<AssociationRule>();
 		expected.add(new AssociationRule(new Itemset("1,2,3,4"), new Itemset("5,6,7")));
+		expected.add(new AssociationRule(new Itemset("1,2,3"), new Itemset("5,6")));
 		
 		AssociationRuleFilter.filter(actual);
 		Assert.assertEquals(actual, expected);		
@@ -78,6 +79,7 @@ public class AssociationRulesFilterTests {
 		Vector<AssociationRule> expected = new Vector<AssociationRule>();
 		expected.add(new AssociationRule(new Itemset("1,2,3"), new Itemset("4,5")));
 		expected.add(new AssociationRule(new Itemset("1,2,3,4"), new Itemset("5,6,7")));
+		expected.add(new AssociationRule(new Itemset("1,2,3"), new Itemset("5,6")));
 
 		AssociationRuleFilter.filter(actual);	
 		Assert.assertEquals(actual, expected);	

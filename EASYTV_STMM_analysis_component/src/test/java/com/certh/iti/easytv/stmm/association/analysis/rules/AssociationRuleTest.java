@@ -100,7 +100,7 @@ public class AssociationRuleTest {
 		AssociationRule rule1 = new AssociationRule(new Itemset("1,2,3"), new Itemset("4,5,6"));
 		AssociationRule rule2 = new AssociationRule(new Itemset("1,2"), new Itemset("4,5"));
 		
-		Assert.assertEquals(rule1.canSubstituted(rule2), true);
+		Assert.assertEquals(rule1.canSubstituted(rule2), false);
 	}
 	
 	
@@ -150,6 +150,28 @@ public class AssociationRuleTest {
 	
 	//******************************************************************************************//
 
-
+	@Test
+	public void test_equals() {
+		AssociationRule rule1 = new AssociationRule(new Itemset("1,2,3"), new Itemset("4,5"));
+		AssociationRule rule2 = new AssociationRule(new Itemset("1,2,3"), new Itemset("4,5"));
+		
+		Assert.assertTrue(rule1.equals(rule2));
+	}
+	
+	@Test
+	public void test_not_equals() {
+		AssociationRule rule1 = new AssociationRule(new Itemset("1,2,3,4"), new Itemset("4,5"));
+		AssociationRule rule2 = new AssociationRule(new Itemset("1,2,3"), new Itemset("4,5"));
+		AssociationRule rule3 = new AssociationRule(new Itemset("1,2,3"), new Itemset("4,5,6"));
+		
+		Assert.assertFalse(rule1.equals(rule2));
+		Assert.assertFalse(rule2.equals(rule1));
+				
+		Assert.assertFalse(rule3.equals(rule2));
+		Assert.assertFalse(rule2.equals(rule3));
+		
+		Assert.assertFalse(rule1.equals(rule3));
+		Assert.assertFalse(rule3.equals(rule1));
+	}
 
 }

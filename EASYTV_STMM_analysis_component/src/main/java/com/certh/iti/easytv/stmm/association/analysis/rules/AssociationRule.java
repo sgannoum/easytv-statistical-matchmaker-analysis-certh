@@ -95,7 +95,7 @@ public class AssociationRule implements Comparable<AssociationRule>{
 		less		no			false
 		more		eq			true
 		more		less		false
-		more		more		true
+		more		more		false
 		more		no			false
 		no			eq			false
 		no			less		false
@@ -103,6 +103,10 @@ public class AssociationRule implements Comparable<AssociationRule>{
 		no			no			false
 	 */
 	public boolean canSubstituted(AssociationRule o) {
+		
+		if(o.head.size() != head.size() && o.body.size() != body.size())
+			return false;
+		
 		if(!o.head.isIncludedIn(head))
 			return false;
 		
