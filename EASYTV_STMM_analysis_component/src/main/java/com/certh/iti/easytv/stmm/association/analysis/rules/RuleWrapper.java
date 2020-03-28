@@ -5,9 +5,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.StringTokenizer;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.HeadRuleConditions;
+import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.RuleCondition.Argument;
 
 public class RuleWrapper implements Comparable<RuleWrapper> {
 	
@@ -24,7 +28,7 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			private JSONObject json = null;
 			
 			public Argument (String xmlType, Object value){
-				this.xmlType = xmlType;
+				this.setXMLType(xmlType);
 				this.value = value;
 			}
 			
@@ -33,9 +37,10 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			}
 			
 			public void setXMLType(String xmlType) {
-				if(xmlType.startsWith("http://www.w3.org/2001/XMLSchema#"))
-					throw new IllegalArgumentException("xml type "+xmlType+" must start with uri: http://www.w3.org/2001/XMLSchema#");
-				this.xmlType = xmlType;
+				if(!xmlType.startsWith("http://www.w3.org/2001/XMLSchema#"))
+					this.xmlType = "http://www.w3.org/2001/XMLSchema#" + xmlType;
+				else 
+					this.xmlType = xmlType;
 			}
 			
 			public String getXMLType() {
@@ -51,7 +56,7 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			
 			public void setJSONObject(JSONObject json) {
 				this.json = json;
-				this.xmlType = json.getString("xml-type");
+				this.setXMLType(json.getString("xml-type"));
 				this.value = json.get("value");
 			}
 			
@@ -80,10 +85,59 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			}
 		}
 		
+		public RuleCondition(String uri, String builtin, Object value, String xmlType) {
+			this.setUri(uri);
+			this.setBuiltin(builtin);
+			this.args = new Argument[] {new Argument(xmlType, value)};
+		}
+		
 		public RuleCondition(String uri, String builtin, Argument[] args) {
 			this.setUri(uri);
 			this.setBuiltin(builtin);
 			this.args = args;
+		}
+		
+		public RuleCondition(String uri, String builtin, Argument arg) {
+			this.setUri(uri);
+			this.setBuiltin(builtin);
+			this.args = new Argument[] {arg};
+		}
+		
+		public RuleCondition(String uri, Argument[] args) {
+			this.setUri(uri);
+			this.setBuiltin("EQ");
+			this.args = args;
+		}
+		
+		public RuleCondition(String uri, Argument arg) {
+			this.setUri(uri);
+			this.setBuiltin("EQ");
+			this.args = new Argument[] {arg};
+		}
+		
+		public RuleCondition(String uri, String builtin, String strValue) {
+			this.setUri(uri);
+			this.setBuiltin(builtin);
+			Object value;
+			String xmlType = null;
+			if(strValue.contains(".")) {
+				xmlType = "double";
+				value = Double.valueOf(strValue);
+			} else if(strValue.contains("\"")) {
+				xmlType = "string";
+				value = strValue.replaceAll("\"", "");
+			} else if(strValue.contains(":")) {
+				xmlType = "time";
+				value = strValue;
+			} else if(strValue.equalsIgnoreCase("false") || strValue.equalsIgnoreCase("true")) {
+				xmlType = "boolean";
+				value = Boolean.valueOf(strValue);
+			} else {
+				xmlType = "integer";
+				value = Integer.valueOf(strValue);
+			}
+			
+			this.args = new Argument[] {new Argument(xmlType, value)};
 		}
 		
 		public RuleCondition(JSONObject json) {
@@ -184,6 +238,48 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 		
 		public RuleConditions(JSONArray json) {
 			this.setJSONObject(json);
+		}
+		
+		public RuleConditions(String ruleConditions, long weight, double support) {		
+			
+			StringTokenizer tk = new StringTokenizer(ruleConditions, "^,", false);
+			this.ruleConditions = new RuleCondition[tk.countTokens()];
+			int index = 0;
+						
+			while(tk.hasMoreTokens()) {
+				String uri = null, builtin, value;
+				String pref = tk.nextToken().trim();
+				
+				StringTokenizer preTk = new StringTokenizer(pref, "<>!=", true);
+				while(preTk.hasMoreTokens()) {
+					
+					uri = preTk.nextToken().trim();;
+					builtin = preTk.nextToken().trim();
+					value = preTk.nextToken().trim();
+
+					if(value.matches("[<|>|!|=]")){
+						builtin += value;
+						value = preTk.nextToken().trim();
+					}
+					
+					if(builtin.equals(">"))
+						builtin = "GT";
+					else if(builtin.equals("<"))
+						builtin = "LT";
+					else if(builtin.equals(">="))
+						builtin = "GE";
+					else if(builtin.equals("<="))
+						builtin = "LE";
+					else if(builtin.equals("!=")) 
+						builtin = "NE";
+					else if(builtin.equals("=")) 
+						builtin = "EQ";
+					
+					this.ruleConditions[index++] = new RuleCondition(uri, builtin, value);
+				}
+			}
+			
+			this.setRuleConditions(this.ruleConditions);
 		}
 		
 		public RuleConditions(RuleCondition[] ruleConditions, long weight, double support) {
@@ -290,6 +386,10 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			super(ruleConditions, weight, support);
 		}
 		
+		public HeadRuleConditions(String ruleConditions, long weight, double support) {
+			super(ruleConditions, weight, support);
+		}
+		
 		/**
 		 * Two rules' heads are compared for removing, updating a rule which
 		 * corresponds to finding two matches. 
@@ -325,6 +425,10 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			super(ruleConditions, weight, support);
 		}
 		
+		public BodyRuleConditions(String ruleConditions, long weight, double support) {
+			super(ruleConditions, weight, support);
+		}
+		
 		/**
 		 * two bodies are equals when they have the same set of conditions, otherwise not.
 		 * 
@@ -357,6 +461,22 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 	public RuleWrapper(BodyRuleConditions body, HeadRuleConditions head) {
 		this.head = head;
 		this.body = body;
+	}
+	
+	public RuleWrapper(String rule, long bweight, double bsupport, long hweight, double hsupport) {
+		
+		String[] ruleBodyHead = rule.split("->");
+		
+		this.body = new BodyRuleConditions(ruleBodyHead[0], bweight, bsupport);
+		this.head = new HeadRuleConditions(ruleBodyHead[1], hweight, hsupport);
+	}
+	
+	public RuleWrapper(String rule) {
+		
+		String[] ruleBodyHead = rule.split("->");
+		
+		this.body = new BodyRuleConditions(ruleBodyHead[0], 0, 0);
+		this.head = new HeadRuleConditions(ruleBodyHead[1], 0, 0);
 	}
 	
 	public RuleWrapper(JSONObject json) {

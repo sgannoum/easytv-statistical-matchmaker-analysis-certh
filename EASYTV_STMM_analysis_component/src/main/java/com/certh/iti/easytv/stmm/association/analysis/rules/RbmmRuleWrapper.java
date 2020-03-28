@@ -19,5 +19,9 @@ public class RbmmRuleWrapper extends RuleWrapper {
 		super(file);
 	}
 	
+	public RbmmRuleWrapper(String rule) {
+		super(rule, 0,0,0,0);
+	}
+	
 
 }

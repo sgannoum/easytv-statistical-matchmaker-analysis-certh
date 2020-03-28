@@ -12,5 +12,8 @@ public class AssociationRuleWrapper extends RuleWrapper {
 		super(json);
 	}
 	
+	public AssociationRuleWrapper(String rule) {
+		super(rule);
+	}
 
 }
