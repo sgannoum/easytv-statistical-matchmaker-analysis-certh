@@ -11,6 +11,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.certh.iti.easytv.user.DynamicProfile;
 import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.UserContent;
 import com.certh.iti.easytv.user.UserContext;
@@ -29,7 +30,6 @@ import com.certh.iti.easytv.user.preference.attributes.SymmetricBinaryAttribute;
 
 public class FPGrowthWrapperTest {
 		
-	private Map<String, Attribute> initialAttributes, initialContextAttribute, initialContentAttribute;
 	private Map<String, Attribute> contextAttributes  =  new LinkedHashMap<String, Attribute>();
 	private Map<String, Attribute> contentAttributes  =  new LinkedHashMap<String, Attribute>();
 
@@ -45,18 +45,6 @@ public class FPGrowthWrapperTest {
 			"    }}}}" + 
 			"}");
 	
-	
-	@BeforeClass
-	public void beforeTest() {
-		initialAttributes = Preference.getAttributes();
-		initialContextAttribute = UserContext.getAttributes();
-		initialContentAttribute = UserContent.getAttributes();
-	}
-	 
-	@AfterClass
-	public void afterTest() {		
-		Profile.setAttributes(initialAttributes, initialContextAttribute, initialContentAttribute);
-	}
 
 	/**
 	 * Check that with no bining preference information remains 
@@ -77,8 +65,8 @@ public class FPGrowthWrapperTest {
 	    }};
 	    
 		//set new preferences attributes
-	    Profile.setAttributes(preferencesAttributes, contextAttributes, contentAttributes);
-	    Vector<Bin> bins = Profile.getBins();
+	    DynamicProfile.setAttributes(preferencesAttributes, contextAttributes, contentAttributes);
+	    Vector<Bin> bins = DynamicProfile.getBins();
 		
 		JSONObject expected = new JSONObject("{" + 
 				"		\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": false," + 
@@ -111,8 +99,8 @@ public class FPGrowthWrapperTest {
 	    }};
 	    
 		//set new preferences attributes
-	    Profile.setAttributes(preferencesAttributes, contextAttributes, contentAttributes);
-	    Vector<Bin> bins = Profile.getBins();
+	    DynamicProfile.setAttributes(preferencesAttributes, contextAttributes, contentAttributes);
+	    Vector<Bin> bins = DynamicProfile.getBins();
 		
 		JSONObject expected = new JSONObject("{" + 
 				"		\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": false," + 
@@ -151,8 +139,8 @@ public class FPGrowthWrapperTest {
 	    }};
 	    
 		//set new preferences attributes
-	    Profile.setAttributes(preferencesAttributes, contextAttributes, contentAttributes);
-	    Vector<Bin> bins = Profile.getBins();
+	    DynamicProfile.setAttributes(preferencesAttributes, contextAttributes, contentAttributes);
+	    Vector<Bin> bins = DynamicProfile.getBins();
 		
 		JSONObject expected = new JSONObject("{" + 
 				"		\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": false," + 

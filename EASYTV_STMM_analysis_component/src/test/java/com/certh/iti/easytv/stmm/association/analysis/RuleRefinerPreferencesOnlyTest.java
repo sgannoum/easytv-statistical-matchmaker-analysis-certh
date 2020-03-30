@@ -2,46 +2,28 @@ package com.certh.iti.easytv.stmm.association.analysis;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import org.json.JSONObject;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.certh.iti.easytv.config.Config;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RbmmRuleWrapper;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper;
+import com.certh.iti.easytv.user.OnlyPreferenceProfile;
 import com.certh.iti.easytv.user.Profile;
-import com.certh.iti.easytv.user.UserContent;
-import com.certh.iti.easytv.user.UserContext;
 import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
-import com.certh.iti.easytv.user.preference.Preference;
-import com.certh.iti.easytv.user.preference.attributes.Attribute;
-
 import junit.framework.Assert;
 
 public class RuleRefinerPreferencesOnlyTest {
-
 	private RuleRefiner ruleRefiner;
 	private List<Profile> profiles = new ArrayList<Profile>();
-	private Map<String, Attribute> initialAttributes, initialContextAttribute, initialContentAttribute;
-	private Map<String, Attribute> contextAttributes  =  new LinkedHashMap<String, Attribute>();
-	private Map<String, Attribute> contentAttributes  =  new LinkedHashMap<String, Attribute>();
-
 	
 	@BeforeClass
 	public void beforeClass() throws IOException, UserProfileParsingException {
-		initialAttributes = Preference.getAttributes();
-		initialContextAttribute = UserContext.getAttributes();
-		initialContentAttribute = UserContent.getAttributes();
-		
-		//change profiles attributes to use only context
-		Profile.setAttributes(initialAttributes, contextAttributes, contentAttributes);
-		
+
 		// load profiles
 		for (int i = 0; i < 9; i++) {
 			System.out.println("load profile: " + "userProfile_" + i + ".json");
@@ -50,16 +32,12 @@ public class RuleRefinerPreferencesOnlyTest {
 			json.remove("user_context");
 			json.remove("user_content");
 
-			profiles.add(new Profile(json));
+			profiles.add(new OnlyPreferenceProfile(json));
 		}
 
-		ruleRefiner = new RuleRefiner(Profile.getBins());
+		ruleRefiner = new RuleRefiner(OnlyPreferenceProfile.getBins());
 	}
 	 
-	@AfterClass
-	public void afterClass() {		
-		Profile.setAttributes(initialAttributes, initialContextAttribute, initialContentAttribute);
-	}
 
 
 	/**

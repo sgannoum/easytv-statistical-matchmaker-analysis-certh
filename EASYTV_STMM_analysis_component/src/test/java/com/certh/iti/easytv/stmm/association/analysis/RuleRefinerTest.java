@@ -30,7 +30,6 @@ public class RuleRefinerTest {
 	private RuleRefiner ruleRefiner;
 	private List<Profile> profiles = new ArrayList<Profile>();
 	
-	
 	private JSONObject profile_1 = new JSONObject("{" + 
 			"    \"user_id\": 1," + 
 			"    \"user_profile\": {\"user_preferences\": {\"default\": {\"preferences\": {" + 

@@ -19,7 +19,13 @@
       <class name="com.certh.iti.easytv.stmm.similarity.dimension.MultiNumericTest"/>
     </classes>
   </test>
-    <test name="FPGrowth tests">
+  <!-- The following test must be executed in separated test class  -->
+  <test name="FPGrowthWrapperTest tests">
+    <classes>
+      <class name="com.certh.iti.easytv.stmm.association.analysis.fpgrowth.FPGrowthWrapperTest"/>
+    </classes>
+  </test>
+  <test name="FPGrowth tests">
     <classes>
       <class name="com.certh.iti.easytv.stmm.association.analysis.fpgrowth.FPGrowthTest"/>
       <class name="com.certh.iti.easytv.stmm.association.analysis.fpgrowth.FPGrowthUseCaseTest"/>	   
