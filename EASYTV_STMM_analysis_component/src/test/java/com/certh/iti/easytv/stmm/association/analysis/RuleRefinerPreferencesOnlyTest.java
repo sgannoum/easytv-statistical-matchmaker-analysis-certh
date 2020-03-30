@@ -15,10 +15,6 @@ import org.testng.annotations.Test;
 import com.certh.iti.easytv.config.Config;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RbmmRuleWrapper;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper;
-import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.BodyRuleConditions;
-import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.HeadRuleConditions;
-import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.RuleCondition;
-import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.RuleCondition.Argument;
 import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.UserContent;
 import com.certh.iti.easytv.user.UserContext;
@@ -80,65 +76,19 @@ public class RuleRefinerPreferencesOnlyTest {
 		// http://registry.easytv.eu/application/cs/ui/text/size 2.3 
 		// ->
 		// http://registry.easytv.eu/application/cs/audio/eq false
-		RbmmRuleWrapper rb1 = new RbmmRuleWrapper(new JSONObject("{" + 
-				"    \"head\": [{" + 
-				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#boolean\"," + 
-				"            \"value\": false" + 
-				"        }]," + 
-				"        \"preference\": \"http://registry.easytv.eu/application/cs/audio/eq\"," + 
-				"        \"builtin\": \"EQ\"" + 
-				"    }]," + 
-				"    \"body\": ["+
-				"	 {" + 
-				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
-				"            \"value\": 1.0" + 
-				"        }]," + 
-				"        \"preference\": \"http://registry.easytv.eu/application/cs/accessibility/magnification/scale\"," + 
-				"        \"builtin\": \"EQ\"" + 
-				"    }," + 
-				"	 {" + 
-				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
-				"            \"value\": 2.3" + 
-				"        }]," + 
-				"        \"preference\": \"http://registry.easytv.eu/application/cs/ui/text/size\"," + 
-				"        \"builtin\": \"EQ\"" + 
-				"    }]" + 
-				"}"));
+		RbmmRuleWrapper rb1 = new RbmmRuleWrapper("http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 1.0 ^"
+												+ "http://registry.easytv.eu/application/cs/ui/text/size = 2.3 "
+												+ "->"
+												+ "http://registry.easytv.eu/application/cs/audio/eq = false");
 
 		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale 3.5 
 		// http://registry.easytv.eu/application/cs/audio/eq true
 		// ->
 		// http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size 1.3 
-		RbmmRuleWrapper rb2 = new RbmmRuleWrapper(new JSONObject("{" + 
-				"    \"head\": [{" + 
-				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
-				"            \"value\": 1.5" + 
-				"        }]," + 
-				"        \"preference\": \"http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size\"," + 
-				"        \"builtin\": \"EQ\"" + 
-				"    }]," + 
-				"    \"body\": ["+
-				"	 {" + 
-				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#boolean\"," + 
-				"            \"value\": true" + 
-				"        }]," + 
-				"        \"preference\": \"http://registry.easytv.eu/application/cs/audio/eq\"," + 
-				"        \"builtin\": \"EQ\"" + 
-				"    }," + 
-				"	 {" + 
-				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
-				"            \"value\": 3.5" + 
-				"        }]," + 
-				"        \"preference\": \"http://registry.easytv.eu/application/cs/accessibility/magnification/scale\"," + 
-				"        \"builtin\": \"EQ\"" + 
-				"    }]" + 
-				"}"));
+		RbmmRuleWrapper rb2 = new RbmmRuleWrapper("http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5 ^"
+												+ "http://registry.easytv.eu/application/cs/audio/eq = true "
+												+ "->"
+												+ "http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size = 1.5");
 
 		Vector<RbmmRuleWrapper> rbmmRules = new Vector<RbmmRuleWrapper>();
 		rbmmRules.add(rb1);
@@ -147,161 +97,72 @@ public class RuleRefinerPreferencesOnlyTest {
 		// http://registry.easytv.eu/common/volume (0,4) 
 		// ->
 		// http://registry.easytv.eu/application/cs/accessibility/detection/sound(true)
-		RuleWrapper rl1 = new RuleWrapper(
-				new BodyRuleConditions(new RuleCondition[] {
-						new RuleCondition("http://registry.easytv.eu/common/volume", "GE",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 0) }),
-						new RuleCondition("http://registry.easytv.eu/common/volume", "LE",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 4) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] { new RuleCondition(
-								"http://registry.easytv.eu/application/cs/accessibility/detection/sound", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#boolean", true) }) },
-						0, 0));
+		RuleWrapper rl1 = new RuleWrapper("http://registry.easytv.eu/common/volume >= 0^"
+										+ "http://registry.easytv.eu/common/volume <= 4"
+										+ "->"
+										+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true");
 
 		// http://registry.easytv.eu/application/cs/ui/text/size(23) 
 		// ->
 		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale(3.5)
-		// http://registry.easytv.eu/application/cs/audio/eq(true)
-		RuleWrapper rl2 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://registry.easytv.eu/application/cs/ui/text/size",
-								"EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "23") }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] {
-								new RuleCondition("http://registry.easytv.eu/application/cs/audio/eq", "EQ",
-										new Argument[] {
-												new Argument("http://www.w3.org/2001/XMLSchema#boolean", true) }),
-								new RuleCondition(
-										"http://registry.easytv.eu/application/cs/accessibility/magnification/scale",
-										"EQ",
-										new Argument[] {
-												new Argument("http://www.w3.org/2001/XMLSchema#double", 3.5) }) },
-						0, 0));
+		// http://registry.easytv.eu/application/cs/audio/eq(true)	
+		RuleWrapper rl2 = new RuleWrapper("http://registry.easytv.eu/application/cs/ui/text/size = \"23\" ^"
+										+ "->"
+										+ "http://registry.easytv.eu/application/cs/audio/eq = true ^"
+										+ "http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5");
 
 		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale(3.5)
 		// http://registry.easytv.eu/application/cs/audio/eq(true) 
 		// ->
 		// http://registry.easytv.eu/application/cs/ui/text/size(23)
-		RuleWrapper rl3 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] {
-								new RuleCondition("http://registry.easytv.eu/application/cs/audio/eq", "EQ",
-										new Argument[] {
-												new Argument("http://www.w3.org/2001/XMLSchema#boolean", true) }),
-								new RuleCondition(
-										"http://registry.easytv.eu/application/cs/accessibility/magnification/scale",
-										"EQ",
-										new Argument[] {
-												new Argument("http://www.w3.org/2001/XMLSchema#double", 3.5) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://registry.easytv.eu/application/cs/ui/text/size",
-								"EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "23") }) },
-						0, 0));
+		RuleWrapper rl3 = new RuleWrapper("http://registry.easytv.eu/application/cs/audio/eq = true ^"
+										+ "http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5"
+										+ "->"
+										+ "http://registry.easytv.eu/application/cs/ui/text/size = \"23\"");
 
 		// http://registry.easytv.eu/application/cs/ui/text/size(23)
 		// http://registry.easytv.eu/application/cs/audio/eq(true) 
 		// ->
 		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale(3.5)
-		RuleWrapper rl4 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] {
-								new RuleCondition("http://registry.easytv.eu/application/cs/ui/text/size", "EQ",
-										new Argument[] {
-												new Argument("http://www.w3.org/2001/XMLSchema#string", "23") }),
-								new RuleCondition("http://registry.easytv.eu/application/cs/audio/eq", "EQ",
-										new Argument[] {
-												new Argument("http://www.w3.org/2001/XMLSchema#boolean", true) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] { new RuleCondition(
-								"http://registry.easytv.eu/application/cs/accessibility/magnification/scale", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 3.5) }) },
-						0, 0));
+		RuleWrapper rl4 = new RuleWrapper("http://registry.easytv.eu/application/cs/ui/text/size = \"23\" ^"
+										+ "http://registry.easytv.eu/application/cs/audio/eq = true"
+										+ "->"
+										+ "http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5");
 
 		// http://registry.easytv.eu/application/cs/audio/eq(true) 
 		// ->
 		// http://registry.easytv.eu/application/cs/ui/text/size(23)
-		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale(3.5)
-		RuleWrapper rl5 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://registry.easytv.eu/application/cs/audio/eq",
-								"EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#boolean", true) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] {
-								new RuleCondition(
-										"http://registry.easytv.eu/application/cs/accessibility/magnification/scale",
-										"EQ", new Argument[] {
-												new Argument("http://www.w3.org/2001/XMLSchema#double", 3.5) }),
-								new RuleCondition("http://registry.easytv.eu/application/cs/ui/text/size", "EQ",
-										new Argument[] {
-												new Argument("http://www.w3.org/2001/XMLSchema#string", "23") }) },
-						0, 0));
+		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale(3.5)	
+		RuleWrapper rl5 = new RuleWrapper("http://registry.easytv.eu/application/cs/audio/eq = true"
+										+ "->"
+										+ "http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5 ^"
+										+ "http://registry.easytv.eu/application/cs/ui/text/size = \"23\"");
 
 		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale(3.5)
 		// http://registry.easytv.eu/application/cs/ui/text/size(23) 
 		// ->
 		// http://registry.easytv.eu/application/cs/audio/eq(true)
-		RuleWrapper rl6 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition(
-								"http://registry.easytv.eu/application/cs/accessibility/magnification/scale", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 3.5) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] {
-								new RuleCondition("http://registry.easytv.eu/application/cs/audio/eq", "EQ",
-										new Argument[] {
-												new Argument("http://www.w3.org/2001/XMLSchema#boolean", true) }),
-								new RuleCondition("http://registry.easytv.eu/application/cs/ui/text/size", "EQ",
-										new Argument[] {
-												new Argument("http://www.w3.org/2001/XMLSchema#string", "23") }) },
-						0, 0));
+		RuleWrapper rl6 = new RuleWrapper("http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5 ^"
+										+ "http://registry.easytv.eu/application/cs/ui/text/size = \"23\""
+										+ "->"
+										+ "http://registry.easytv.eu/application/cs/audio/eq = true");
 
 		// http://registry.easytv.eu/application/cs/accessibility/detection/sound(true)
 		// -> 
-		// http://registry.easytv.eu/common/volume (0,4)
-		RuleWrapper rl7 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition(
-								"http://registry.easytv.eu/application/cs/accessibility/detection/sound", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#boolean", true) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] {
-								new RuleCondition("http://registry.easytv.eu/common/volume", "GE",
-										new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 0) }),
-								new RuleCondition("http://registry.easytv.eu/common/volume", "LE",
-										new Argument[] {
-												new Argument("http://www.w3.org/2001/XMLSchema#integer", 4) }) },
-						0, 0));
+		// http://registry.easytv.eu/common/volume (0,4)	
+		RuleWrapper rl7 = new RuleWrapper("http://registry.easytv.eu/application/cs/accessibility/detection/sound = true"
+										+ "->"
+										+ "http://registry.easytv.eu/common/volume >= 0 ^"
+										+ "http://registry.easytv.eu/common/volume <= 4");
 
 		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale(3.5)
 		// -> 
 		// http://registry.easytv.eu/application/cs/audio/eq(true)
 		// http://registry.easytv.eu/application/cs/ui/text/size(23)
-		RuleWrapper rl8 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition(
-								"http://registry.easytv.eu/application/cs/accessibility/magnification/scale", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 3.5) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] {
-								new RuleCondition("http://registry.easytv.eu/application/cs/audio/eq", "EQ",
-										new Argument[] {
-												new Argument("http://www.w3.org/2001/XMLSchema#boolean", true) }),
-								new RuleCondition("http://registry.easytv.eu/application/cs/ui/text/size", "EQ",
-										new Argument[] {
-												new Argument("http://www.w3.org/2001/XMLSchema#string", "23") }) },
-						0, 0));
+		RuleWrapper rl8 = new RuleWrapper("http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5"
+										+ "->"
+										+ "http://registry.easytv.eu/application/cs/audio/eq = true ^"
+										+ "http://registry.easytv.eu/application/cs/ui/text/size = \"23\"");
 
 		Vector<RuleWrapper> expectedRules = new Vector<RuleWrapper>();
 		expectedRules.add(rl1);
@@ -312,7 +173,6 @@ public class RuleRefinerPreferencesOnlyTest {
 		expectedRules.add(rl6);
 		expectedRules.add(rl7);
 		expectedRules.add(rl8);
-		
 
 		// Get rules
 		Vector<RuleWrapper> actualRules = ruleRefiner.refineRules(profiles, rbmmRules, minSupport, minConfidence);

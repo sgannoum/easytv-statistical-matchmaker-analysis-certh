@@ -5,13 +5,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.MissingFormatArgumentException;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.HeadRuleConditions;
-import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.RuleCondition.Argument;
 
 public class RuleWrapper implements Comparable<RuleWrapper> {
 	
@@ -55,7 +54,6 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			}
 			
 			public void setJSONObject(JSONObject json) {
-				this.json = json;
 				this.setXMLType(json.getString("xml-type"));
 				this.value = json.get("value");
 			}
@@ -82,6 +80,11 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 					return 0;
 				
 				return -1;
+			}
+			
+			@Override
+			public String toString() {
+				return String.valueOf(value);
 			}
 		}
 		
@@ -122,7 +125,7 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			String xmlType = null;
 			if(strValue.contains(".")) {
 				xmlType = "double";
-				value = Double.valueOf(strValue);
+				value = Double.valueOf(strValue).doubleValue();
 			} else if(strValue.contains("\"")) {
 				xmlType = "string";
 				value = strValue.replaceAll("\"", "");
@@ -131,10 +134,10 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 				value = strValue;
 			} else if(strValue.equalsIgnoreCase("false") || strValue.equalsIgnoreCase("true")) {
 				xmlType = "boolean";
-				value = Boolean.valueOf(strValue);
+				value = Boolean.valueOf(strValue).booleanValue();
 			} else {
 				xmlType = "integer";
-				value = Integer.valueOf(strValue);
+				value = Integer.valueOf(strValue).intValue();
 			}
 			
 			this.args = new Argument[] {new Argument(xmlType, value)};
@@ -180,10 +183,7 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			return json;
 		}
 		
-		public void setJSONObject(JSONObject json) {
-			
-			this.json = json;
-			
+		public void setJSONObject(JSONObject json) {			
 			uri = json.getString("preference");
 			builtin = json.getString("builtin");
 			JSONArray jsonArgs = json.getJSONArray("args");
@@ -210,12 +210,11 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			do {
 				
 				for(j = 0; j < other.args.length && 
-							!args[i].equals(other.args[j]); j++);
+							!other.args[j].equals(args[i]); j++);
 					
 			} while(j < other.args.length && ++i < args.length);
 				
 			return (i - args.length) == 0;
-			
 		}
 		
 		@Override
@@ -226,6 +225,21 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 				hash += arg.hashCode();
 			
 			return hash;
+		}
+		
+		@Override
+		public String toString() {
+			
+			String conditions = "";
+			for(int i = 0; i < args.length; i++)
+				conditions += String.format("%s %s %s", uri, 
+														builtin.equals("EQ") ? "=" : 
+														builtin.equals("GE") ? ">=" :
+														builtin.equals("LE") ? "<=" :
+														builtin.equals("GT") ? ">" :
+														builtin.equals("LT") ? "<" : "!=",
+														args[i].toString());
+			return conditions;
 		}
 	}
 	
@@ -252,10 +266,17 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 				
 				StringTokenizer preTk = new StringTokenizer(pref, "<>!=", true);
 				while(preTk.hasMoreTokens()) {
+					uri = null;
+					builtin = null;
+					value = null;
 					
-					uri = preTk.nextToken().trim();;
-					builtin = preTk.nextToken().trim();
-					value = preTk.nextToken().trim();
+					try {					
+						uri = preTk.nextToken().trim();;
+						builtin = preTk.nextToken().trim();
+						value = preTk.nextToken().trim();
+					} catch(NoSuchElementException e) {
+						throw new MissingFormatArgumentException((uri == null ? "missing uri" : builtin == null ? "missing builtin operation": "missing value") + " in " + pref);
+					}
 
 					if(value.matches("[<|>|!|=]")){
 						builtin += value;
@@ -331,15 +352,19 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 		public boolean equals(Object obj) {
 			if(this == obj) return true;
 			
-			if(!RuleConditions.class.isInstance(obj)) return false;
+			if(!RuleConditions.class.isInstance(obj)) 
+				return false;
+			
 			RuleConditions other = (RuleConditions) obj;	
+			if(ruleConditions.length != other.ruleConditions.length)
+				return false;
 			
 			int i = 0;
 			int j = 0;
 			do {
 				
 				for(j = 0; j < other.ruleConditions.length && 
-							!ruleConditions[i].equals(other.ruleConditions[j]); j++);
+							!other.ruleConditions[j].equals(ruleConditions[i]); j++);
 					
 			} while(j < other.ruleConditions.length && ++i < ruleConditions.length );
 			
@@ -356,6 +381,17 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			return hash;
 		}
 		
+		@Override
+		public String toString() {
+			int i = 0;
+			String conditions = "";
+			for(i = 0; i < ruleConditions.length - 1; i++)
+				conditions += ruleConditions[i].toString() + " ^\r\n";
+			
+			conditions += ruleConditions[i];
+			return conditions;
+		}
+		
 		public JSONArray getJSONObject() {
 			if(json == null) {
 				json = new JSONArray();
@@ -367,8 +403,6 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 		}
 		
 		public void setJSONObject(JSONArray json) {
-			this.json = json;
-			
 			ruleConditions = new RuleCondition[json.length()];
 		
 			for(int i = 0; i < json.length(); ruleConditions[i] = new RuleCondition(json.getJSONObject(i)), i++) ;
@@ -405,7 +439,7 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			do {
 				
 				for(j = 0; j < o.ruleConditions.length && 
-							!ruleConditions[i].equals(o.ruleConditions[j]) ; j++);
+							!o.ruleConditions[j].equals(ruleConditions[i]) ; j++);
 					
 			} while(j != o.ruleConditions.length &&
 						++i < ruleConditions.length);
@@ -444,7 +478,7 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			do {
 				
 				for(j = 0; j < o.ruleConditions.length && 
-							!ruleConditions[i].equals(o.ruleConditions[j]) ; j++);
+							!o.ruleConditions[j].equals(ruleConditions[i]) ; j++);
 					
 			} while(j != o.ruleConditions.length && 
 						++i < ruleConditions.length);
@@ -516,8 +550,6 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 	}
 	
 	public void setJSONObject(JSONObject json) {
-		this.json = json;
-		
 		JSONArray headconditions = json.getJSONArray("head");
 		if(head == null)
 			head = new HeadRuleConditions(headconditions);
@@ -557,7 +589,7 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 	}
 	
 	/**
-	 * Two rules are equals when their heads are equals
+	 * Two rules are equals when their bodies are equals
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -575,7 +607,7 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 	
 	@Override
 	public String toString() {
-		return getJSONObject().toString(1);
+		return String.format("\r\n[\r\n%s\r\n->\r\n%s\r\n]", body.toString(), head.toString());
 	}
 
 	@Override

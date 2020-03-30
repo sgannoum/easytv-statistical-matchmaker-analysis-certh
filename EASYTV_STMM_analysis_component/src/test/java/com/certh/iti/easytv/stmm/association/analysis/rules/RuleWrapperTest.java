@@ -20,7 +20,7 @@ public class RuleWrapperTest {
 		JSONObject rule = new JSONObject("{" + 
 				"    \"head\": [{" + 
 				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"xml-type\": \"double\"," + 
 				"            \"value\": 1.5" + 
 				"        }]," + 
 				"        \"preference\": \"http://4\"," + 
@@ -28,7 +28,7 @@ public class RuleWrapperTest {
 				"    }]," + 
 				"    \"body\": [{" + 
 				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"xml-type\": \"double\"," + 
 				"            \"value\": 1.6" + 
 				"        }]," + 
 				"        \"preference\": \"http://1\"," + 
@@ -39,11 +39,11 @@ public class RuleWrapperTest {
 		RuleWrapper actual = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.6) }) },
+								new Argument[] { new Argument("double", 1.6) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 		
 		RuleWrapper expected = new RuleWrapper(rule);
@@ -56,7 +56,7 @@ public class RuleWrapperTest {
 		JSONObject rule = new JSONObject("{" + 
 				"    \"head\": [{" + 
 				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"xml-type\": \"double\"," + 
 				"            \"value\": 1.5" + 
 				"        }]," + 
 				"        \"preference\": \"http://tenth\"," + 
@@ -65,7 +65,7 @@ public class RuleWrapperTest {
 				"    \"body\": ["
 				+ "{" + 
 				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"xml-type\": \"double\"," + 
 				"            \"value\": 1.6" + 
 				"        }]," + 
 				"        \"preference\": \"http://first\"," + 
@@ -73,7 +73,7 @@ public class RuleWrapperTest {
 				"  },"
 				+ "{" + 
 				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#integer\"," + 
+				"            \"xml-type\": \"integer\"," + 
 				"            \"value\": 0" + 
 				"        }]," + 
 				"        \"preference\": \"http://second\"," + 
@@ -81,7 +81,7 @@ public class RuleWrapperTest {
 				"  },"
 				+ "{" + 
 				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#integer\"," + 
+				"            \"xml-type\": \"integer\"," + 
 				"            \"value\": 4" + 
 				"        }]," + 
 				"        \"preference\": \"http://second\"," + 
@@ -89,7 +89,7 @@ public class RuleWrapperTest {
 				"  },"
 				+ "{" + 
 				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#integer\"," + 
+				"            \"xml-type\": \"integer\"," + 
 				"            \"value\": 5" + 
 				"        }]," + 
 				"        \"preference\": \"http://third\"," + 
@@ -97,7 +97,7 @@ public class RuleWrapperTest {
 				"  },"
 				+ "{" + 
 				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#integer\"," + 
+				"            \"xml-type\": \"integer\"," + 
 				"            \"value\": 6" + 
 				"        }]," + 
 				"        \"preference\": \"http://third\"," + 
@@ -105,7 +105,7 @@ public class RuleWrapperTest {
 				"  },"
 				+ "{" + 
 				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#boolean\"," + 
+				"            \"xml-type\": \"boolean\"," + 
 				"            \"value\": false" + 
 				"        }]," + 
 				"        \"preference\": \"http://fourth\"," + 
@@ -113,7 +113,7 @@ public class RuleWrapperTest {
 				"  },"
 				+ "{" + 
 				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#boolean\"," + 
+				"            \"xml-type\": \"boolean\"," + 
 				"            \"value\": true" + 
 				"        }]," + 
 				"        \"preference\": \"http://fifth\"," + 
@@ -121,7 +121,7 @@ public class RuleWrapperTest {
 				"  },"
 				+ "{" + 
 				"        \"args\": [{" + 
-				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#string\"," + 
+				"            \"xml-type\": \"string\"," + 
 				"            \"value\": \"hello\"" + 
 				"        }]," + 
 				"        \"preference\": \"http://sixth\"," + 
@@ -168,11 +168,11 @@ public class RuleWrapperTest {
 		RuleWrapper as1 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.6) }) },
+								new Argument[] { new Argument("double", 1.6) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 		
 		JSONObject actual = as1.getJSONObject();
@@ -180,7 +180,7 @@ public class RuleWrapperTest {
 	}
 	
 	@Test
-	public void test_conversion() {
+	public void test_conversion_1() {
 		
 		JSONObject expected = new JSONObject("{" + 
 				"    \"head\": [{" + 
@@ -206,6 +206,52 @@ public class RuleWrapperTest {
 		Assert.assertTrue(expected.similar(actual));
 	}
 	
+	@Test
+	public void test_conversion_2() {
+		
+		JSONObject input = new JSONObject("{" + 
+				"    \"head\": [{" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"double\"," + 
+				"            \"value\": 1.5" + 
+				"        }]," + 
+				"        \"preference\": \"http://4\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }]," + 
+				"    \"body\": [{" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"double\"," + 
+				"            \"value\": 1.6" + 
+				"        }]," + 
+				"        \"preference\": \"http://1\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }]" + 
+				"}");
+		
+		JSONObject expected = new JSONObject("{" + 
+				"    \"head\": [{" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"value\": 1.5" + 
+				"        }]," + 
+				"        \"preference\": \"http://4\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }]," + 
+				"    \"body\": [{" + 
+				"        \"args\": [{" + 
+				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
+				"            \"value\": 1.6" + 
+				"        }]," + 
+				"        \"preference\": \"http://1\"," + 
+				"        \"builtin\": \"EQ\"" + 
+				"    }]" + 
+				"}");
+
+		RuleWrapper ruleWrapper = new RuleWrapper(input);
+		JSONObject actual = ruleWrapper.getJSONObject(); 
+		Assert.assertTrue(expected.similar(actual));
+	}
+	
 	/**
 	 * test that two rules with the same body sections have the same hascode value
 	 */
@@ -215,21 +261,21 @@ public class RuleWrapperTest {
 		RuleWrapper as1 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.6) }) },
+								new Argument[] { new Argument("double", 1.6) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		RuleWrapper as2 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.6) }) },
+								new Argument[] { new Argument("double", 1.6) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		Assert.assertTrue(as1.hashCode() == as2.hashCode());
@@ -244,21 +290,21 @@ public class RuleWrapperTest {
 		RuleWrapper as1 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.4) }) },
+								new Argument[] { new Argument("double", 1.4) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		RuleWrapper as2 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.3) }) },
+								new Argument[] { new Argument("double", 1.3) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		Assert.assertFalse(as1.hashCode() == as2.hashCode());
@@ -273,21 +319,21 @@ public class RuleWrapperTest {
 		RuleWrapper as1 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://11", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		RuleWrapper as2 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		Assert.assertFalse(as1.hashCode() == as2.hashCode());
@@ -302,21 +348,21 @@ public class RuleWrapperTest {
 		RuleWrapper as1 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://11", "NE",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		RuleWrapper as2 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		Assert.assertFalse(as1.hashCode() == as2.hashCode());
@@ -330,20 +376,20 @@ public class RuleWrapperTest {
 
 		RuleWrapper as1 = new RuleWrapper(
 				new BodyRuleConditions(new RuleCondition[] { new RuleCondition("http://11", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#int", 1.5) }) }, 0, 0),
+						new Argument[] { new Argument("int", 1.5) }) }, 0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		RuleWrapper as2 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		Assert.assertFalse(as1.hashCode() == as2.hashCode());
@@ -357,38 +403,38 @@ public class RuleWrapperTest {
 
 		RuleCondition[] bodyConditions = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as1 = new RuleWrapper(new BodyRuleConditions(bodyConditions, 0, 0),
 				new HeadRuleConditions(headConditions, 0, 0));
 
 		RuleCondition[] bodyConditions1 = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions1 = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as2 = new RuleWrapper(new BodyRuleConditions(bodyConditions1, 0, 0),
 				new HeadRuleConditions(headConditions1, 0, 0));
@@ -404,38 +450,38 @@ public class RuleWrapperTest {
 
 		RuleCondition[] bodyConditions = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as1 = new RuleWrapper(new BodyRuleConditions(bodyConditions, 0, 0),
 				new HeadRuleConditions(headConditions, 0, 0));
 
 		RuleCondition[] bodyConditions1 = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "heello world") }) };
+						new Argument[] { new Argument("string", "heello world") }) };
 
 		RuleCondition[] headConditions1 = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as2 = new RuleWrapper(new BodyRuleConditions(bodyConditions1, 0, 0),
 				new HeadRuleConditions(headConditions1, 0, 0));
@@ -451,38 +497,38 @@ public class RuleWrapperTest {
 
 		RuleCondition[] bodyConditions = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as1 = new RuleWrapper(new BodyRuleConditions(bodyConditions, 0, 0),
 				new HeadRuleConditions(headConditions, 0, 0));
 
 		RuleCondition[] bodyConditions1 = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions1 = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as2 = new RuleWrapper(new BodyRuleConditions(bodyConditions1, 0, 0),
 				new HeadRuleConditions(headConditions1, 0, 0));
@@ -499,21 +545,21 @@ public class RuleWrapperTest {
 		RuleWrapper as1 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.4) }) },
+								new Argument[] { new Argument("double", 1.4) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		RuleWrapper as2 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.3) }) },
+								new Argument[] { new Argument("double", 1.3) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		Assert.assertNotEquals(as1, as2);
@@ -525,21 +571,21 @@ public class RuleWrapperTest {
 		RuleWrapper as1 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://11", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		RuleWrapper as2 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		Assert.assertNotEquals(as1, as2);
@@ -551,21 +597,21 @@ public class RuleWrapperTest {
 		RuleWrapper as1 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://11", "NE",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		RuleWrapper as2 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		Assert.assertNotEquals(as1, as2);
@@ -576,20 +622,20 @@ public class RuleWrapperTest {
 
 		RuleWrapper as1 = new RuleWrapper(
 				new BodyRuleConditions(new RuleCondition[] { new RuleCondition("http://11", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#int", 1.5) }) }, 0, 0),
+						new Argument[] { new Argument("int", 1.5) }) }, 0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		RuleWrapper as2 = new RuleWrapper(
 				new BodyRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }) },
+								new Argument[] { new Argument("double", 1.5) }) },
 						0, 0));
 
 		Assert.assertNotEquals(as1, as2);
@@ -600,38 +646,38 @@ public class RuleWrapperTest {
 
 		RuleCondition[] bodyConditions = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as1 = new RuleWrapper(new BodyRuleConditions(bodyConditions, 0, 0),
 				new HeadRuleConditions(headConditions, 0, 0));
 
 		RuleCondition[] bodyConditions1 = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "heello world") }) };
+						new Argument[] { new Argument("string", "heello world") }) };
 
 		RuleCondition[] headConditions1 = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as2 = new RuleWrapper(new BodyRuleConditions(bodyConditions1, 0, 0),
 				new HeadRuleConditions(headConditions1, 0, 0));
@@ -644,38 +690,38 @@ public class RuleWrapperTest {
 
 		RuleCondition[] bodyConditions = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 11) }),
+						new Argument[] { new Argument("integer", 11) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 11) }),
+						new Argument[] { new Argument("integer", 11) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as1 = new RuleWrapper(new BodyRuleConditions(bodyConditions, 0, 0),
 				new HeadRuleConditions(headConditions, 0, 0));
 
 		RuleCondition[] bodyConditions1 = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions1 = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as2 = new RuleWrapper(new BodyRuleConditions(bodyConditions1, 0, 0),
 				new HeadRuleConditions(headConditions1, 0, 0));
@@ -688,38 +734,38 @@ public class RuleWrapperTest {
 
 		RuleCondition[] bodyConditions = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 2.0) }),
+						new Argument[] { new Argument("double", 2.0) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 11) }),
+						new Argument[] { new Argument("integer", 11) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as1 = new RuleWrapper(new BodyRuleConditions(bodyConditions, 0, 0),
 				new HeadRuleConditions(headConditions, 0, 0));
 
 		RuleCondition[] bodyConditions1 = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions1 = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as2 = new RuleWrapper(new BodyRuleConditions(bodyConditions1, 0, 0),
 				new HeadRuleConditions(headConditions1, 0, 0));
@@ -732,76 +778,76 @@ public class RuleWrapperTest {
 
 		RuleCondition[] bodyConditions = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 2.0) }),
+						new Argument[] { new Argument("double", 2.0) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 11) }),
+						new Argument[] { new Argument("integer", 11) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as1 = new RuleWrapper(new BodyRuleConditions(bodyConditions, 0, 0),
 				new HeadRuleConditions(headConditions, 0, 0));
 
 		RuleCondition[] bodyConditions1 = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 10) }),
+						new Argument[] { new Argument("integer", 10) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions1 = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 11) }),
+						new Argument[] { new Argument("integer", 11) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as2 = new RuleWrapper(new BodyRuleConditions(bodyConditions1, 0, 0),
 				new HeadRuleConditions(headConditions1, 0, 0));
 
 		RuleCondition[] bodyConditions2 = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 11) }),
+						new Argument[] { new Argument("integer", 11) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions2 = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 11) }),
+						new Argument[] { new Argument("integer", 11) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as3 = new RuleWrapper(new BodyRuleConditions(bodyConditions2, 0, 0),
 				new HeadRuleConditions(headConditions2, 0, 0));
 
 		RuleCondition[] bodyConditions3 = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://2", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 11) }),
+						new Argument[] { new Argument("integer", 11) }),
 				new RuleCondition("http://3", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleCondition[] headConditions3 = new RuleCondition[] {
 				new RuleCondition("http://4", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#double", 1.5) }),
+						new Argument[] { new Argument("double", 1.5) }),
 				new RuleCondition("http://5", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#integer", 11) }),
+						new Argument[] { new Argument("integer", 11) }),
 				new RuleCondition("http://6", "EQ",
-						new Argument[] { new Argument("http://www.w3.org/2001/XMLSchema#string", "hello world") }) };
+						new Argument[] { new Argument("string", "hello world") }) };
 
 		RuleWrapper as4 = new RuleWrapper(new BodyRuleConditions(bodyConditions3, 0, 0),
 				new HeadRuleConditions(headConditions3, 0, 0));
