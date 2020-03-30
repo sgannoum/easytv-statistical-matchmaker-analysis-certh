@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.apache.commons.math3.exception.OutOfRangeException;
+
 import com.certh.iti.easytv.stmm.association.analysis.fpgrowth.Itemset;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.BodyRuleConditions;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.HeadRuleConditions;
@@ -67,9 +69,12 @@ public class AssociationRuleConverter {
 		Itemset head = associationRule.getHead();
 		RuleCondition[] heads = new RuleCondition[head.size()];
 		for(int i = 0; i < head.size(); i++) {
-			int item = head.get(i);
-			Bin bin = bins.get(item);
+			int binId = head.get(i);
 			
+			if(binId < 0 || binId > bins.size() - 1)
+				throw new OutOfRangeException(binId, 0, bins.size() - 1);
+			
+			Bin bin = bins.get(binId);
 			heads[i] = new RuleCondition(bin.label, "EQ" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(), bin.center)});
 		}
 		
@@ -78,9 +83,12 @@ public class AssociationRuleConverter {
 		RuleCondition[] bodies= new RuleCondition[body.size() * 2];
 		int index = 0;
 		for(int i = 0; i < body.size(); i++) {
-			int item = body.get(i);
-			Bin bin = bins.get(item);
+			int binId = body.get(i);
 			
+			if(binId < 0 || binId > bins.size() - 1)
+				throw new OutOfRangeException(binId, 0, bins.size() - 1);
+			
+			Bin bin = bins.get(binId);
 			if(bin.range.length == 1)
 				bodies[index++] = new RuleCondition(bin.label, "EQ" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(),  bin.range[0])});
 			else if(bin.range.length == 2) {
