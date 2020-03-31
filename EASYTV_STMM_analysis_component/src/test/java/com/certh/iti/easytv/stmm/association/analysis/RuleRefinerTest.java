@@ -282,21 +282,5 @@ public class RuleRefinerTest {
 		Vector<RuleWrapper> actual = RuleRefiner.refineRules(assRules, rbmmRules);
 		Assert.assertEquals(actual, expected);
 	}
-	
-
-	@Test(expectedExceptions = IllegalStateException.class)
-	public void test_refineRules_exception() {
-
-		Vector<AssociationRuleWrapper> asRules = new Vector<AssociationRuleWrapper>();
-		asRules.add(new AssociationRuleWrapper("b1 = 2.0 -> h1 = 1.5"));
-		asRules.add(new AssociationRuleWrapper("b1 = 1.5 -> h1 = 1.5"));
-
-		Vector<RbmmRuleWrapper> rbmmRules = new Vector<RbmmRuleWrapper>();
-		rbmmRules.add(new RbmmRuleWrapper("b1 = 2.0 -> h1 = 1.5"));
-		rbmmRules.add(new RbmmRuleWrapper("b1 = 1.5 -> h1 = 1.5"));
-		rbmmRules.add(new RbmmRuleWrapper("b1 = 2.0 -> h1 = 1.5"));
-
-		RuleRefiner.refineRules(asRules, rbmmRules);
-	}
 
 }

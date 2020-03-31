@@ -1,9 +1,7 @@
 package com.certh.iti.easytv.stmm.association.analysis;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -102,71 +100,42 @@ public class RuleRefiner {
 	 */
 	public static  Vector<RuleWrapper> refineRules(Vector<AssociationRuleWrapper> asRules, Vector<RbmmRuleWrapper> rbmmRules){
 		//Classify rules cases into the results of set actions between the two sets
-		ArrayList<RuleWrapper> list;
-		HashMap<Integer, ArrayList<RuleWrapper>> maps = new HashMap<Integer, ArrayList<RuleWrapper>>();
-		
-		//Add association rules first
-		for(AssociationRuleWrapper rule : asRules) {
-			int hash = rule.hashCode();
-			if((list = maps.get(hash)) != null) {				
-				list.get(0).merge(rule.getHead());
-				logger.info(String.format("Association rule to be merged %s", rule.toString()));
-			} else {
-				list = new ArrayList<RuleWrapper>();
-				list.add(rule);
-				maps.put(hash, list);
-			}
-		}
-		
-		//Then add rbmm rules
-		for(RbmmRuleWrapper rule : rbmmRules) {
-			int hash = rule.hashCode();
-			if((list = maps.get(hash)) != null) {
-				list.add(rule);
-			} else {
-				list = new ArrayList<RuleWrapper>();
-				list.add(rule);
-				maps.put(hash, list);
-			}
-		}
-		
-		//Handle rules
-		RuleWrapper key;
-		AssociationRuleWrapper as;
-		RbmmRuleWrapper rb;
+		AssociationRuleWrapper assValue;
 		Vector<RuleWrapper> resutls = new Vector<RuleWrapper>();
-		for(Entry<Integer, ArrayList<RuleWrapper>> entry : maps.entrySet()) {
-			list = entry.getValue();
-			key = list.get(0);
-			
-			if(AssociationRuleWrapper.class.isInstance(key)) {
-				
-				//Check for two cases: 
-				//	Case A: adding a rule when only one association rule instance exists
-				//	Case B: updating a rule when two instances of different classes exists.
-				
-				if(list.size() == 1) {
-					as = (AssociationRuleWrapper) list.get(0);
-					resutls.add(as);
-					logger.info(String.format("Association rule to be added %s", as.toString()));
-
-				} else if(list.size() == 2) {
-					as = (AssociationRuleWrapper) list.get(0);
-					rb = (RbmmRuleWrapper) list.get(1);
-					as.merge(rb.getHead());
-					resutls.add(as);
-					logger.info(String.format("RBMM rule to be updated %s", rb.toString()));
-
-				} else if(list.size() > 2) 
-					throw new IllegalStateException("More than two rules are matched..."+ list.toString());
-				
-				
-			} else if (RbmmRuleWrapper.class.isInstance(key)) {
-				 	//Rule to be deleted from rbmm
-					logger.info(String.format("RBMM rule to be deleted %s", key.toString()));
+		HashMap<Integer, AssociationRuleWrapper> maps = new HashMap<Integer, AssociationRuleWrapper>();
+		
+		//Classity association rules first
+		for(AssociationRuleWrapper assRule : asRules) {
+			int key = assRule.hashCode();
+			if((assValue = maps.get(key)) != null) {				
+				assValue.merge(assRule.getHead());
+				logger.info(String.format("Association rule to be merged %s", assRule.toString()));
 			} else 
-				throw new IllegalStateException("Unkown class type " + key.getClass().getName());	
+				maps.put(key, assRule);
 		}
+		
+		//Check for two cases: 
+		//	Case A: updating an RBMM rule
+		//	Case B: Deleting an RBMM rule when no association rule exists
+		//	Case C: Add a new 
+		for(RbmmRuleWrapper rbmmRule : rbmmRules) {
+			int key = rbmmRule.hashCode();
+			if((assValue = maps.remove(key)) != null) {
+				assValue.merge(rbmmRule.getHead());
+				resutls.add(assValue);
+				logger.info(String.format("RBMM rule to be updated %s", rbmmRule.toString()));
+			} else {
+			 	//Rule to be deleted from rbmm
+				logger.info(String.format("RBMM rule to be deleted %s", rbmmRule.toString()));
+			}
+		}
+		
+		//Check for the case: 
+		//	Case C: Add a new association rule
+		for(AssociationRuleWrapper entry : maps.values()) {
+			resutls.add(entry);
+			logger.info(String.format("Association rule to be added %s", entry.toString()));	
+		} 
 		
 		return resutls;
 	}

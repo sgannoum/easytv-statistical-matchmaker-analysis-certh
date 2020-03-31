@@ -2,6 +2,7 @@ package com.certh.iti.easytv.stmm.association.analysis;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
 
@@ -125,6 +126,6 @@ public class RuleRefinerPreferencesOnlyTest {
 
 		// Get rules
 		Vector<RuleWrapper> actualRules = ruleRefiner.refineRules(profiles, rbmmRules, minSupport, minConfidence);
-		Assert.assertEquals(actualRules, expectedRules);
+		Assert.assertEquals(new HashSet<RuleWrapper>(actualRules), new HashSet<RuleWrapper>(expectedRules));
 	}
 }
