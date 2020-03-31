@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.json.JSONObject;
+import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -15,7 +16,6 @@ import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper;
 import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 
-import junit.framework.Assert;
 /**
  * Test the whole rules refinement process, from association analysis to generated rules
  * the unit test will actually test the following conditions:
@@ -171,84 +171,130 @@ public class RuleRefinerTest {
 
 
 	/**
-	 * A set of unit tests to tests the refineRules difference cases
+	 * A rule based rule is updated by an association rule when their bodies are equals, then 
+	 * the rule based rule head is substituted by the rules head unions
 	 */
 	@Test
-	public void test_rule_update_case() {
+	public void test_refineRules_update_case_1() {
 
-		AssociationRuleWrapper as1 = new AssociationRuleWrapper("B1 = 2.0 -> H1 = 2.5");
-		RbmmRuleWrapper rb1 = new RbmmRuleWrapper("B1 = 2.0 -> H1 = 1.5");
-
-		Vector<AssociationRuleWrapper> asRules = new Vector<AssociationRuleWrapper>();
-		asRules.add(as1);
+		Vector<AssociationRuleWrapper> assRules = new Vector<AssociationRuleWrapper>();
+		assRules.add(new AssociationRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true"));
 
 		Vector<RbmmRuleWrapper> rbmmRules = new Vector<RbmmRuleWrapper>();
-		rbmmRules.add(rb1);
-
-		Vector<RuleWrapper> actual = RuleRefiner.refineRules(asRules, rbmmRules);
+		rbmmRules.add(new RbmmRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h3 = 1.5"));
 
 		Vector<RuleWrapper> expected = new Vector<RuleWrapper>();		
-		expected.add(new RbmmRuleWrapper("B1 = 2.0 -> H1 = 2.5"));
+		expected.add(new RbmmRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true ^ h3 = 1.5"));
 
-		Assert.assertEquals(actual, expected);
-	}
-
-	@Test
-	public void test_rule_remove_case() {
-	
-		AssociationRuleWrapper as1 = new AssociationRuleWrapper("B1 = 2.0 -> H1 = 2.5");	
-		RbmmRuleWrapper rb1 = new RbmmRuleWrapper("B1 = 2.0 -> H1 = 1.5");
-
-		Vector<AssociationRuleWrapper> asRules = new Vector<AssociationRuleWrapper>();
-		asRules.add(as1);
-
-		Vector<RbmmRuleWrapper> rbmmRules = new Vector<RbmmRuleWrapper>();
-		rbmmRules.add(rb1);
-
-		Vector<RuleWrapper> actual = RuleRefiner.refineRules(asRules, rbmmRules);
-
-		Vector<RuleWrapper> expected = new Vector<RuleWrapper>();
-		expected.add(as1);
-		
+		Vector<RuleWrapper> actual = RuleRefiner.refineRules(assRules, rbmmRules);
+		Assert.assertEquals(assRules.get(0).hashCode(), rbmmRules.get(0).hashCode());
 		Assert.assertEquals(actual, expected);
 	}
 	
 	@Test
-	public void test_rule_add_case() {
+	public void test_refineRules_update_case_2() {
 
-		AssociationRuleWrapper as1 = new AssociationRuleWrapper("B1 = 2.0 -> H1 = 2.5");	
-
-		
-		Vector<RuleWrapper> expected = new Vector<RuleWrapper>();
-		expected.add(as1);
-
-		Vector<AssociationRuleWrapper> asRules = new Vector<AssociationRuleWrapper>();
-		asRules.add(as1);
+		Vector<AssociationRuleWrapper> assRules = new Vector<AssociationRuleWrapper>();
+		assRules.add(new AssociationRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 1.0 ^ h2 = true"));
 
 		Vector<RbmmRuleWrapper> rbmmRules = new Vector<RbmmRuleWrapper>();
-		Vector<RuleWrapper> actual = RuleRefiner.refineRules(asRules, rbmmRules);
+		rbmmRules.add(new RbmmRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h3 = 1.5"));
 
+		Vector<RuleWrapper> expected = new Vector<RuleWrapper>();		
+		expected.add(new RbmmRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 1.0 ^ h2 = true ^ h3 = 1.5"));
+
+		Vector<RuleWrapper> actual = RuleRefiner.refineRules(assRules, rbmmRules);
+		Assert.assertEquals(actual, expected);
+	}
+	
+	@Test
+	public void test_refineRules_update_case_3() {
+
+		Vector<AssociationRuleWrapper> assRules = new Vector<AssociationRuleWrapper>();
+		assRules.add(new AssociationRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true"));
+		assRules.add(new AssociationRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 1.0 ^ h2 = true"));
+
+		Vector<RbmmRuleWrapper> rbmmRules = new Vector<RbmmRuleWrapper>();
+		rbmmRules.add(new RbmmRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h3 = 1.5"));
+
+		Vector<RuleWrapper> expected = new Vector<RuleWrapper>();		
+		expected.add(new RbmmRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true ^ h3 = 1.5"));
+
+		Vector<RuleWrapper> actual = RuleRefiner.refineRules(assRules, rbmmRules);
+		Assert.assertEquals(actual, expected);
+	}
+
+	/**
+	 * A rule based rule is remove when there is no matched association rule
+	 */
+	@Test
+	public void test_refineRules_remove_case() {
+	
+		Vector<AssociationRuleWrapper> assRules = new Vector<AssociationRuleWrapper>();
+		assRules.add(new AssociationRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true"));
+
+		Vector<RbmmRuleWrapper> rbmmRules = new Vector<RbmmRuleWrapper>();
+		rbmmRules.add(new RbmmRuleWrapper("b1 = 1 ^ b2 = 2.0 -> h1 = 2.5 ^ h2 = true"));
+
+		Vector<RuleWrapper> expected = new Vector<RuleWrapper>();
+		expected.add(new AssociationRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true"));
+
+		Vector<RuleWrapper> actual = RuleRefiner.refineRules(assRules, rbmmRules);
+		Assert.assertEquals(actual, expected);
+	}
+	
+	/**
+	 * An association rule is added, when there is no mactched rule based rule.
+	 */
+	@Test
+	public void test_refineRules_add_case() {
+
+		Vector<AssociationRuleWrapper> assRules = new Vector<AssociationRuleWrapper>();
+		assRules.add(new AssociationRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true"));
+		
+		Vector<RuleWrapper> expected = new Vector<RuleWrapper>();
+		expected.add(new AssociationRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true"));
+		
+		Vector<RuleWrapper> actual = RuleRefiner.refineRules(assRules, new Vector<RbmmRuleWrapper>());
 		Assert.assertEquals(expected, actual);
 	}
+	
+	/**
+	 * An association rule is added, when there is no matched rule based rule.
+	 */
+	@Test
+	public void test_refineRules_cases() {
+
+		Vector<AssociationRuleWrapper> assRules = new Vector<AssociationRuleWrapper>();
+		assRules.add(new AssociationRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true"));
+		assRules.add(new AssociationRuleWrapper("b1 = 1 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true"));		//to be added
+
+		Vector<RbmmRuleWrapper> rbmmRules = new Vector<RbmmRuleWrapper>();
+		rbmmRules.add(new RbmmRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h3 = 1.5"));	//to be updated
+		rbmmRules.add(new RbmmRuleWrapper("b1 = 1 -> h1 = 2.5 ^ h2 = true"));										//to be deleted
+
+		
+		Vector<RuleWrapper> expected = new Vector<RuleWrapper>();		
+		expected.add(new AssociationRuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true ^ h3 = 1.5"));
+		expected.add(new RbmmRuleWrapper("b1 = 1 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true"));
+
+
+		Vector<RuleWrapper> actual = RuleRefiner.refineRules(assRules, rbmmRules);
+		Assert.assertEquals(actual, expected);
+	}
+	
 
 	@Test(expectedExceptions = IllegalStateException.class)
 	public void test_refineRules_exception() {
 
-		AssociationRuleWrapper as1 = new AssociationRuleWrapper("B1 = 2.0 -> H1 = 1.5");	
-		AssociationRuleWrapper as2 = new AssociationRuleWrapper("B1 = 1.5 -> H1 = 1.5");	
-		RbmmRuleWrapper rb1 = new RbmmRuleWrapper("B1 = 2.0 -> H1 = 1.5");	
-		RbmmRuleWrapper rb2 = new RbmmRuleWrapper("B1 = 1.5 -> H1 = 1.5");	
-		RbmmRuleWrapper rb3 = new RbmmRuleWrapper("B1 = 2.0 -> H1 = 1.5");	
-
-
 		Vector<AssociationRuleWrapper> asRules = new Vector<AssociationRuleWrapper>();
-		asRules.add(as1);
-		asRules.add(as2);
+		asRules.add(new AssociationRuleWrapper("b1 = 2.0 -> h1 = 1.5"));
+		asRules.add(new AssociationRuleWrapper("b1 = 1.5 -> h1 = 1.5"));
 
 		Vector<RbmmRuleWrapper> rbmmRules = new Vector<RbmmRuleWrapper>();
-		rbmmRules.add(rb1);
-		rbmmRules.add(rb2);
-		rbmmRules.add(rb3);
+		rbmmRules.add(new RbmmRuleWrapper("b1 = 2.0 -> h1 = 1.5"));
+		rbmmRules.add(new RbmmRuleWrapper("b1 = 1.5 -> h1 = 1.5"));
+		rbmmRules.add(new RbmmRuleWrapper("b1 = 2.0 -> h1 = 1.5"));
 
 		RuleRefiner.refineRules(asRules, rbmmRules);
 	}

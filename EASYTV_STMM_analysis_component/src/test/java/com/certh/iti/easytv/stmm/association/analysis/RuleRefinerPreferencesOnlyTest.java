@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.json.JSONObject;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -15,7 +16,6 @@ import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper;
 import com.certh.iti.easytv.user.OnlyPreferenceProfile;
 import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
-import junit.framework.Assert;
 
 public class RuleRefinerPreferencesOnlyTest {
 	private RuleRefiner ruleRefiner;
@@ -49,20 +49,13 @@ public class RuleRefinerPreferencesOnlyTest {
 		double minSupport = 0.5;
 		double minConfidence = 0.5;
 
-		// Rbmm rules
-		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale 1.0 
-		// http://registry.easytv.eu/application/cs/ui/text/size 2.3 
-		// ->
-		// http://registry.easytv.eu/application/cs/audio/eq false
+
 		RbmmRuleWrapper rb1 = new RbmmRuleWrapper("http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 1.0 ^"
 												+ "http://registry.easytv.eu/application/cs/ui/text/size = 2.3 "
 												+ "->"
 												+ "http://registry.easytv.eu/application/cs/audio/eq = false");
 
-		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale 3.5 
-		// http://registry.easytv.eu/application/cs/audio/eq true
-		// ->
-		// http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size 1.3 
+
 		RbmmRuleWrapper rb2 = new RbmmRuleWrapper("http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5 ^"
 												+ "http://registry.easytv.eu/application/cs/audio/eq = true "
 												+ "->"
@@ -72,75 +65,53 @@ public class RuleRefinerPreferencesOnlyTest {
 		rbmmRules.add(rb1);
 		rbmmRules.add(rb2);
 
-		// http://registry.easytv.eu/common/volume (0,4) 
-		// ->
-		// http://registry.easytv.eu/application/cs/accessibility/detection/sound(true)
+
 		RuleWrapper rl1 = new RuleWrapper("http://registry.easytv.eu/common/volume >= 0^"
 										+ "http://registry.easytv.eu/common/volume <= 4"
 										+ "->"
 										+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true");
 
-		// http://registry.easytv.eu/application/cs/ui/text/size(23) 
-		// ->
-		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale(3.5)
-		// http://registry.easytv.eu/application/cs/audio/eq(true)	
+
 		RuleWrapper rl2 = new RuleWrapper("http://registry.easytv.eu/application/cs/ui/text/size = \"23\" ^"
 										+ "->"
 										+ "http://registry.easytv.eu/application/cs/audio/eq = true ^"
 										+ "http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5");
 
-		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale(3.5)
-		// http://registry.easytv.eu/application/cs/audio/eq(true) 
-		// ->
-		// http://registry.easytv.eu/application/cs/ui/text/size(23)
+		
 		RuleWrapper rl3 = new RuleWrapper("http://registry.easytv.eu/application/cs/audio/eq = true ^"
 										+ "http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5"
 										+ "->"
-										+ "http://registry.easytv.eu/application/cs/ui/text/size = \"23\"");
+										+ "http://registry.easytv.eu/application/cs/ui/text/size = \"23\" ^"
+										+ "http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size = 1.5");
 
-		// http://registry.easytv.eu/application/cs/ui/text/size(23)
-		// http://registry.easytv.eu/application/cs/audio/eq(true) 
-		// ->
-		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale(3.5)
+
 		RuleWrapper rl4 = new RuleWrapper("http://registry.easytv.eu/application/cs/ui/text/size = \"23\" ^"
 										+ "http://registry.easytv.eu/application/cs/audio/eq = true"
 										+ "->"
 										+ "http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5");
 
-		// http://registry.easytv.eu/application/cs/audio/eq(true) 
-		// ->
-		// http://registry.easytv.eu/application/cs/ui/text/size(23)
-		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale(3.5)	
+		
 		RuleWrapper rl5 = new RuleWrapper("http://registry.easytv.eu/application/cs/audio/eq = true"
 										+ "->"
-										+ "http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5 ^"
-										+ "http://registry.easytv.eu/application/cs/ui/text/size = \"23\"");
+										+ "http://registry.easytv.eu/application/cs/ui/text/size = \"23\" ^"
+										+ "http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5");
 
-		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale(3.5)
-		// http://registry.easytv.eu/application/cs/ui/text/size(23) 
-		// ->
-		// http://registry.easytv.eu/application/cs/audio/eq(true)
-		RuleWrapper rl6 = new RuleWrapper("http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5 ^"
-										+ "http://registry.easytv.eu/application/cs/ui/text/size = \"23\""
-										+ "->"
-										+ "http://registry.easytv.eu/application/cs/audio/eq = true");
 
-		// http://registry.easytv.eu/application/cs/accessibility/detection/sound(true)
-		// -> 
-		// http://registry.easytv.eu/common/volume (0,4)	
+		RuleWrapper rl6 = new RuleWrapper("http://registry.easytv.eu/application/cs/ui/text/size = \"23\" ^"
+										 + "http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5"
+										 + "->"
+										 + "http://registry.easytv.eu/application/cs/audio/eq = true");
+
+
 		RuleWrapper rl7 = new RuleWrapper("http://registry.easytv.eu/application/cs/accessibility/detection/sound = true"
-										+ "->"
-										+ "http://registry.easytv.eu/common/volume >= 0 ^"
-										+ "http://registry.easytv.eu/common/volume <= 4");
+										 + "->"
+										 + "http://registry.easytv.eu/common/volume = 2");
 
-		// http://registry.easytv.eu/application/cs/accessibility/magnification/scale(3.5)
-		// -> 
-		// http://registry.easytv.eu/application/cs/audio/eq(true)
-		// http://registry.easytv.eu/application/cs/ui/text/size(23)
+		
 		RuleWrapper rl8 = new RuleWrapper("http://registry.easytv.eu/application/cs/accessibility/magnification/scale = 3.5"
-										+ "->"
-										+ "http://registry.easytv.eu/application/cs/audio/eq = true ^"
-										+ "http://registry.easytv.eu/application/cs/ui/text/size = \"23\"");
+								 		+ "->"
+								 		+ "http://registry.easytv.eu/application/cs/ui/text/size = \"23\" ^"
+								 		+ "http://registry.easytv.eu/application/cs/audio/eq = true");
 
 		Vector<RuleWrapper> expectedRules = new Vector<RuleWrapper>();
 		expectedRules.add(rl1);
@@ -154,6 +125,6 @@ public class RuleRefinerPreferencesOnlyTest {
 
 		// Get rules
 		Vector<RuleWrapper> actualRules = ruleRefiner.refineRules(profiles, rbmmRules, minSupport, minConfidence);
-		Assert.assertEquals(expectedRules, actualRules);
+		Assert.assertEquals(actualRules, expectedRules);
 	}
 }

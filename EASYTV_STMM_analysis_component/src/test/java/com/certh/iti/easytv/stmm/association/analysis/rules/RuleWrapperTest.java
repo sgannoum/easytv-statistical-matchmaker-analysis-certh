@@ -2,7 +2,6 @@ package com.certh.iti.easytv.stmm.association.analysis.rules;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -252,6 +251,25 @@ public class RuleWrapperTest {
 		Assert.assertTrue(expected.similar(actual));
 	}
 	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void test_wrong_head() {
+		RuleWrapper rl1 = new RuleWrapper("body_first = 1.6"
+										+ "->"
+										+ "head_first = 1.5 ^"
+										+ "head_first = 1.0 ^"
+										+ "head_second = 1.5");
+	}
+	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void test_wrong_body() {
+		RuleWrapper rl1 = new RuleWrapper("body_first = 1.6 ^"
+										+ "body_first = 1.0"
+										+ "->"
+										+ "head_first = 1.5 ^"
+										+ "head_second = 1.5");
+	
+	}
+	
 	/**
 	 * test that two rules with the same body sections have the same hascode value
 	 */
@@ -399,7 +417,7 @@ public class RuleWrapperTest {
 	 * test that two rules with the same body sections have the same hascode value
 	 */
 	@Test
-	public void test_hasCode_equals1() {
+	public void test_hasCode_equals_1() {
 
 		RuleCondition[] bodyConditions = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
@@ -441,12 +459,29 @@ public class RuleWrapperTest {
 
 		Assert.assertTrue(as1.hashCode() == as2.hashCode());
 	}
+	
+	@Test
+	public void test_hasCode_equals_2() {
+
+		RuleWrapper as1 = new RuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true");
+		RuleWrapper as2 = new RuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h3 = 1.5");
+
+		Assert.assertTrue(as1.hashCode() == as2.hashCode());
+	}
+	@Test
+	public void test_hasCode_not_equals_2() {
+
+		RuleWrapper as1 = new RuleWrapper("b1 = 11 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h2 = true");
+		RuleWrapper as2 = new RuleWrapper("b1 = 1 ^ b2 = 2.0 ^ b3 = \"str\" ^ b4 = true -> h1 = 2.5 ^ h3 = 1.5");
+
+		Assert.assertFalse(as1.hashCode() == as2.hashCode());
+	}
 
 	/**
 	 * test that two rules with the different body sections dose not have the same hascode value
 	 */
 	@Test
-	public void test_hasCode_not_equals1() {
+	public void test_hasCode_not_equals_1() {
 
 		RuleCondition[] bodyConditions = new RuleCondition[] {
 				new RuleCondition("http://1", "EQ",
@@ -876,7 +911,7 @@ public class RuleWrapperTest {
 		RuleWrapper expected = new RuleWrapper("body_first = 1.6"
 										+ "->"
 										+ "head_first = 1.5 ^"
-										+ "head_first = 1.5 ^"
+										+ "head_second = 1.5 ^"
 										+ "head_third = 1.5");
 		rl1.merge(rl2.getHead());
 		

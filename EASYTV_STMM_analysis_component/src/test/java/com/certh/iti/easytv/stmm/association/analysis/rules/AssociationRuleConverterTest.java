@@ -43,6 +43,7 @@ public class AssociationRuleConverterTest {
 		AssociationRuleWrapper actual = rulesConverter.convert(associationRule);
 		AssociationRuleWrapper expected = new AssociationRuleWrapper("first = 0 -> second = 1");
 
+		Assert.assertEquals(actual, expected);
 		Assert.assertTrue(actual.getJSONObject().similar(expected.getJSONObject()));
 	}
 	
@@ -73,6 +74,7 @@ public class AssociationRuleConverterTest {
 		AssociationRuleWrapper actual = rulesConverter.convert(associationRule);
 		AssociationRuleWrapper expected = new AssociationRuleWrapper("first >= 0 ^ first <= 4 -> second = 7");
 
+		Assert.assertEquals(actual, expected);
 		Assert.assertTrue(actual.getJSONObject().similar(expected.getJSONObject()));
 	}
 	
@@ -103,6 +105,7 @@ public class AssociationRuleConverterTest {
 		AssociationRuleWrapper actual = rulesConverter.convert(associationRule);
 		AssociationRuleWrapper expected = new AssociationRuleWrapper("first = 0.0 -> second = 1.0");
 
+		Assert.assertEquals(actual, expected);
 		Assert.assertTrue(actual.getJSONObject().similar(expected.getJSONObject()));
 	}
 	
@@ -133,6 +136,7 @@ public class AssociationRuleConverterTest {
 		AssociationRuleWrapper actual = rulesConverter.convert(associationRule);
 		AssociationRuleWrapper expected = new AssociationRuleWrapper("first >= 0.0 ^ first <= 4.0 -> second = 7.0");
 
+		Assert.assertEquals(actual, expected);
 		Assert.assertTrue(actual.getJSONObject().similar(expected.getJSONObject()));
 	}
 	
@@ -163,6 +167,7 @@ public class AssociationRuleConverterTest {
 		AssociationRuleWrapper actual = rulesConverter.convert(associationRule);
 		AssociationRuleWrapper expected = new AssociationRuleWrapper("first = \"0\" -> second = \"1\"");
 
+		Assert.assertEquals(actual, expected);
 		Assert.assertTrue(actual.getJSONObject().similar(expected.getJSONObject()));
 	}
 	
@@ -346,30 +351,37 @@ public class AssociationRuleConverterTest {
 				
 		actual = rulesConverter.convert(new AssociationRule(new Itemset(new int[] {0}), new Itemset(new int[] {1})));
 		expected = new AssociationRuleWrapper("integer_no_bin_1 = 0 -> integer_no_bin_2 = 1");
+		Assert.assertEquals(actual, expected);
 		Assert.assertTrue(actual.getJSONObject().similar(expected.getJSONObject()));
 		
 		actual = rulesConverter.convert(new AssociationRule(new Itemset(new int[] {2}), new Itemset(new int[] {3})));
 		expected = new AssociationRuleWrapper("integer_bin_1 >= 0 ^ integer_bin_1 <= 4 -> integer_bin_2 = 7");
+		Assert.assertEquals(actual, expected);
 		Assert.assertTrue(actual.getJSONObject().similar(expected.getJSONObject()));
 		
 		actual = rulesConverter.convert(new AssociationRule(new Itemset(new int[] {4}), new Itemset(new int[] {5})));
 		expected = new AssociationRuleWrapper("double_no_bin_1 = 0.0 -> double_no_bin_1 = 1.0");
+		Assert.assertEquals(actual, expected);
 		Assert.assertTrue(actual.getJSONObject().similar(expected.getJSONObject()));
 		
 		actual = rulesConverter.convert(new AssociationRule(new Itemset(new int[] {6}), new Itemset(new int[] {7})));
 		expected = new AssociationRuleWrapper("double_bin_1 >= 0.0 ^ double_bin_1 <= 4.0 -> double_bin_2 = 7.0");
+		Assert.assertEquals(actual, expected);
 		Assert.assertTrue(actual.getJSONObject().similar(expected.getJSONObject()));
 		
 		actual = rulesConverter.convert(new AssociationRule(new Itemset(new int[] {8}), new Itemset(new int[] {9})));
 		expected = new AssociationRuleWrapper("nominal_no_bin_1 = \"0\" -> nominal_no_bin_2 = \"1\"");
+		Assert.assertEquals(actual, expected);
 		Assert.assertTrue(actual.getJSONObject().similar(expected.getJSONObject()));
 		
 		actual = rulesConverter.convert(new AssociationRule(new Itemset(new int[] {10}), new Itemset(new int[] {11})));
 		expected = new AssociationRuleWrapper("ordinal_no_bin_1 = \"0\" -> ordinal_no_bin_2 = \"1\"");
+		Assert.assertEquals(actual, expected);
 		Assert.assertTrue(actual.getJSONObject().similar(expected.getJSONObject()));
 		
 		actual = rulesConverter.convert(new AssociationRule(new Itemset(new int[] {12}), new Itemset(new int[] {13})));
 		expected = new AssociationRuleWrapper("symetrical_no_bin_1 = true -> symetrical_no_bin_2 = false");
+		Assert.assertEquals(actual, expected);
 		Assert.assertTrue(actual.getJSONObject().similar(expected.getJSONObject()));
 	}
 

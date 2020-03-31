@@ -5,8 +5,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.MissingFormatArgumentException;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.json.JSONArray;
@@ -156,7 +161,7 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 		}
 
 		public void setUri(String uri) {
-			this.uri = uri;
+			this.uri = uri.trim();
 		}
 		
 		public String getBuiltin() {
@@ -164,7 +169,7 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 		}
 
 		public void setBuiltin(String builtin) {
-			this.builtin = builtin;
+			this.builtin = builtin.trim();
 		}
 		
 		public JSONObject getJSONObject() {
@@ -196,25 +201,27 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 		
 		@Override
 		public boolean equals(Object obj) {
-			if(this == obj) return true;
-			if(!RuleCondition.class.isInstance(obj)) return false;
-			RuleCondition other = (RuleCondition) obj;
+			if(this == obj) 
+				return true;
 			
-			if(!uri.equals(other.uri) ||
-				!builtin.equals(other.builtin) ||
-				 args.length != other.args.length) 
+			if(!RuleCondition.class.isInstance(obj)) 
 				return false;
 			
-			int i = 0;
-			int j = 0;
-			do {
-				
-				for(j = 0; j < other.args.length && 
-							!other.args[j].equals(args[i]); j++);
-					
-			} while(j < other.args.length && ++i < args.length);
-				
-			return (i - args.length) == 0;
+			RuleCondition other = (RuleCondition) obj;
+			if(!uri.equals(other.uri) ||
+				!builtin.equals(other.builtin) ||
+				  args.length != other.args.length) 
+				return false;
+			
+			Set<Integer> classifier = new HashSet<Integer>();
+			for(Argument arg : args) 
+				classifier.add(arg.hashCode()); 
+			
+			for(Argument arg : other.args) 
+				if(classifier.add(arg.hashCode())) 
+					return false;
+
+			return true;
 		}
 		
 		@Override
@@ -243,7 +250,7 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 		}
 	}
 	
-	private abstract static class RuleConditions {
+	private abstract static class RuleConditions implements Comparable<RuleConditions>{
 		
 		protected RuleCondition[] ruleConditions;
 		protected long weight;
@@ -328,7 +335,14 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			json = null;
 		}
 
-		public void setRuleConditions(RuleCondition[] ruleConditions) {
+		public void setRuleConditions(RuleCondition[] ruleConditions) {		
+			Set<String> classifier = new HashSet<String>();
+			for(RuleCondition cond1 : ruleConditions) { 
+				String key = cond1.getUri() +" "+ cond1.getBuiltin();
+				if(!classifier.add(key)) 
+					throw new IllegalArgumentException("Rule condition with two similar conditions for "+key);
+			}
+
 			this.ruleConditions = ruleConditions;
 		}
 
@@ -348,9 +362,26 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			this.support = support;
 		}
 		
+		public JSONArray getJSONObject() {
+			if(json == null) {
+				json = new JSONArray();
+				for(RuleCondition ruleCondition : ruleConditions) 
+					json.put(ruleCondition.getJSONObject());
+			}
+			
+			return json;
+		}
+		
+		public void setJSONObject(JSONArray json) {
+			ruleConditions = new RuleCondition[json.length()];
+		
+			for(int i = 0; i < json.length(); ruleConditions[i] = new RuleCondition(json.getJSONObject(i)), i++) ;
+		}
+		
 		@Override
 		public boolean equals(Object obj) {
-			if(this == obj) return true;
+			if(this == obj) 
+				return true;
 			
 			if(!RuleConditions.class.isInstance(obj)) 
 				return false;
@@ -359,16 +390,15 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			if(ruleConditions.length != other.ruleConditions.length)
 				return false;
 			
-			int i = 0;
-			int j = 0;
-			do {
-				
-				for(j = 0; j < other.ruleConditions.length && 
-							!other.ruleConditions[j].equals(ruleConditions[i]); j++);
-					
-			} while(j < other.ruleConditions.length && ++i < ruleConditions.length );
+			Set<Integer> classifier = new HashSet<Integer>();
+			for(RuleCondition cond1 : ruleConditions)  
+				classifier.add(cond1.hashCode()); 
 			
-			return (i - ruleConditions.length) == 0;
+			for(RuleCondition cond2 : other.ruleConditions) 
+				if(classifier.add(cond2.hashCode())) 
+					return false;
+				
+			return true;
 		}
 		
 		@Override
@@ -392,25 +422,29 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			return conditions;
 		}
 		
-		public JSONArray getJSONObject() {
-			if(json == null) {
-				json = new JSONArray();
-				for(RuleCondition ruleCondition : ruleConditions) 
-					json.put(ruleCondition.getJSONObject());
-			}
+		@Override
+		public int compareTo(RuleConditions other) {
 			
-			return json;
-		}
-		
-		public void setJSONObject(JSONArray json) {
-			ruleConditions = new RuleCondition[json.length()];
-		
-			for(int i = 0; i < json.length(); ruleConditions[i] = new RuleCondition(json.getJSONObject(i)), i++) ;
+			if(ruleConditions.length !=  other.ruleConditions.length)
+				return -1;
+			
+			int counter = 0;
+			Set<Integer> classifier = new HashSet<Integer>();
+			for(RuleCondition cond1 : ruleConditions) 
+				classifier.add(cond1.hashCode()); 
+			
+			for(RuleCondition cond2 : other.ruleConditions) 
+				if(classifier.add(cond2.hashCode())) 
+					counter--;
+				else 
+					counter++;
+			
+			return counter;
 		}
 
 	}
 	
-	public static class HeadRuleConditions extends RuleConditions implements Comparable<HeadRuleConditions> {
+	public static class HeadRuleConditions extends RuleConditions {
 
 		public HeadRuleConditions(JSONArray json) {
 			super(json);
@@ -424,32 +458,9 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			super(ruleConditions, weight, support);
 		}
 		
-		/**
-		 * Two rules' heads are compared for removing, updating a rule which
-		 * corresponds to finding two matches. 
-		 */
-		@Override
-		public int compareTo(HeadRuleConditions o) {
-			
-			if(ruleConditions.length !=  o.ruleConditions.length)
-				return -1;
-			
-			int i = 0;
-			int j = 0;
-			do {
-				
-				for(j = 0; j < o.ruleConditions.length && 
-							!o.ruleConditions[j].equals(ruleConditions[i]) ; j++);
-					
-			} while(j != o.ruleConditions.length &&
-						++i < ruleConditions.length);
-			
-			return i - ruleConditions.length;
-		}
-		
 	}
 	
-	public static class BodyRuleConditions extends RuleConditions implements Comparable<BodyRuleConditions> {
+	public static class BodyRuleConditions extends RuleConditions {
 
 		public BodyRuleConditions(JSONArray json) {
 			super(json);
@@ -461,29 +472,6 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 		
 		public BodyRuleConditions(String ruleConditions, long weight, double support) {
 			super(ruleConditions, weight, support);
-		}
-		
-		/**
-		 * two bodies are equals when they have the same set of conditions, otherwise not.
-		 * 
-		 */
-		@Override
-		public int compareTo(BodyRuleConditions o) {
-			
-			if(ruleConditions.length !=  o.ruleConditions.length)
-				return -1;
-			
-			int i = 0;
-			int j = 0;
-			do {
-				
-				for(j = 0; j < o.ruleConditions.length && 
-							!o.ruleConditions[j].equals(ruleConditions[i]) ; j++);
-					
-			} while(j != o.ruleConditions.length && 
-						++i < ruleConditions.length);
-			
-			return i - ruleConditions.length;
 		}
 	}
 	
@@ -565,27 +553,25 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 	
 	/**
 	 * Merge both heads
-	 * @param head
+	 * @param other
 	 */
-	public void merge(HeadRuleConditions head) {
-		int index = 0;
-		RuleCondition[] conditions = new RuleCondition[head.ruleConditions.length];
+	public void merge(HeadRuleConditions other) {
+		Map<String, RuleCondition> classifier = new HashMap<String, RuleCondition>();
 		
-		for(int i = 0; i < head.ruleConditions.length; i++) {
-			boolean add = true;
-			RuleCondition current = head.ruleConditions[i];
-			for(int j = 0; j < this.head.ruleConditions.length && add; j++) {
-				if(current.equals(this.head.ruleConditions[j])) {
-					add = false;
-				}
-			}
-			
-			if(add) conditions[index++] = current;
+		for(RuleCondition cond1 : head.ruleConditions) 
+			classifier.put(cond1.getUri() + cond1.getBuiltin(), cond1);
+		
+		for(RuleCondition cond2 : other.ruleConditions) {
+			String key = cond2.getUri() + cond2.getBuiltin();
+			if(!classifier.containsKey(key)) 
+				classifier.put(key, cond2);
 		}
 		
-		conditions = Arrays.copyOf(conditions, index);
-		
-		this.head.add(conditions);
+		//add to header
+		Collection<RuleCondition> values = classifier.values();
+		head.ruleConditions = new RuleCondition[values.toArray().length];
+		System.arraycopy(values.toArray(), 0, head.ruleConditions, 0, head.ruleConditions.length);
+
 	}
 	
 	/**
@@ -593,11 +579,20 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj) return true;
+		if(this == obj) 
+			return true;
 		
-		if(!RuleWrapper.class.isInstance(obj)) return false;
+		if(!RuleWrapper.class.isInstance(obj)) 
+			return false;
+		
 		RuleWrapper other = (RuleWrapper) obj;	
-		return body.equals(other.body);
+		if(!body.equals(other.body))
+			return false;
+		
+		if(!head.equals(other.head))
+			return false;
+		
+		return true;
 	}
 	
 	@Override
