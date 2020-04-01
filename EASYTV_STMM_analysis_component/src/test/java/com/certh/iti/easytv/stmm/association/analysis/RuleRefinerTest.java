@@ -29,6 +29,8 @@ public class RuleRefinerTest {
 
 	private RuleRefiner ruleRefiner;
 	private List<Profile> profiles = new ArrayList<Profile>();
+	private double minSupport = 0.5;
+	private double minConfidence = 0.5;
 	
 	private JSONObject profile_1 = new JSONObject("{" + 
 			"    \"user_id\": 1," + 
@@ -74,7 +76,40 @@ public class RuleRefinerTest {
 		profiles.add(new Profile(profile_2));
 		profiles.add(new Profile(profile_3));
 
-		ruleRefiner = new RuleRefiner(Profile.getBins());
+		ruleRefiner = new RuleRefiner(Profile.getBins(), profiles, minSupport, minConfidence);
+	}
+	
+	/**
+	 * Test the association rules generated
+	 */
+	@Test
+	public void test_extracted_rules_1() {
+		
+		RuleWrapper rl1 = new AssociationRuleWrapper("http://registry.easytv.eu/context/device = \"tablet\" ^"
+													+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true"
+													+ "->"
+													+ "http://registry.easytv.eu/common/volume = 2");
+
+		RuleWrapper rl2 = new AssociationRuleWrapper("http://registry.easytv.eu/context/device = \"tablet\" ^"
+													+ "http://registry.easytv.eu/common/volume >= 0 ^"
+													+ "http://registry.easytv.eu/common/volume <= 4 ^"
+													+ "->"
+													+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true");
+		
+		RuleWrapper rl3 = new AssociationRuleWrapper("http://registry.easytv.eu/context/device = \"tablet\" "
+													+ "->"
+													+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true ^"
+													+ "http://registry.easytv.eu/common/volume = 2");
+		
+		Vector<RuleWrapper> expectedRules = new Vector<RuleWrapper>();
+		expectedRules.add(rl1);
+		expectedRules.add(rl2);
+		expectedRules.add(rl3);
+
+		
+		// Get rules
+		Vector<AssociationRuleWrapper> actualRules = ruleRefiner.getAssociationRulesWrapper();
+		Assert.assertEquals(actualRules, expectedRules);
 	}
 
 	/**
@@ -82,10 +117,7 @@ public class RuleRefinerTest {
 	 */
 	@Test
 	public void test_refineRules_use_Case_1() {
-
-		double minSupport = 0.5;
-		double minConfidence = 0.5;
-
+		
 		// No Rbmm rules	
 		Vector<RbmmRuleWrapper> rbmmRules = new Vector<RbmmRuleWrapper>();
 
@@ -113,8 +145,8 @@ public class RuleRefinerTest {
 
 		
 		// Get rules
-		Vector<RuleWrapper> actualRules = ruleRefiner.refineRules(profiles, rbmmRules, minSupport, minConfidence);		
-		Assert.assertEquals(expectedRules, actualRules);
+		Vector<RuleWrapper> actualRules = ruleRefiner.refineRules(rbmmRules);
+		Assert.assertEquals(actualRules, expectedRules);
 	}
 	
 	/**
@@ -122,9 +154,6 @@ public class RuleRefinerTest {
 	 */
 	@Test
 	public void test_refineRules_use_Case_2() {
-
-		double minSupport = 0.5;
-		double minConfidence = 0.5;
 
 		// Rbmm rules	
 		RbmmRuleWrapper rb1 = new RbmmRuleWrapper("http://registry.easytv.eu/application/cs/accessibility/magnification/scale = false ^"
@@ -165,8 +194,8 @@ public class RuleRefinerTest {
 
 		
 		// Get rules
-		Vector<RuleWrapper> actualRules = ruleRefiner.refineRules(profiles, rbmmRules, minSupport, minConfidence);		
-		Assert.assertEquals(expectedRules, actualRules);
+		Vector<RuleWrapper> actualRules = ruleRefiner.refineRules(rbmmRules);
+		Assert.assertEquals(actualRules, expectedRules);
 	}
 
 

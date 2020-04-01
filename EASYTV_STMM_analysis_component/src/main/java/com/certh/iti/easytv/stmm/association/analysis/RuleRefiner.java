@@ -21,15 +21,38 @@ public class RuleRefiner {
 	private final static Logger logger = Logger.getLogger(RuleRefiner.class.getName());
 	
 	private Vector<Bin> bins;
+	private List<Profile> profiles;
 	private Vector<Itemset> frequentItemset;
 	private Vector<AssociationRule> associationRules;
-	private Vector<RuleWrapper> associationRulesWrapper;
+	private Vector<AssociationRuleWrapper> asRules;
+	private AssociationRuleConverter rulesConverter;
 
 	private double minSupport = 0, minConfidence = 0;
 
 	
-	public RuleRefiner(Vector<Bin> bins) {
+	public RuleRefiner(Vector<Bin> bins, List<Profile> profiles, double minSupport, double minConfidence) {
 		this.bins = bins;
+		this.minSupport = minSupport;
+		this.minConfidence = minConfidence;
+		this.profiles = profiles;
+		this.rulesConverter = new AssociationRuleConverter(this.bins);
+		
+		//Create fp-growth instance and get profiles itemsets
+		logger.info("Start association analysis");
+		AssociationAnalyzer fpgrowth = new FPGrowthWrapper(this.profiles, bins);
+		
+		//Association rules generator
+		logger.info("Start association rules generating process");
+		AssociationRuleGenerator ruleGenerator = new AssociationRuleGenerator(fpgrowth.getItemsets());
+		
+		logger.info(String.format("Generate rules with  Minimume support: %.1f, Minimume confidence: %.1f", minSupport, minConfidence));
+		frequentItemset = fpgrowth.getFrequentItemsets(minSupport);
+		
+		logger.info(String.format("Found %d frequent itemsets with minSupport: %f and minConfidence: %f", frequentItemset.size(), minSupport, minConfidence));
+		associationRules = ruleGenerator.findAssociationRules(frequentItemset, minConfidence);
+		
+		logger.info(String.format("Found %d association rules", associationRules.size()));
+		asRules = rulesConverter.convert(associationRules);
 	}
 	
 	public double getMinSupport() {
@@ -40,12 +63,20 @@ public class RuleRefiner {
 		return minConfidence;
 	}
 
+	public Vector<Bin> getBins() {
+		return bins;
+	}
+	
 	public Vector<Itemset> getFrequentItemsete() {
 		return frequentItemset;
 	}
 	
 	public Vector<AssociationRule> getAssociationRules() {
 		return associationRules;
+	}
+	
+	public Vector<AssociationRuleWrapper> getAssociationRulesWrapper() {
+		return asRules;
 	}
 	
 	/**
@@ -56,36 +87,10 @@ public class RuleRefiner {
 	 * @param minConfidence minimum confidence for rules
 	 * @return a collection of refined rules
 	 */
-	public Vector<RuleWrapper> refineRules(List<Profile> profiles, Vector<RbmmRuleWrapper> rbmmRules, double minSupport, double minConfidence) {
-		
-		this.minSupport = minSupport;
-		this.minConfidence = minConfidence;
-		
-		//Create fp-growth instance and get profiles itemsets
-		logger.info("Start association analysis");
-		AssociationAnalyzer fpgrowth = new FPGrowthWrapper(profiles, bins);
-		
-		//Association rules generator
-		logger.info("Start association rules generating process");
-		AssociationRuleGenerator ruleGenerator = new AssociationRuleGenerator(fpgrowth.getItemsets());
-		
-		//Assocation rule converter
-		AssociationRuleConverter rulesConverter = new AssociationRuleConverter(bins);
-		
-		logger.info(String.format("Generate rules with  Minimume support: %.1f, Minimume confidence: %.1f", minSupport, minConfidence));
-		frequentItemset = fpgrowth.getFrequentItemsets(minSupport);
-		
-		logger.info(String.format("Found %d frequent itemsets with minSupport: %f and minConfidence: %f", frequentItemset.size(), minSupport, minConfidence));
-		associationRules = ruleGenerator.findAssociationRules(frequentItemset, minConfidence);
-		
-		logger.info(String.format("Found %d association rules", associationRules.size()));
-		Vector<AssociationRuleWrapper> asRules = rulesConverter.convert(associationRules);
+	public Vector<RuleWrapper> refineRules(Vector<RbmmRuleWrapper> rbmmRules) {
 		
 		logger.info(String.format("Refine converted %d association rules with RBMM %d rules...", asRules.size(), rbmmRules.size()));
-		associationRulesWrapper = RuleRefiner.refineRules(asRules, rbmmRules);
-		
-		//Refine rules
-		return associationRulesWrapper;
+		return RuleRefiner.refineRules(asRules, rbmmRules);
 	}
 	
 	/**
@@ -98,7 +103,7 @@ public class RuleRefiner {
 	 * @param rbmmRules
 	 * @return
 	 */
-	public static  Vector<RuleWrapper> refineRules(Vector<AssociationRuleWrapper> asRules, Vector<RbmmRuleWrapper> rbmmRules){
+	public static Vector<RuleWrapper> refineRules(Vector<AssociationRuleWrapper> asRules, Vector<RbmmRuleWrapper> rbmmRules){
 		//Classify rules cases into the results of set actions between the two sets
 		AssociationRuleWrapper assValue;
 		Vector<RuleWrapper> resutls = new Vector<RuleWrapper>();

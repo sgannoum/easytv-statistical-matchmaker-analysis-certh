@@ -228,8 +228,8 @@ public class Main {
 		
 		logger.info(""+rbmmRules.size()+" rules have been received.");
 		
-        RuleRefiner ruleRefiner = new RuleRefiner(Profile.getBins());
-        Vector<RuleWrapper> rules =  ruleRefiner.refineRules(_Profiles.getPoints(), rbmmRules, minSupport, minConfidence);
+        RuleRefiner ruleRefiner = new RuleRefiner(Profile.getBins(),_Profiles.getPoints(), minSupport, minConfidence);
+        Vector<RuleWrapper> rules =  ruleRefiner.refineRules(rbmmRules);
 
         if(!rules.isEmpty()) {
 	        for(RuleWrapper rule : rules)  
