@@ -10,13 +10,16 @@
   <test name="Clustering tests">
     <classes>
       <class name="com.certh.iti.easytv.stmm.clustering.DBScanTest"/>
-      <class name="com.certh.iti.easytv.stmm.clustering.DBScanProfilesTest"/>
-      
+      <class name="com.certh.iti.easytv.stmm.clustering.DBScanProfilesTest"/>  
+      <class name="com.certh.iti.easytv.stmm.clustering.ClustereTest"/>
+    </classes>
+  </test>
+  <test name="Similarity tests">
+    <classes>
       <class name="com.certh.iti.easytv.stmm.similarity.SimilarityMeasureTest"/>
       <class name="com.certh.iti.easytv.stmm.similarity.SimilarityMeasureProfileTest"/>
       <class name="com.certh.iti.easytv.stmm.similarity.DissimilarityMeasureProfileTest"/>    
-      
-      <!-- <class name="com.certh.iti.easytv.stmm.similarity.MaskGeneratorTest"/> -->
+ <!-- <class name="com.certh.iti.easytv.stmm.similarity.MaskGeneratorTest"/> -->
       <class name="com.certh.iti.easytv.stmm.similarity.MaskedSimilarityMeasureProfileTest"/>
     </classes>
   </test>

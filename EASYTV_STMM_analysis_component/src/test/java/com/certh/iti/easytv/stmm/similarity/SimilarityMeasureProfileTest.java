@@ -3,14 +3,15 @@ package com.certh.iti.easytv.stmm.similarity;
 import java.io.IOException;
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
 import org.json.JSONObject;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.certh.iti.easytv.stmm.similarity.DimensionsGenerator;
 import com.certh.iti.easytv.stmm.similarity.SimilarityMeasure;
 import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
-import junit.framework.Assert;
 
 public class SimilarityMeasureProfileTest {
 	
@@ -18,7 +19,7 @@ public class SimilarityMeasureProfileTest {
 	private DistanceMeasure distanceMeasure;
 	
 	
-	@BeforeClass
+	@BeforeTest
 	public void beforeTest() {
 		dimensionsGenerator = new DimensionsGenerator(Profile.getUris(), Profile.getOperands());
 		distanceMeasure = new SimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
@@ -63,7 +64,7 @@ public class SimilarityMeasureProfileTest {
 		Profile profile_5 = new Profile( new JSONObject("{" + 
 														"    \"user_id\": 0," + 
 														"    \"user_profile\": {\"user_preferences\": {\"default\": {\"preferences\": {" + 
-														"		\"http://registry.easytv.eu/application/cs/audio/eq/low/pass/qFactor\": 1.2" + 
+														"		\"http://registry.easytv.eu/application/cs/audio/eq/low/pass/qFactor\": 12.0" + 
 														"		" + 
 														"    }}}}" + 
 														"}"));
