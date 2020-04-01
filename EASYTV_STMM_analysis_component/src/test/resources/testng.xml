@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Statistical matchmaker unit tests">
-  <test name="Test rule refinements preference only">
-    <classes>
-     <class name="com.certh.iti.easytv.stmm.association.analysis.RuleRefinerPreferencesOnlyTest"/>
-    </classes>
-  </test>
+
   <test name="Test rule refinements">
     <classes>
      <class name="com.certh.iti.easytv.stmm.association.analysis.RuleRefinerTest"/>
@@ -14,12 +10,21 @@
   <test name="Clustering tests">
     <classes>
       <class name="com.certh.iti.easytv.stmm.clustering.DBScanTest"/>
+      <class name="com.certh.iti.easytv.stmm.clustering.DBScanProfilesTest"/>
+      
       <class name="com.certh.iti.easytv.stmm.similarity.SimilarityMeasureTest"/>
+      <class name="com.certh.iti.easytv.stmm.similarity.SimilarityMeasureProfileTest"/>
+      <class name="com.certh.iti.easytv.stmm.similarity.DissimilarityMeasureProfileTest"/>    
+      
       <!-- <class name="com.certh.iti.easytv.stmm.similarity.MaskGeneratorTest"/> -->
+      <class name="com.certh.iti.easytv.stmm.similarity.MaskedSimilarityMeasureProfileTest"/>
+    </classes>
+  </test>
+  <test name="Dimensions tests">
+    <classes>
       <class name="com.certh.iti.easytv.stmm.similarity.dimension.MultiNumericTest"/>
     </classes>
   </test>
-  <!-- The following test must be executed in separated test class  -->
   <test name="FPGrowthWrapperTest tests">
     <classes>
       <class name="com.certh.iti.easytv.stmm.association.analysis.fpgrowth.FPGrowthWrapperTest"/>

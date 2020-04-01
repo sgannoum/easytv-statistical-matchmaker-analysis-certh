@@ -8,11 +8,12 @@ import org.apache.commons.math3.ml.clustering.Cluster;
 import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
 import org.json.JSONObject;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.certh.iti.easytv.stmm.similarity.DimensionsGenerator;
-import com.certh.iti.easytv.stmm.similarity.SimilarityMeasure;
+import com.certh.iti.easytv.stmm.similarity.DissimilarityMeasure;
 import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 
@@ -24,7 +25,7 @@ public class DBScanProfilesTest {
 	@BeforeClass
 	public void beforeTest() {
 		dimensionsGenerator = new DimensionsGenerator(Profile.getUris(), Profile.getOperands());
-		distanceMeasure = new SimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
+		distanceMeasure = new DissimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 	}
 
 	@Test
@@ -123,30 +124,32 @@ public class DBScanProfilesTest {
 
 		
 		List<Profile> profiles = new ArrayList<Profile>();
-		profiles.add(profile_1); profiles.add(profile_11); profiles.add(profile_12);
-		profiles.add(profile_2); profiles.add(profile_21); profiles.add(profile_22);
-		profiles.add(profile_3); profiles.add(profile_31); profiles.add(profile_32);
+		profiles.add(profile_1); profiles.add(profile_11); profiles.add(profile_12); //first cluster
+		profiles.add(profile_2); profiles.add(profile_21); profiles.add(profile_22); //second cluster
+		profiles.add(profile_3); profiles.add(profile_31); profiles.add(profile_32); //third cluster
 		
-		for(int i = 0; i < profiles.size(); i++) {
-			Profile p1 = profiles.get(i);
-			for(int j = i + 1; j < profiles.size(); j++) {
-				Profile p2 = profiles.get(j);
-				System.out.print(" "+distanceMeasure.compute(p1.getPoint(), p2.getPoint()));
-			}
-			System.out.println();
-		}
+		//print profiles distances
+		//print_dissimilarity_distances_of_profiles(profiles);
 			
+		DBSCANClusterer<Profile> dbscan = new DBSCANClusterer<Profile>(0.1, 2, distanceMeasure);
+		List<Cluster<Profile>> actual = dbscan.cluster(profiles);
 		
-		DBSCANClusterer<Profile> dbscan = new DBSCANClusterer<Profile>(0.95, 2, distanceMeasure);
-		List<Cluster<Profile>> clusters = dbscan.cluster(profiles);
 		
-		System.out.println("Cluster size: "+clusters.size());
-		for(Cluster<Profile> cluster : clusters) {
-			for(Profile p : cluster.getPoints())
-				System.out.print(" "+p.getUserId());
-			System.out.println();
-		}
-		
+		List<Cluster<Profile>> expected = new ArrayList<Cluster<Profile>>();
+		Cluster<Profile> cluster_1 = new Cluster<Profile>();
+		Cluster<Profile> cluster_2 = new Cluster<Profile>();
+		Cluster<Profile> cluster_3 = new Cluster<Profile>();
+		cluster_1.addPoint(profile_1); cluster_1.addPoint(profile_11); cluster_1.addPoint(profile_12);
+		cluster_2.addPoint(profile_2); cluster_2.addPoint(profile_21); cluster_2.addPoint(profile_22);
+		cluster_3.addPoint(profile_3); cluster_3.addPoint(profile_31); cluster_3.addPoint(profile_32);
+
+		expected.add(cluster_1); expected.add(cluster_2); expected.add(cluster_3);
+	
+		Assert.assertEquals(actual.size(), expected.size());
+		Assert.assertEquals(actual.get(0).getPoints(), expected.get(0).getPoints());
+		Assert.assertEquals(actual.get(1).getPoints(), expected.get(1).getPoints());
+		Assert.assertEquals(actual.get(2).getPoints(), expected.get(2).getPoints());
+
 	}
 	
 	
@@ -165,14 +168,14 @@ public class DBScanProfilesTest {
 				"    \"user_id\": 11," + 
 				"    \"user_profile\": {\"user_preferences\": {\"default\": {\"preferences\": {" + 
 				"		\"http://registry.easytv.eu/common/volume\": 5," + 
-				"		\"http://registry.easytv.eu/common/contrast\": 10" + 
+				"		\"http://registry.easytv.eu/common/contrast\": 6" + 
 				"    }}}}" + 
 				"}"));
 		
 		Profile profile_12 = new Profile( new JSONObject("{" + 
 				"    \"user_id\": 12," + 
 				"    \"user_profile\": {\"user_preferences\": {\"default\": {\"preferences\": {" + 
-				"		\"http://registry.easytv.eu/common/volume\": 10," + 
+				"		\"http://registry.easytv.eu/common/volume\": 6," + 
 				"		\"http://registry.easytv.eu/common/contrast\": 5" + 
 				"    }}}}" + 
 				"}"));
@@ -188,7 +191,7 @@ public class DBScanProfilesTest {
 		Profile profile_21 = new Profile( new JSONObject("{" + 
 				"    \"user_id\": 21," + 
 				"    \"user_profile\": {\"user_preferences\": {\"default\": {\"preferences\": {" + 
-				"		\"http://registry.easytv.eu/common/volume\": 40," + 
+				"		\"http://registry.easytv.eu/common/volume\": 31," + 
 				"		\"http://registry.easytv.eu/common/contrast\": 30" + 
 				"    }}}}" + 
 				"}"));
@@ -197,22 +200,22 @@ public class DBScanProfilesTest {
 				"    \"user_id\": 22," + 
 				"    \"user_profile\": {\"user_preferences\": {\"default\": {\"preferences\": {" + 
 				"		\"http://registry.easytv.eu/common/volume\": 30," + 
-				"		\"http://registry.easytv.eu/common/contrast\": 40" + 
+				"		\"http://registry.easytv.eu/common/contrast\": 31" + 
 				"    }}}}" + 
 				"}"));
 		
 		Profile profile_3 = new Profile( new JSONObject("{" + 
 				"    \"user_id\": 3," + 
 				"    \"user_profile\": {\"user_preferences\": {\"default\": {\"preferences\": {" + 
-				"		\"http://registry.easytv.eu/common/volume\": 70," + 
-				"		\"http://registry.easytv.eu/common/contrast\": 70" + 
+				"		\"http://registry.easytv.eu/common/volume\": 80," + 
+				"		\"http://registry.easytv.eu/common/contrast\": 80" + 
 				"    }}}}" + 
 				"}"));
 		
 		Profile profile_31 = new Profile( new JSONObject("{" + 
 				"    \"user_id\": 31," + 
 				"    \"user_profile\": {\"user_preferences\": {\"default\": {\"preferences\": {" + 
-				"		\"http://registry.easytv.eu/common/volume\": 70," + 
+				"		\"http://registry.easytv.eu/common/volume\": 81," + 
 				"		\"http://registry.easytv.eu/common/contrast\": 80" + 
 				"    }}}}" + 
 				"}"));
@@ -222,31 +225,57 @@ public class DBScanProfilesTest {
 				"    \"user_id\": 32," + 
 				"    \"user_profile\": {\"user_preferences\": {\"default\": {\"preferences\": {" + 
 				"		\"http://registry.easytv.eu/common/volume\": 80," + 
-				"		\"http://registry.easytv.eu/common/contrast\": 70" + 
+				"		\"http://registry.easytv.eu/common/contrast\": 81" + 
 				"    }}}}" + 
 				"}"));
 
 		
 		List<Profile> profiles = new ArrayList<Profile>();
 		profiles.add(profile_1); profiles.add(profile_11); profiles.add(profile_12);
-		//profiles.add(profile_2); profiles.add(profile_21); profiles.add(profile_22);
+		profiles.add(profile_2); profiles.add(profile_21); profiles.add(profile_22);
 		profiles.add(profile_3); profiles.add(profile_31); profiles.add(profile_32);
 		
+		//print profiles distances
+		//print_dissimilarity_distances_of_profiles(profiles);
+			
+		DBSCANClusterer<Profile> dbscan = new DBSCANClusterer<Profile>(0.1, 2, distanceMeasure);
+		List<Cluster<Profile>> actual = dbscan.cluster(profiles);
 		
-		DBSCANClusterer<Profile> dbscan = new DBSCANClusterer<Profile>(0.99, 4, distanceMeasure);
-		List<Cluster<Profile>> clusters = dbscan.cluster(profiles);
 		
-		System.out.println("Cluster size: "+clusters.size());
-		for(Cluster<Profile> cluster : clusters) {
-			List<Profile> aCluster = cluster.getPoints();
-			for(int i = 0; i < aCluster.size(); i++) {
-				Profile p1 = aCluster.get(i);
-				for(int j = i + 1; j < aCluster.size(); j++) {
-					Profile p2 = aCluster.get(j);
-					System.out.print(" "+distanceMeasure.compute(p1.getPoint(), p2.getPoint()));
+		List<Cluster<Profile>> expected = new ArrayList<Cluster<Profile>>();
+		Cluster<Profile> cluster_1 = new Cluster<Profile>();
+		Cluster<Profile> cluster_2 = new Cluster<Profile>();
+		Cluster<Profile> cluster_3 = new Cluster<Profile>();
+		cluster_1.addPoint(profile_1); cluster_1.addPoint(profile_11); cluster_1.addPoint(profile_12);
+		cluster_2.addPoint(profile_2); cluster_2.addPoint(profile_21); cluster_2.addPoint(profile_22);
+		cluster_3.addPoint(profile_3); cluster_3.addPoint(profile_31); cluster_3.addPoint(profile_32);
+
+		expected.add(cluster_1); expected.add(cluster_2); expected.add(cluster_3);
+	
+		Assert.assertEquals(actual.size(), expected.size());
+		Assert.assertEquals(actual.get(0).getPoints(), expected.get(0).getPoints());
+		Assert.assertEquals(actual.get(1).getPoints(), expected.get(1).getPoints());
+		Assert.assertEquals(actual.get(2).getPoints(), expected.get(2).getPoints());
+		
+	}
+	
+	/**
+	 * A utility function that help printing profiles distances
+	 * @param profiles
+	 */
+	private void print_dissimilarity_distances_of_profiles(List<Profile> profiles) {
+		
+		for(int i = 0; i < profiles.size(); i++) {
+			Profile p1 = profiles.get(i);
+			for(int j = 0; j < profiles.size(); j++) {
+				if(i == j) {
+					System.out.print(String.format(" %5.2f ", 0.0));
+				} else {
+					Profile p2 = profiles.get(j);
+					System.out.print(String.format(" %5.2f ",distanceMeasure.compute(p1.getPoint(), p2.getPoint())));
 				}
-				System.out.println();
 			}
+			System.out.println();
 		}
 		
 	}

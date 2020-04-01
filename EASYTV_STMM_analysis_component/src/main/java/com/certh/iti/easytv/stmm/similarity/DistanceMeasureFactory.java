@@ -20,7 +20,7 @@ public class DistanceMeasureFactory {
 	 * @return
 	 */
 	public static DistanceMeasure getInstance() {
-		return new SimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
+		return new DissimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 	}
 	
 	/**
@@ -44,7 +44,7 @@ public class DistanceMeasureFactory {
 		//All dimensions
 		for(String mode : compareMode)
 			if(mode.equalsIgnoreCase("all")) 
-				return new SimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
+				return new DissimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 		
 		//long that corresponds to dimensions
 		long mask = MaskGenerator.getMask(Profile.getUris(), compareMode);

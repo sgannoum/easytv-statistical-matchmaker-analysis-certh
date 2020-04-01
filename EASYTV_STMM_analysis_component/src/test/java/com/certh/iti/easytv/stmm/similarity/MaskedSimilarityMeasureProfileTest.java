@@ -1,4 +1,4 @@
-package com.certh.iti.easytv.stmm.clustering;
+package com.certh.iti.easytv.stmm.similarity;
 
 import java.io.IOException;
 
@@ -16,7 +16,7 @@ import com.certh.iti.easytv.stmm.similarity.SimilarityMeasure;
 import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 
-public class MaskedSimilarityMeasureTest {
+public class MaskedSimilarityMeasureProfileTest {
 
 	private DimensionsGenerator dimensionsGenerator;
 	private DistanceMeasure allDistance;

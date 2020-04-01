@@ -1,4 +1,4 @@
-package com.certh.iti.easytv.stmm.clustering;
+package com.certh.iti.easytv.stmm.similarity;
 
 import java.io.IOException;
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
@@ -12,7 +12,7 @@ import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 import junit.framework.Assert;
 
-public class SimilarityMeasureTest {
+public class SimilarityMeasureProfileTest {
 	
 	private DimensionsGenerator dimensionsGenerator;
 	private DistanceMeasure distanceMeasure;
