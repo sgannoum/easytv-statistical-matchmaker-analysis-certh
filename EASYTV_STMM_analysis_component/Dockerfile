@@ -16,7 +16,7 @@ COPY ./config.ini .
 # Copy sh file
 RUN echo "#!/bin/bash" > start_STMM_Job.sh
 RUN echo "cd /root/STMM" >> start_STMM_Job.sh
-RUN echo "/opt/jdk/bin/java -jar /root/STMM/EASYTV_STMM_profile_generator-0.0.1-SNAPSHOT-jar-with-dependencies.jar" >> start_STMM_Job.sh
+RUN echo "/opt/jdk/bin/java -Xms1024m -Xmx2048m -jar /root/STMM/EASYTV_STMM_profile_generator-0.0.1-SNAPSHOT-jar-with-dependencies.jar" >> start_STMM_Job.sh
 RUN chmod 777 start_STMM_Job.sh
 
 #Create Crontab file with job to run every day at 00:00
