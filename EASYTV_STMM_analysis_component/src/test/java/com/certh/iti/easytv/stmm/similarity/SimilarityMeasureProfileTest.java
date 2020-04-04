@@ -1,15 +1,13 @@
 package com.certh.iti.easytv.stmm.similarity;
 
 import java.io.IOException;
+
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
 import org.json.JSONObject;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import com.certh.iti.easytv.stmm.similarity.DimensionsGenerator;
-import com.certh.iti.easytv.stmm.similarity.SimilarityMeasure;
 import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 

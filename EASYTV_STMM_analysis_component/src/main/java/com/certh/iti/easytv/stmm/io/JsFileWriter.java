@@ -113,6 +113,7 @@ public class JsFileWriter implements ProfileWriter{
         writer.println("var SymmetricBinary = require(\"./DimensionHandlers\").SymmetricBinary");
         writer.println("var Color = require(\"./DimensionHandlers\").Color");
         writer.println("var MultiNominal = require(\"./DimensionHandlers\").MultiNominal");
+        writer.println("var MultiNumeric = require(\"./DimensionHandlers\").MultiNumeric");
         writer.println();
 		
         //entry count
