@@ -62,14 +62,13 @@ public class Main {
 	private static String DB_PASSWORD = "easytv";
 	
 	private static Vector<RbmmRuleWrapper> rbmmRules;
-	private static double minSupport = 0.8;
-	private static double minConfidence = 0.9;
+	private static double MIN_SUPPORT = 0.8;
+	private static double MIN_CONFIDENCE = 0.9;
 	
 	public static void main(String[] args) 
 			throws NumberFormatException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, 
 				   SecurityException, IOException, UserProfileParsingException, AddressException, NoSuchAlgorithmException, MessagingException 
 	{	
-		
 		
 		//Parse arguments
 		int argn = args.length;
@@ -86,7 +85,7 @@ public class Main {
 				_rbmmRulesFile = new File(value.trim());
 		}
 		
-		if		(_ConfigFile == null || !_ConfigFile.exists() ) {
+		if(_ConfigFile == null || !_ConfigFile.exists() ) {
 			String pwd = System.getProperty("user.dir");
 			_ConfigFile = new File(pwd + File.separator + "config.ini");
             logger.info("Could not find profiles directory, reverted to :'" + _ConfigFile.getAbsolutePath() + "'");
@@ -97,42 +96,17 @@ public class Main {
 			System.exit(-1);
 		}
 
-		if(System.getenv("STMM_HOST") != null) {
-			STMM_HOST = System.getenv("STMM_HOST") ;
-		}
-		
-		if(System.getenv("STMM_PORT") != null) {
-			STMM_PORT = System.getenv("STMM_PORT") ;
-		}
-		
-		if(System.getenv("RBMM_HOST") != null) {
-			RBMM_HOST = System.getenv("RBMM_HOST") ;
-		}
-		
-		if(System.getenv("RBMM_PORT") != null) {
-			RBMM_PORT = System.getenv("RBMM_PORT") ;
-		}
-		
-		if(System.getenv("DB_HOST") != null) {
-			DB_HOST = System.getenv("DB_HOST") ;
-		}
-		
-		if(System.getenv("DB_PORT") != null) {
-			DB_PORT = System.getenv("DB_PORT") ;
-		}
-		
-		if(System.getenv("DB_NAME") != null) {
-			DB_NAME= System.getenv("DB_NAME") ;
-		}
-		
-		if(System.getenv("DB_USER") != null) {
-			DB_USER = System.getenv("DB_USER") ;
-		}
-		
-		if(System.getenv("DB_PASSWORD") != null) {
-			DB_PASSWORD = System.getenv("DB_PASSWORD") ;
-		}
-		
+		if(System.getenv("STMM_HOST") != null)  				STMM_HOST = System.getenv("STMM_HOST") ;
+		if(System.getenv("STMM_PORT") != null) 					STMM_PORT = System.getenv("STMM_PORT") ;
+		if(System.getenv("RBMM_HOST") != null) 					RBMM_HOST = System.getenv("RBMM_HOST") ;
+		if(System.getenv("RBMM_PORT") != null) 					RBMM_PORT = System.getenv("RBMM_PORT") ;
+		if(System.getenv("DB_HOST") != null) 					DB_HOST = System.getenv("DB_HOST") ;
+		if(System.getenv("DB_PORT") != null)					DB_PORT = System.getenv("DB_PORT") ;
+		if(System.getenv("DB_NAME") != null) 					DB_NAME= System.getenv("DB_NAME") ;
+		if(System.getenv("DB_USER") != null) 					DB_USER = System.getenv("DB_USER") ;
+		if(System.getenv("DB_PASSWORD") != null)				DB_PASSWORD = System.getenv("DB_PASSWORD") ;
+		if(System.getenv("RULES_MIN_SUPPORT") != null)			MIN_SUPPORT = Double.valueOf(System.getenv("RULES_MIN_SUPPORT"));
+		if(System.getenv("RULES_MIN_CONFIDENCE") != null)		MIN_CONFIDENCE = Double.valueOf(System.getenv("RULES_MIN_CONFIDENCE"));
 		if(System.getenv("DB_PASSWORD_FILE") != null) {
 			String line = "";
 			BufferedReader reader = new BufferedReader(new FileReader(System.getenv("DB_PASSWORD_FILE")));
@@ -149,13 +123,6 @@ public class Main {
 			
 			DB_PASSWORD = buff.toString();
 		}
-		
-		if(System.getenv("minSupport") != null)
-			minSupport = Double.valueOf(System.getenv("minSupport")).doubleValue();
-		
-		if(System.getenv("minConfidence") != null)
-			minConfidence = Double.valueOf(System.getenv("minConfidence")).doubleValue();
-	
 		
 		//Read config
 		Config.getInstance().ReadConfiguration(_ConfigFile);
@@ -228,7 +195,7 @@ public class Main {
 		
 		logger.info(""+rbmmRules.size()+" rules have been received.");
 		
-        RuleRefiner ruleRefiner = new RuleRefiner(Profile.getBins(),_Profiles.getPoints(), minSupport, minConfidence);
+        RuleRefiner ruleRefiner = new RuleRefiner(Profile.getBins(),_Profiles.getPoints(), MIN_SUPPORT, MIN_CONFIDENCE);
         Vector<RuleWrapper> rules =  ruleRefiner.refineRules(rbmmRules);
 
         if(!rules.isEmpty()) {
