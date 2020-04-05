@@ -41,6 +41,7 @@ public class Main {
 	private static final String _ArgProfilesDirectory = "-p";
 	private static final String _ArgOutputDirectory = "-o";
 	private static final String _ArgRbmmRulesFile = "-r";
+	private static final String _ArgEnviroment = "-e";
 	
 	// Profiles
 	private static File _ConfigFile = null;
@@ -60,16 +61,16 @@ public class Main {
 	private static String DB_NAME = "easytv";
 	private static String DB_USER = "easytv";
 	private static String DB_PASSWORD = "easytv";
+	private static String ENVIRONMENT = "development";
 	
 	private static Vector<RbmmRuleWrapper> rbmmRules;
-	private static double MIN_SUPPORT = 0.8;
-	private static double MIN_CONFIDENCE = 0.9;
+	private static double RULES_MIN_SUPPORT = 0.8;
+	private static double RULES_MIN_CONFIDENCE = 0.9;
 	
 	public static void main(String[] args) 
 			throws NumberFormatException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, 
 				   SecurityException, IOException, UserProfileParsingException, AddressException, NoSuchAlgorithmException, MessagingException 
 	{	
-		
 		//Parse arguments
 		int argn = args.length;
 		for(int i = 0; i < argn; i+=2 ) {
@@ -83,6 +84,8 @@ public class Main {
 				_OutputDirectory = new File(value.trim());
 			else if (arg.equals(_ArgRbmmRulesFile)) 
 				_rbmmRulesFile = new File(value.trim());
+			else if (arg.equals(_ArgEnviroment)) 
+				ENVIRONMENT = value.trim();
 		}
 		
 		if(_ConfigFile == null || !_ConfigFile.exists() ) {
@@ -105,8 +108,9 @@ public class Main {
 		if(System.getenv("DB_NAME") != null) 					DB_NAME= System.getenv("DB_NAME") ;
 		if(System.getenv("DB_USER") != null) 					DB_USER = System.getenv("DB_USER") ;
 		if(System.getenv("DB_PASSWORD") != null)				DB_PASSWORD = System.getenv("DB_PASSWORD") ;
-		if(System.getenv("RULES_MIN_SUPPORT") != null)			MIN_SUPPORT = Double.valueOf(System.getenv("RULES_MIN_SUPPORT"));
-		if(System.getenv("RULES_MIN_CONFIDENCE") != null)		MIN_CONFIDENCE = Double.valueOf(System.getenv("RULES_MIN_CONFIDENCE"));
+		if(System.getenv("RULES_MIN_SUPPORT") != null)			RULES_MIN_SUPPORT = Double.valueOf(System.getenv("RULES_MIN_SUPPORT"));
+		if(System.getenv("RULES_MIN_CONFIDENCE") != null)		RULES_MIN_CONFIDENCE = Double.valueOf(System.getenv("RULES_MIN_CONFIDENCE"));
+		if(System.getenv("ENVIRONMENT") != null)				ENVIRONMENT = System.getenv("ENVIRONMENT");
 		if(System.getenv("DB_PASSWORD_FILE") != null) {
 			String line = "";
 			BufferedReader reader = new BufferedReader(new FileReader(System.getenv("DB_PASSWORD_FILE")));
@@ -153,8 +157,10 @@ public class Main {
 		
 		logger.info("Finished loading " + _Profiles.getPoints().size() + " profiles.");
 		
-		logger.info("Send email with statistics...");
-		EmailHandler.sendAttachmenentMail("noreply@easytvproject.eu", "salgan@iti.gr", Profile.getStatistics());
+		if(!ENVIRONMENT.equals("development")) {
+			logger.info("Send email with statistics...");
+			EmailHandler.sendAttachmenentMail("noreply@easytvproject.eu", "salgan@iti.gr", Profile.getStatistics());
+		}
 		
 		/**
 		 *	ASSOCIATION ANALYSIS
@@ -188,6 +194,7 @@ public class Main {
 			JSONArray rules = new JSONArray(buff.toString());
 			for(int i = 0; i < rules.length(); i++)
 				rbmmRules.add(new RbmmRuleWrapper(rules.getJSONObject(i)));
+			
 		} else {
 			logger.info("Get RBMM rules from "+"http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules");
 			rbmmRules = HttpHandler.readRules("http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules");
@@ -195,16 +202,13 @@ public class Main {
 		
 		logger.info(""+rbmmRules.size()+" rules have been received.");
 		
-        RuleRefiner ruleRefiner = new RuleRefiner(Profile.getBins(),_Profiles.getPoints(), MIN_SUPPORT, MIN_CONFIDENCE);
+        RuleRefiner ruleRefiner = new RuleRefiner(Profile.getBins(),_Profiles.getPoints(), RULES_MIN_SUPPORT, RULES_MIN_CONFIDENCE);
         Vector<RuleWrapper> rules =  ruleRefiner.refineRules(rbmmRules);
 
-        if(!rules.isEmpty()) {
-	        for(RuleWrapper rule : rules)  
-	        	logger.info(rule.getJSONObject().toString(4));
-	
-			//write rules to RBMM
+        //Inform RBMM
+        if(!rules.isEmpty() && !ENVIRONMENT.equals("development")) 
 			HttpHandler.writeRules("http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules", rules);
-        }
+        
 	}
 	
 	
@@ -232,7 +236,7 @@ public class Main {
 			profileWriter.write(generalized);
 			
 		} else {
-			logger.info("Inform stmm via: " + "http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters");
+			logger.info("Update stmm clusters: " + "http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters");
 	        
 			//inform stmm runtime via http request
 			HttpHandler stmmWriter = new HttpHandler("http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters"); 
