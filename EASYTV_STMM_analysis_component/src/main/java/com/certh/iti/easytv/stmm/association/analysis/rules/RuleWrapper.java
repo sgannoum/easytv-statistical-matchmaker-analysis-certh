@@ -417,7 +417,8 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			for(i = 0; i < ruleConditions.length - 1; i++)
 				conditions += ruleConditions[i].toString() + " ^\r\n";
 			
-			conditions += ruleConditions[i];
+			if(ruleConditions.length > 0) conditions += ruleConditions[i];
+			
 			return conditions;
 		}
 		
