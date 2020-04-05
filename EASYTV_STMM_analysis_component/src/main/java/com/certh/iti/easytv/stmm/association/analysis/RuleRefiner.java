@@ -48,7 +48,7 @@ public class RuleRefiner {
 		logger.info(String.format("Generate rules with  Minimume support: %.1f, Minimume confidence: %.1f", minSupport, minConfidence));
 		frequentItemset = fpgrowth.getFrequentItemsets(minSupport);
 		
-		logger.info(String.format("Found %d frequent itemsets with minSupport: %f and minConfidence: %f", frequentItemset.size(), minSupport, minConfidence));
+		logger.info(String.format("Found %d frequent itemsets with minSupport: %.1f and minConfidence: %.1f", frequentItemset.size(), minSupport, minConfidence));
 		associationRules = ruleGenerator.findAssociationRules(frequentItemset, minConfidence);
 		
 		logger.info(String.format("Found %d association rules", associationRules.size()));

@@ -10,6 +10,7 @@ import org.apache.commons.math3.ml.clustering.Cluster;
 import org.json.JSONObject;
 
 import com.certh.iti.easytv.user.Profile;
+import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 
 public class DBProfileReader implements ProfileReader{
 
@@ -27,6 +28,7 @@ public class DBProfileReader implements ProfileReader{
 	}
 
 	public Cluster<Profile> readProfiles() {
+		Profile profile;
 		Cluster<Profile> profiles = new Cluster<Profile>();
 		logger.info("Try to connect with db : "+ "jdbc:mysql://"+ Url);
 		
@@ -38,7 +40,8 @@ public class DBProfileReader implements ProfileReader{
 			
 			// here sonoo is database name, root is username and password
 			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("select userModel from userModels");
+			ResultSet rs = stmt.executeQuery("SELECT userModel "
+										   + "FROM userModels");
 			
 			logger.info("Parse user profiles...");
 			
@@ -52,8 +55,14 @@ public class DBProfileReader implements ProfileReader{
 										.put("user_id", 0)
 										.put("user_profile", user_profile);
 				
-				
-				Profile profile = new Profile(json);
+				try 
+				{
+					profile = new Profile(json);
+				} catch (UserProfileParsingException e1) {
+					//Print ERROR message and ignore error
+					logger.warning("Problem loading profile: "+e1.getMessage());
+					continue;
+				} 
 				
 				//add to profile list
 				profiles.addPoint(profile);
@@ -64,14 +73,12 @@ public class DBProfileReader implements ProfileReader{
 			//close
 			con.close();
 			
-		} catch (Exception e) {
-			logger.info("Connection failed...."+e.getMessage());
-			e.printStackTrace();
+		} catch (Exception e2) {
+			logger.info("Connection failed...."+e2.getMessage());
+			e2.printStackTrace();
 		}
 		
 		return profiles;
-		
-		
 	}
 
 }
