@@ -40,20 +40,24 @@ public class DBProfileReader implements ProfileReader{
 			
 			// here sonoo is database name, root is username and password
 			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT userModel "
+			ResultSet rs = stmt.executeQuery("SELECT userId, userModel as user_profile, userContext, userContent "
 										   + "FROM userModels");
 			
 			logger.info("Parse user profiles...");
 			
 			while (rs.next()) {
 				
-				//convert to json
-				JSONObject user_profile =  new JSONObject(rs.getString(1));
-				
-				//add a pseudo id and user profile
 				JSONObject json = new JSONObject()
-										.put("user_id", 0)
-										.put("user_profile", user_profile);
+						.put("user_id", rs.getInt("userId"))
+						.put("user_profile", new JSONObject(rs.getString("user_profile")));
+				
+				if(rs.getString("userContext") != null) 
+					json
+						.put("user_context", new JSONObject(rs.getString("userContext")));
+
+				if(rs.getString("userContent") != null) 
+					json
+						.put("user_content", new JSONObject(rs.getString("userContent")));
 				
 				try 
 				{

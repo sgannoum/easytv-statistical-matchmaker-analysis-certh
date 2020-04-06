@@ -57,7 +57,7 @@ public class Main {
 	private static String RBMM_PORT = "8080";
 
 	private static String DB_HOST = "localhost";
-	private static String DB_PORT = "8077";
+	private static String DB_PORT = "3306";
 	private static String DB_NAME = "easytv";
 	private static String DB_USER = "easytv";
 	private static String DB_PASSWORD = "easytv";
@@ -226,8 +226,7 @@ public class Main {
 		/**
 		 *	WRITE JS FILES
 		 */
-        logger.info("--------");
-		if(_OutputDirectory != null && _ProfilesDirectory != null) {
+		if(_OutputDirectory != null) {
 		
 			logger.info("Write dimensions handlers and clutering data JS files.");
 
@@ -235,7 +234,7 @@ public class Main {
 			profileWriter = new JsFileWriter(_OutputDirectory); 
 			profileWriter.write(generalized);
 			
-		} else {
+		} else if(!generalized.isEmpty()){
 			logger.info("Update stmm clusters: " + "http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters");
 	        
 			//inform stmm runtime via http request
