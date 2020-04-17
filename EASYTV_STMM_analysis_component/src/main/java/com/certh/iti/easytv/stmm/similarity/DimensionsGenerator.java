@@ -1,6 +1,8 @@
 package com.certh.iti.easytv.stmm.similarity;
 
-import java.util.Vector;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import com.certh.iti.easytv.stmm.similarity.dimension.AsymmetricBinary;
@@ -27,16 +29,19 @@ public class DimensionsGenerator {
 	private final static Logger logger = Logger.getLogger(DimensionsGenerator.class.getName());
 
 	protected Dimension[] dimensions;
-	protected String[] lables;
+	protected String[] uris;
 	
-	public DimensionsGenerator(Vector<String> lable, Vector<Attribute> operands) {
-		this.lables = new String[operands.size()];
-		this.dimensions = new Dimension[operands.size()];
+	public DimensionsGenerator(Map<String, Attribute> attributes) {
+		Iterator<Entry<String, Attribute>> iterator = attributes.entrySet().iterator();
+
+		uris = new String[attributes.size()];
+		dimensions = new Dimension[attributes.size()];
 		String msg = "\n";
 
-		for (int i = 0; i < operands.size(); i++) {
-			Attribute operand = operands.get(i);
-			this.lables[i] = lable.get(i);
+		for (int i = 0; i < attributes.size(); i++) {
+			Entry<String, Attribute> entry = iterator.next();
+			Attribute operand = entry.getValue();
+			uris[i] = entry.getKey();
 			
 			if(ColorAttribute.class.isInstance(operand)) {
 				ColorAttribute colorAttribute = (ColorAttribute) operand;
@@ -56,12 +61,12 @@ public class DimensionsGenerator {
 				OrdinalAttribute ordinal = (OrdinalAttribute) operand;
 				dimensions[i] = new Ordinal(ordinal.getStates().length, ordinal.getMaxValue(), ordinal.getMinValue());
 				
+			} else if (NominalAttribute.class.isInstance(operand)) {
+				dimensions[i] = new Nominal(operand.getOperandMissingValue());
+				
 			} else if (MultiNominalAttribute.class.isInstance(operand)) {
 				MultiNominalAttribute multi = (MultiNominalAttribute) operand;
 				dimensions[i] = new MultiNominal(multi.getStates().length, multi.getOperandMissingValue());
-				
-			} else if (NominalAttribute.class.isInstance(operand)) {
-				dimensions[i] = new Nominal(operand.getOperandMissingValue());
 				
 			} else if (SymmetricBinaryAttribute.class.isInstance(operand)) {
 				dimensions[i] = new SymmetricBinary(operand.getOperandMissingValue());
@@ -73,11 +78,11 @@ public class DimensionsGenerator {
 				dimensions[i] = new Time();
 				
 			} else {
-				throw new IllegalStateException("Unknown operand type: "+operand.toString()+" associated with dimension: "+ lable.get(i));
+				throw new IllegalStateException("Unknown operand type: "+operand.toString()+" associated with dimension: "+ uris[i]);
 			}
 			
 			
-			msg +=  String.format("%s\t%s => %s\n", lable.get(i), operand.getClass().getSimpleName(), dimensions[i].getClass().getSimpleName());
+			msg +=  String.format("%s\t%s => %s\n", uris[i], operand.getClass().getSimpleName(), dimensions[i].getClass().getSimpleName());
 			
 		}
 		
@@ -91,7 +96,7 @@ public class DimensionsGenerator {
 	}
 	
 	public String[] getLables() {
-		return lables;
+		return uris;
 	}
 
 }

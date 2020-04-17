@@ -21,7 +21,7 @@ public class ClustereTest {
 	
 	@BeforeTest
 	public void beforeTest() {
-		dimensionsGenerator = new DimensionsGenerator(Profile.getUris(), Profile.getOperands());
+		dimensionsGenerator = new DimensionsGenerator(Profile.getAggregator().getAttributes());
 		distanceMeasure = new DissimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 	}
 

@@ -14,13 +14,13 @@ import com.certh.iti.easytv.stmm.association.analysis.rules.AssociationRuleWrapp
 import com.certh.iti.easytv.stmm.association.analysis.rules.RbmmRuleWrapper;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper;
 import com.certh.iti.easytv.user.Profile;
-import com.certh.iti.easytv.user.preference.attributes.Attribute.Bin;
+import com.certh.iti.easytv.user.preference.attributes.AttributesAggregator;
 
 public class RuleRefiner {
 	
 	private final static Logger logger = Logger.getLogger(RuleRefiner.class.getName());
 	
-	private Vector<Bin> bins;
+	private AttributesAggregator aggregator;
 	private List<Profile> profiles;
 	private Vector<Itemset> frequentItemset;
 	private Vector<AssociationRule> associationRules;
@@ -30,16 +30,16 @@ public class RuleRefiner {
 	private double minSupport = 0, minConfidence = 0;
 
 	
-	public RuleRefiner(Vector<Bin> bins, List<Profile> profiles, double minSupport, double minConfidence) {
-		this.bins = bins;
+	public RuleRefiner(AttributesAggregator aggregator, List<Profile> profiles, double minSupport, double minConfidence) {
+		this.aggregator = aggregator;
 		this.minSupport = minSupport;
 		this.minConfidence = minConfidence;
 		this.profiles = profiles;
-		this.rulesConverter = new AssociationRuleConverter(this.bins);
+		this.rulesConverter = new AssociationRuleConverter(aggregator);
 		
 		//Create fp-growth instance and get profiles itemsets
 		logger.info("Start association analysis");
-		AssociationAnalyzer fpgrowth = new FPGrowthWrapper(this.profiles, bins);
+		AssociationAnalyzer fpgrowth = new FPGrowthWrapper(this.profiles, aggregator);
 		
 		//Association rules generator
 		logger.info("Start association rules generating process");
@@ -61,10 +61,6 @@ public class RuleRefiner {
 	
 	public double getMinConfidence() {
 		return minConfidence;
-	}
-
-	public Vector<Bin> getBins() {
-		return bins;
 	}
 	
 	public Vector<Itemset> getFrequentItemsete() {

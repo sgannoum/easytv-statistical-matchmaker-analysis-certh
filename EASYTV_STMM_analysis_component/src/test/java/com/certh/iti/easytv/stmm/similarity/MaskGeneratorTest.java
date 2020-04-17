@@ -1,30 +1,36 @@
 package com.certh.iti.easytv.stmm.similarity;
 
 import java.io.IOException;
-import java.util.Vector;
-
 import org.testng.annotations.Test;
-
-import com.certh.iti.easytv.user.preference.Preference;
 
 import junit.framework.Assert;
 
 public class MaskGeneratorTest {
 	
-	Vector<String> uris = Preference.getUris();
+	String[] uris = new String[] {
+			"http://registry.easytv.eu/common/volume",
+			"http://registry.easytv.eu/common/contrast",
+			"http://registry.easytv.eu/common/content/audio/language",
+			"http://registry.easytv.eu/common/display/screen/enhancement/cursor/Size",
+			"http://registry.easytv.eu/common/display/screen/enhancement/cursor/color"
+	};
 	
 	@Test
 	public void test_mask_generato() throws IOException {
 				
-		String[] categories = new String[] {uris.get(0), uris.get(2)};
+		String[] categories = new String[] {uris[0], uris[2]};
 		Assert.assertEquals((long) (Math.pow(2, 0) + Math.pow(2, 2)), MaskGenerator.getMask(uris, categories));
 		
-		categories = new String[] {uris.get(0), uris.get(4), uris.get(3)};
+	}
+	
+	@Test
+	public void test_mask_generato1() throws IOException {
+
+		String[] categories = new String[] {uris[0], uris[4], uris[3]};
 		Assert.assertEquals((long) (Math.pow(2, 0) + 
 									Math.pow(2, 3) + 
 									Math.pow(2, 4) ), 
 									MaskGenerator.getMask(uris, categories));
-
 	}
 	
 	@Test

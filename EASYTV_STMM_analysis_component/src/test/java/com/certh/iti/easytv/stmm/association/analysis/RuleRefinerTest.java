@@ -76,7 +76,7 @@ public class RuleRefinerTest {
 		profiles.add(new Profile(profile_2));
 		profiles.add(new Profile(profile_3));
 
-		ruleRefiner = new RuleRefiner(Profile.getBins(), profiles, minSupport, minConfidence);
+		ruleRefiner = new RuleRefiner(Profile.getAggregator(), profiles, minSupport, minConfidence);
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public class RuleRefinerTest {
 		
 		// Get rules
 		Vector<AssociationRuleWrapper> actualRules = ruleRefiner.getAssociationRulesWrapper();
-		Assert.assertEquals(actualRules, expectedRules);
+		Assert.assertEquals(actualRules, expectedRules, actualRules.toString());
 	}
 
 	/**

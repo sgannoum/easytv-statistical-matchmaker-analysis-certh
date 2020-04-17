@@ -19,7 +19,7 @@ public class SimilarityMeasureProfileTest {
 	
 	@BeforeTest
 	public void beforeTest() {
-		dimensionsGenerator = new DimensionsGenerator(Profile.getUris(), Profile.getOperands());
+		dimensionsGenerator = new DimensionsGenerator(Profile.getAggregator().getAttributes());
 		distanceMeasure = new SimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 	}
 	

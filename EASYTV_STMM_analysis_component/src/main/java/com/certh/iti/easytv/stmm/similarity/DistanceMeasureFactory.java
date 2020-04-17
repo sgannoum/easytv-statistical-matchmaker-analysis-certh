@@ -12,7 +12,7 @@ import com.certh.iti.easytv.user.Profile;
  */
 public class DistanceMeasureFactory {
 	
-	private static DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(Profile.getUris(), Profile.getOperands());
+	private static DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(Profile.getAggregator().getAttributes());
 	
 	/**
 	 * Get an instance for all dimensions
@@ -47,7 +47,7 @@ public class DistanceMeasureFactory {
 				return new DissimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 		
 		//long that corresponds to dimensions
-		long mask = MaskGenerator.getMask(Profile.getUris(), compareMode);
+		long mask = MaskGenerator.getMask(dimensionsGenerator.getLables(), compareMode);
 		
 		//Subset of dimensions
 		return new MaskedSimilarityMeasure(mask, dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());

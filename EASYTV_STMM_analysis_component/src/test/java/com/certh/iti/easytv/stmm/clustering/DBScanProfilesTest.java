@@ -24,7 +24,7 @@ public class DBScanProfilesTest {
 	
 	@BeforeClass
 	public void beforeTest() {
-		dimensionsGenerator = new DimensionsGenerator(Profile.getUris(), Profile.getOperands());
+		dimensionsGenerator = new DimensionsGenerator(Profile.getAggregator().getAttributes());
 		distanceMeasure = new DissimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 	}
 
@@ -129,7 +129,7 @@ public class DBScanProfilesTest {
 		profiles.add(profile_3); profiles.add(profile_31); profiles.add(profile_32); //third cluster
 		
 		//print profiles distances
-		//print_dissimilarity_distances_of_profiles(profiles);
+		print_dissimilarity_distances_of_profiles(profiles);
 			
 		DBSCANClusterer<Profile> dbscan = new DBSCANClusterer<Profile>(0.1, 2, distanceMeasure);
 		List<Cluster<Profile>> actual = dbscan.cluster(profiles);
@@ -229,7 +229,7 @@ public class DBScanProfilesTest {
 				"    }}}}" + 
 				"}"));
 
-		
+			
 		List<Profile> profiles = new ArrayList<Profile>();
 		profiles.add(profile_1); profiles.add(profile_11); profiles.add(profile_12);
 		profiles.add(profile_2); profiles.add(profile_21); profiles.add(profile_22);
@@ -238,7 +238,7 @@ public class DBScanProfilesTest {
 		//print profiles distances
 		//print_dissimilarity_distances_of_profiles(profiles);
 			
-		DBSCANClusterer<Profile> dbscan = new DBSCANClusterer<Profile>(0.1, 2, distanceMeasure);
+		DBSCANClusterer<Profile> dbscan = new DBSCANClusterer<Profile>(0.04, 2, distanceMeasure);
 		List<Cluster<Profile>> actual = dbscan.cluster(profiles);
 		
 		

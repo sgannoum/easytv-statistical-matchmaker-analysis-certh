@@ -37,6 +37,7 @@ public class DissimilarityMeasure implements DistanceMeasure{
 			}
 		}
 		
+		
 		if(divisor == 0.0)
 			return 0.0;
 		

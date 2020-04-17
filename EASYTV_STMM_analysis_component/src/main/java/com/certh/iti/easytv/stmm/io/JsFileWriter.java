@@ -114,6 +114,7 @@ public class JsFileWriter implements ProfileWriter{
         writer.println("var Color = require(\"./DimensionHandlers\").Color");
         writer.println("var MultiNominal = require(\"./DimensionHandlers\").MultiNominal");
         writer.println("var MultiNumeric = require(\"./DimensionHandlers\").MultiNumeric");
+        writer.println("var Ignore = require(\"./DimensionHandlers\").Ignore");
         writer.println();
 		
         //entry count
@@ -278,7 +279,7 @@ public class JsFileWriter implements ProfileWriter{
 			//TODO
     		//handlerInstance = new AsymmetricBinary();
 		} else if(TimeAttribute.class.isInstance(operand)) {
-    		//TODO
+    		handlerInstance = String.format("new Ignore()");
     	}
     	
     	return handlerInstance;

@@ -4,15 +4,14 @@ import java.util.Arrays;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.apache.commons.math3.exception.OutOfRangeException;
-
 import com.certh.iti.easytv.stmm.association.analysis.fpgrowth.Itemset;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.BodyRuleConditions;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.HeadRuleConditions;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.RuleCondition;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RuleWrapper.RuleCondition.Argument;
-import com.certh.iti.easytv.user.preference.Preference;
-import com.certh.iti.easytv.user.preference.attributes.Attribute.Bin;
+import com.certh.iti.easytv.user.preference.attributes.AttributesAggregator.Association;
+import com.certh.iti.easytv.user.preference.attributes.discretization.Discrete;
+import com.certh.iti.easytv.user.preference.attributes.AttributesAggregator;
 
 /**
  * A converter class that converts assciationRule into an associationRuleWrapper instance
@@ -23,22 +22,25 @@ public class AssociationRuleConverter {
 	private final static Logger logger = Logger.getLogger(AssociationRuleConverter.class.getName());
 
 	
-	private Vector<Bin> bins;
+	private AttributesAggregator aggregator;
 	private Vector<AssociationRuleWrapper> rules = new  Vector<AssociationRuleWrapper>();
 	
-	public AssociationRuleConverter(Vector<Bin> bins) {
-		this.bins = bins;
+	public AssociationRuleConverter(AttributesAggregator aggregator) {
+		this.aggregator = aggregator;
 	}
 	
 	/**
-	 * Convert Association rules into AssociationRuleWrapper
+	 * Convert Association rules into AssociationRuleWrapper after filtering rules that:
+	 * 1-) have contextual or content information in their head part
+	 * 2-) are considered contained in other rules
+	 * 
 	 * @param rules
 	 * @return
 	 */
 	public Vector<AssociationRuleWrapper> convert(Vector<AssociationRule> rules) {
 		
 		//get preference maximum item value
-		int maxItem = Preference.getBinNumber();
+		int maxItem = aggregator.getBase("http://registry.easytv.eu/context/device");
 		
 		//keep only rules that have preferences item in their head section
 		AssociationRuleFilter.filter(rules, maxItem);
@@ -60,6 +62,7 @@ public class AssociationRuleConverter {
 	
 	/**
 	 * Convert an AssociationRule instance into AssociationRuleWrapper
+	 * 
 	 * @param associationRule an instance
 	 * @return
 	 */
@@ -67,33 +70,25 @@ public class AssociationRuleConverter {
 
 		//handle head
 		Itemset head = associationRule.getHead();
-		RuleCondition[] heads = new RuleCondition[head.size()];
-		for(int i = 0; i < head.size(); i++) {
-			int binId = head.get(i);
-			
-			if(binId < 0 || binId > bins.size() - 1)
-				throw new OutOfRangeException(binId, 0, bins.size() - 1);
-			
-			Bin bin = bins.get(binId);
-			heads[i] = new RuleCondition(bin.label, "EQ" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(), bin.center)});
+		RuleCondition[] heads = new RuleCondition[head.size()];		
+		for(int i = 0; i < head.size(); i++) {			
+			Association<String, Discrete> association = aggregator.decode(head.get(i));
+			heads[i] = new RuleCondition(association.getUri(), "EQ" , new Argument[] {new Argument(association.getValue().getXMLDataTypeURI(), association.getValue().getCenter())});
 		}
 		
 		//handle body
 		Itemset body = associationRule.getBody();
 		RuleCondition[] bodies= new RuleCondition[body.size() * 2];
 		int index = 0;
-		for(int i = 0; i < body.size(); i++) {
-			int binId = body.get(i);
+		for(int i = 0; i < body.size(); i++) {			
+			Association<String, Discrete> association = aggregator.decode(body.get(i));
+			Discrete discrete = association.getValue();
 			
-			if(binId < 0 || binId > bins.size() - 1)
-				throw new OutOfRangeException(binId, 0, bins.size() - 1);
-			
-			Bin bin = bins.get(binId);
-			if(bin.range.length == 1)
-				bodies[index++] = new RuleCondition(bin.label, "EQ" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(),  bin.range[0])});
-			else if(bin.range.length == 2) {
-				bodies[index++] = new RuleCondition(bin.label, "GE" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(),  bin.range[0])});
-				bodies[index++] = new RuleCondition(bin.label, "LE" , new Argument[] {new Argument(bin.type.getXMLDataTypeURI(),  bin.range[1])});
+			if(discrete.getRange().length == 1)
+				bodies[index++] = new RuleCondition(association.getUri(), "EQ" , new Argument[] {new Argument(discrete.getXMLDataTypeURI(), discrete.getRange()[0])});
+			else {
+				bodies[index++] = new RuleCondition(association.getUri(), "GE" , new Argument[] {new Argument(discrete.getXMLDataTypeURI(), discrete.getRange()[0])});
+				bodies[index++] = new RuleCondition(association.getUri(), "LE" , new Argument[] {new Argument(discrete.getXMLDataTypeURI(), discrete.getRange()[1])});
 			}
 		}
 		
