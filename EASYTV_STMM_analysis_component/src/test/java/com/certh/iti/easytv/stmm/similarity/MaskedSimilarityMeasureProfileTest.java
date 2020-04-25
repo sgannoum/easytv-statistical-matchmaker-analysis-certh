@@ -25,9 +25,7 @@ public class MaskedSimilarityMeasureProfileTest {
 	public void beforeTest() throws IOException, UserProfileParsingException {
 
 		//Get corresponding dimensions
-		dimensionsGenerator = new DimensionsGenerator(Profile.getAggregator().getAttributes());
-		
-		dimensionsGenerator = new DimensionsGenerator(Profile.getAggregator().getAttributes());
+		dimensionsGenerator = new DimensionsGenerator(Profile.getAggregator().getAttributes());		
 		allDistance = new SimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 	}
 	

@@ -29,6 +29,7 @@ public class MaskedSimilarityMeasure implements DistanceMeasure {
 
 		do {
 			if((tmpMask & 1L) == 1) {
+				System.out.println(uris[index]);
 				double[] delta_d = dimensions[index].dissimilarity(a[index], b[index]);
 				
 				dividend += delta_d[0] * delta_d[1];
@@ -37,8 +38,9 @@ public class MaskedSimilarityMeasure implements DistanceMeasure {
 			index++;
 		} while((tmpMask /=2) != 0.0);
 		
-		//System.out.println(1.0 - (dividend/divisor));
-		//return similarity
+		if(divisor == 0.0)
+			return 1.0;
+		
 		return 1.0 - (dividend/divisor);
 	}
 }

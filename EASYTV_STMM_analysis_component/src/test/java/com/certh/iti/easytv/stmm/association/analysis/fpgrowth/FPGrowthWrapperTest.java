@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 
 import org.json.JSONObject;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.certh.iti.easytv.user.Profile;
@@ -23,8 +21,6 @@ import com.certh.iti.easytv.user.preference.attributes.discretization.Discrete;
 import junit.framework.Assert;
 
 public class FPGrowthWrapperTest {
-
-	private AttributesAggregator aggregator;
 	
 	private JSONObject profile_0 = new JSONObject("{" + 
 			"    \"user_id\": 0," + 
@@ -37,17 +33,6 @@ public class FPGrowthWrapperTest {
 			"		" + 
 			"    }}}}" + 
 			"}");
-	
-
-	@BeforeClass
-	public void beforeclass() {
-		aggregator = Profile.getAggregator();
-	}
-	
-	@AfterClass
-	public void afterclass() {
-		Profile.setAggregator(aggregator);
-	}
 	
 	/**
 	 * Check that with no bining preference information remains 
@@ -66,12 +51,27 @@ public class FPGrowthWrapperTest {
 		    put("http://registry.easytv.eu/application/cs/ui/text/size", new OrdinalAttribute(new String[] {"15", "20", "23"}));					
 		    put("http://registry.easytv.eu/application/cs/accessibility/magnification/scale", new DoubleAttribute(new double[] {1.5, 3.5}, 0.5, 0));
 	    }};
+	        
+    	//load values
+	    Attribute attr;
+    	attr = preferencesAttributes.get("http://registry.easytv.eu/common/volume");
+    	for(int i = 0; i < 101; i++) attr.handle(i);
+    	attr = preferencesAttributes.get("http://registry.easytv.eu/application/cs/accessibility/magnification/scale");
+		for(double i = 1.5; i < 4.0; i+= 0.5) attr.handle(i);
+    	attr = preferencesAttributes.get("http://registry.easytv.eu/application/tts/audio/voice");
+		attr.handle("male"); attr.handle("female"); 
+    	attr = preferencesAttributes.get("http://registry.easytv.eu/application/cs/ui/text/size");
+		attr.handle("15"); attr.handle("20"); attr.handle("23");
+		attr = preferencesAttributes.get("http://registry.easytv.eu/application/cs/accessibility/detection/sound");
+		attr.handle(false); attr.handle(true);
 	    
 		//set new preferences attributes
 	    AttributesAggregator aggregator = new AttributesAggregator();
 	    aggregator.add(preferencesAttributes);
+	    
+	    //set the profile aggregator
 	    Profile.setAggregator(aggregator);
-		
+	    
 		JSONObject expected = new JSONObject("{" + 
 				"		\"http://registry.easytv.eu/application/cs/accessibility/detection/sound\": false," + 
 				"		\"http://registry.easytv.eu/common/volume\": 0," + 
@@ -100,6 +100,19 @@ public class FPGrowthWrapperTest {
 		    put("http://registry.easytv.eu/application/cs/ui/text/size", new OrdinalAttribute(new String[] {"15", "20", "23"}));					
 		    put("http://registry.easytv.eu/application/cs/accessibility/magnification/scale", new DoubleAttribute(new double[] {1.5, 3.5}, 0.5, 0));
 	    }};
+	    
+    	//load values
+	    Attribute attr;
+    	attr = preferencesAttributes.get("http://registry.easytv.eu/common/volume");
+    	for(int i = 0; i < 101; i++) attr.handle(i);
+    	attr = preferencesAttributes.get("http://registry.easytv.eu/application/cs/accessibility/magnification/scale");
+		for(double i = 1.5; i < 4.0; i+= 0.5) attr.handle(i);
+    	attr = preferencesAttributes.get("http://registry.easytv.eu/application/tts/audio/voice");
+		attr.handle("male"); attr.handle("female"); 
+    	attr = preferencesAttributes.get("http://registry.easytv.eu/application/cs/ui/text/size");
+		attr.handle("15"); attr.handle("20"); attr.handle("23");
+		attr = preferencesAttributes.get("http://registry.easytv.eu/application/cs/accessibility/detection/sound");
+		attr.handle(false); attr.handle(true);
 	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
 	    aggregator.add(preferencesAttributes);
@@ -139,6 +152,19 @@ public class FPGrowthWrapperTest {
 		    put("http://registry.easytv.eu/application/cs/ui/text/size", new OrdinalAttribute(new String[] {"15", "20", "23"}));					
 		    put("http://registry.easytv.eu/application/cs/accessibility/magnification/scale", new DoubleAttribute(new double[] {1.5, 3.5}, 0.5, 0));
 	    }};
+	    
+    	//load values
+	    Attribute attr;
+    	attr = preferencesAttributes.get("http://registry.easytv.eu/common/volume");
+    	for(int i = 0; i < 101; i++) attr.handle(i);
+    	attr = preferencesAttributes.get("http://registry.easytv.eu/application/cs/accessibility/magnification/scale");
+		for(double i = 1.5; i < 4.0; i+= 0.5) attr.handle(i);
+    	attr = preferencesAttributes.get("http://registry.easytv.eu/application/tts/audio/voice");
+		attr.handle("male"); attr.handle("female"); 
+    	attr = preferencesAttributes.get("http://registry.easytv.eu/application/cs/ui/text/size");
+		attr.handle("15"); attr.handle("20"); attr.handle("23");
+		attr = preferencesAttributes.get("http://registry.easytv.eu/application/cs/accessibility/detection/sound");
+		attr.handle(false); attr.handle(true);
 	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
 	    aggregator.add(preferencesAttributes);

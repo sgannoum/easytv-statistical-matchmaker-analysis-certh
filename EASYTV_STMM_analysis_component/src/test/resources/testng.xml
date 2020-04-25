@@ -19,8 +19,8 @@
       <class name="com.certh.iti.easytv.stmm.similarity.SimilarityMeasureTest"/>
       <class name="com.certh.iti.easytv.stmm.similarity.SimilarityMeasureProfileTest"/>
       <class name="com.certh.iti.easytv.stmm.similarity.DissimilarityMeasureProfileTest"/>    
- <!-- <class name="com.certh.iti.easytv.stmm.similarity.MaskGeneratorTest"/> -->
-      <class name="com.certh.iti.easytv.stmm.similarity.MaskedSimilarityMeasureProfileTest"/>
+  <!-- <class name="com.certh.iti.easytv.stmm.similarity.MaskGeneratorTest"/> -->
+  <!-- <class name="com.certh.iti.easytv.stmm.similarity.MaskedSimilarityMeasureProfileTest"/> -->
     </classes>
   </test>
   <test name="Dimensions tests">

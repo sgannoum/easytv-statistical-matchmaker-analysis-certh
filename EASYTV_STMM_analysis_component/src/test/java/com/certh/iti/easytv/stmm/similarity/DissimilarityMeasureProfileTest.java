@@ -6,7 +6,7 @@ import java.util.Arrays;
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
 import org.json.JSONObject;
 import org.testng.Assert;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.certh.iti.easytv.config.Config;
@@ -19,7 +19,7 @@ public class DissimilarityMeasureProfileTest {
 	private Profile profile;
 	private DistanceMeasure dist;
 	
-	@BeforeTest
+	@BeforeClass
 	public void beforeTest() throws IOException, UserProfileParsingException {
 		jsonProfile = Config.getProfile("profile_with_context_1.json");
 		profile = new Profile(jsonProfile);

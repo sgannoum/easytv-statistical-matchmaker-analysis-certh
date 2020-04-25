@@ -1,8 +1,6 @@
 package com.certh.iti.easytv.stmm.similarity;
 
 import org.apache.commons.math3.exception.DimensionMismatchException;
-import org.apache.commons.math3.ml.distance.DistanceMeasure;
-
 import com.certh.iti.easytv.stmm.similarity.dimension.Dimension;
 
 public class SimilarityMeasure extends DissimilarityMeasure{

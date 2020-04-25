@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.apache.commons.math3.ml.distance.DistanceMeasure;
 import org.json.JSONObject;
 import org.testng.Assert;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.certh.iti.easytv.user.Profile;
@@ -13,15 +12,6 @@ import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
 
 public class SimilarityMeasureProfileTest {
 	
-	private DimensionsGenerator dimensionsGenerator;
-	private DistanceMeasure distanceMeasure;
-	
-	
-	@BeforeTest
-	public void beforeTest() {
-		dimensionsGenerator = new DimensionsGenerator(Profile.getAggregator().getAttributes());
-		distanceMeasure = new SimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
-	}
 	
 	@Test
 	public void test_only_integer_dimension() throws IOException, UserProfileParsingException {
@@ -67,6 +57,8 @@ public class SimilarityMeasureProfileTest {
 														"    }}}}" + 
 														"}"));
 		
+		DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(Profile.getAggregator().getAttributes());
+		DistanceMeasure distanceMeasure = new SimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 		
 		double distance_12 = distanceMeasure.compute(profile_1.getPoint(), profile_2.getPoint());	
 		double distance_13 = distanceMeasure.compute(profile_1.getPoint(), profile_3.getPoint());	
@@ -127,7 +119,8 @@ public class SimilarityMeasureProfileTest {
 						"		" + 
 						"    }}}}" + 
 						"}"));
-		
+		DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(Profile.getAggregator().getAttributes());
+		DistanceMeasure distanceMeasure = new SimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 
 		double distance_12 = distanceMeasure.compute(profile_1.getPoint(), profile_2.getPoint());	
 		double distance_13 = distanceMeasure.compute(profile_1.getPoint(), profile_3.getPoint());	
@@ -190,6 +183,9 @@ public class SimilarityMeasureProfileTest {
 						"    }}}}" + 
 						"}"));
 
+		DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(Profile.getAggregator().getAttributes());
+		DistanceMeasure distanceMeasure = new SimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
+		
 		double distance_12 = distanceMeasure.compute(profile_1.getPoint(), profile_2.getPoint());	
 		double distance_13 = distanceMeasure.compute(profile_1.getPoint(), profile_3.getPoint());	
 		double distance_14 = distanceMeasure.compute(profile_1.getPoint(), profile_4.getPoint());	
@@ -251,6 +247,9 @@ public class SimilarityMeasureProfileTest {
 						"    }}}}" + 
 						"}"));
 
+		DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(Profile.getAggregator().getAttributes());
+		DistanceMeasure distanceMeasure = new SimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
+		
 		double distance_12 = distanceMeasure.compute(profile_1.getPoint(), profile_2.getPoint());	
 		double distance_13 = distanceMeasure.compute(profile_1.getPoint(), profile_3.getPoint());	
 		double distance_14 = distanceMeasure.compute(profile_1.getPoint(), profile_4.getPoint());	
@@ -312,6 +311,8 @@ public class SimilarityMeasureProfileTest {
 				"    }}}}" + 
 				"}"));
 		
+		DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(Profile.getAggregator().getAttributes());
+		DistanceMeasure distanceMeasure = new SimilarityMeasure(dimensionsGenerator.getLables(), dimensionsGenerator.getDimensions());
 
 		double distance_12 = distanceMeasure.compute(profile_1.getPoint(), profile_2.getPoint());	
 		double distance_13 = distanceMeasure.compute(profile_1.getPoint(), profile_3.getPoint());	

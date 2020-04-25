@@ -26,6 +26,10 @@ public class AssociationRuleConverterTest {
 	     	put("second", new IntegerAttribute(new double[] {1.0, 1.0}, 1.0));
 	    }};
 		
+	    //load values
+	    attributes.get("first").handle(0);
+	    attributes.get("second").handle(1);
+
 	    AttributesAggregator aggregator = new AttributesAggregator();
 	    aggregator.add(attributes);
 
@@ -49,6 +53,10 @@ public class AssociationRuleConverterTest {
 	     	put("second", new IntegerAttribute(new double[] {5.0, 9.0}, 1.0, 1, -1));
 	    }};
 		
+	    //load values
+	    attributes.get("first").handle(0); attributes.get("first").handle(4);
+	    attributes.get("second").handle(7);
+	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
 	    aggregator.add(attributes);
 			
@@ -71,6 +79,10 @@ public class AssociationRuleConverterTest {
 	     	put("first", new DoubleAttribute(new double[] {0.0, 0.0}, 1.0));
 	     	put("second", new DoubleAttribute(new double[] {1.0, 1.0}, 1.0));
 	    }};
+	    
+	    //load values
+	    attributes.get("first").handle(0.0);
+	    attributes.get("second").handle(1.0);
 		
 	    AttributesAggregator aggregator = new AttributesAggregator();
 	    aggregator.add(attributes);
@@ -95,6 +107,10 @@ public class AssociationRuleConverterTest {
 	     	put("second", new DoubleAttribute(new double[] {5.0, 9.0}, 1.0, 1, -1));
 	    }};
 		
+	    //load values
+	    attributes.get("first").handle(0.0);  attributes.get("first").handle(4.0);
+	    attributes.get("second").handle(7.0);
+	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
 	    aggregator.add(attributes);
 		
@@ -119,6 +135,10 @@ public class AssociationRuleConverterTest {
 	     	put("second", new NominalAttribute(new String[] {"1"}));
 	    }};
 		
+	    //load values
+	    attributes.get("first").handle("0"); 
+	    attributes.get("second").handle("1");
+	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
 	    aggregator.add(attributes);
 		
@@ -143,6 +163,11 @@ public class AssociationRuleConverterTest {
 	     	put("second", new NominalAttribute(new String[] {"1"}));
 	    }};
 		
+	    //load values
+	    attributes.get("first").handle("0"); 
+	    attributes.get("second").handle("1");
+	    
+	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
 	    aggregator.add(attributes);
 			
@@ -165,6 +190,10 @@ public class AssociationRuleConverterTest {
 	     	put("first", new SymmetricBinaryAttribute());
 	     	put("second", new SymmetricBinaryAttribute());
 	    }};
+	    
+	    //load values
+	    attributes.get("first").handle(false); 
+	    attributes.get("second").handle(false); 
 		
 	    AttributesAggregator aggregator = new AttributesAggregator();
 	    aggregator.add(attributes);
@@ -193,7 +222,16 @@ public class AssociationRuleConverterTest {
 	     	put("ordinal_no_bin", new OrdinalAttribute(new String[] {"0", "1"}));
 	     	put("symetrical_no_bin", new SymmetricBinaryAttribute());
 	    }};
-		
+	    
+	    //load values
+	    attributes.get("integer_no_bin").handle(0);  attributes.get("integer_no_bin").handle(1); 
+	    attributes.get("integer_bin").handle(0);  attributes.get("integer_bin").handle(4); attributes.get("integer_bin").handle(7); 
+	    attributes.get("double_no_bin").handle(0.0);  attributes.get("double_no_bin").handle(1.0); 
+	    attributes.get("double_bin").handle(0.0);  attributes.get("double_bin").handle(4.0); attributes.get("double_bin").handle(7.0); 
+	    attributes.get("nominal_no_bin").handle("0");  attributes.get("nominal_no_bin").handle("1"); 
+	    attributes.get("ordinal_no_bin").handle("0");  attributes.get("ordinal_no_bin").handle("1"); 
+	    attributes.get("symetrical_no_bin").handle(false);  attributes.get("symetrical_no_bin").handle(false); 
+	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
 	    aggregator.add(attributes);
 
