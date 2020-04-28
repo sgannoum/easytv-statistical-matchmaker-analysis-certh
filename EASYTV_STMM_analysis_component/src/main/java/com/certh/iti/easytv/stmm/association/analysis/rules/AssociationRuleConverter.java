@@ -40,7 +40,7 @@ public class AssociationRuleConverter {
 	public Vector<AssociationRuleWrapper> convert(Vector<AssociationRule> rules) {
 		
 		//get preference maximum item value
-		int maxItem = aggregator.getBase("http://registry.easytv.eu/context/device");
+		int maxItem = aggregator.getGroupBase("contextual attributes");
 		
 		//keep only rules that have preferences item in their head section
 		AssociationRuleFilter.filter(rules, maxItem);

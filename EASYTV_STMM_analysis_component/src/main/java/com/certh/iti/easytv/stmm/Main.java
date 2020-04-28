@@ -56,7 +56,7 @@ public class Main {
 	private static String RBMM_HOST = "localhost";
 	private static String RBMM_PORT = "8080";
 
-	private static String DB_HOST = "172.18.0.3";
+	private static String DB_HOST = "172.18.0.2";
 	private static String DB_PORT = "3306";
 	private static String DB_NAME = "easytv";
 	private static String DB_USER = "easytv";

@@ -31,7 +31,7 @@ public class AssociationRuleConverterTest {
 	    attributes.get("second").handle(1);
 
 	    AttributesAggregator aggregator = new AttributesAggregator();
-	    aggregator.add(attributes);
+	    aggregator.add(attributes, "attribute group");
 
 		AssociationRuleConverter rulesConverter = new AssociationRuleConverter(aggregator);
 		AssociationRule associationRule = new AssociationRule(new Itemset(new int[] {0}), new Itemset(new int[] {1}));
@@ -58,7 +58,7 @@ public class AssociationRuleConverterTest {
 	    attributes.get("second").handle(7);
 	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
-	    aggregator.add(attributes);
+	    aggregator.add(attributes, "attribute group");
 			
 		AssociationRuleConverter rulesConverter = new AssociationRuleConverter(aggregator);
 		AssociationRule associationRule = new AssociationRule(new Itemset(new int[] {0}), new Itemset(new int[] {1}));
@@ -85,7 +85,7 @@ public class AssociationRuleConverterTest {
 	    attributes.get("second").handle(1.0);
 		
 	    AttributesAggregator aggregator = new AttributesAggregator();
-	    aggregator.add(attributes);
+	    aggregator.add(attributes, "attribute group");
 			
 		AssociationRuleConverter rulesConverter = new AssociationRuleConverter(aggregator);
 		AssociationRule associationRule = new AssociationRule(new Itemset(new int[] {0}), new Itemset(new int[] {1}));
@@ -112,7 +112,7 @@ public class AssociationRuleConverterTest {
 	    attributes.get("second").handle(7.0);
 	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
-	    aggregator.add(attributes);
+	    aggregator.add(attributes, "attribute group");
 		
 			
 		AssociationRuleConverter rulesConverter = new AssociationRuleConverter(aggregator);
@@ -140,7 +140,7 @@ public class AssociationRuleConverterTest {
 	    attributes.get("second").handle("1");
 	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
-	    aggregator.add(attributes);
+	    aggregator.add(attributes, "attribute group");
 		
 		
 		AssociationRuleConverter rulesConverter = new AssociationRuleConverter(aggregator);
@@ -169,7 +169,7 @@ public class AssociationRuleConverterTest {
 	    
 	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
-	    aggregator.add(attributes);
+	    aggregator.add(attributes, "attribute group");
 			
 		AssociationRuleConverter rulesConverter = new AssociationRuleConverter(aggregator);
 		AssociationRule associationRule = new AssociationRule(new Itemset(new int[] {0}), new Itemset(new int[] {1}));
@@ -196,7 +196,7 @@ public class AssociationRuleConverterTest {
 	    attributes.get("second").handle(false); 
 		
 	    AttributesAggregator aggregator = new AttributesAggregator();
-	    aggregator.add(attributes);
+	    aggregator.add(attributes, "attribute group");
 			
 		AssociationRuleConverter rulesConverter = new AssociationRuleConverter(aggregator);
 		AssociationRule associationRule = new AssociationRule(new Itemset(new int[] {0}), new Itemset(new int[] {2}));
@@ -233,7 +233,7 @@ public class AssociationRuleConverterTest {
 	    attributes.get("symetrical_no_bin").handle(false);  attributes.get("symetrical_no_bin").handle(false); 
 	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
-	    aggregator.add(attributes);
+	    aggregator.add(attributes, "attribute group");
 
 		AssociationRuleWrapper actual, expected; 
 		AssociationRuleConverter rulesConverter = new AssociationRuleConverter(aggregator);

@@ -67,7 +67,7 @@ public class FPGrowthWrapperTest {
 	    
 		//set new preferences attributes
 	    AttributesAggregator aggregator = new AttributesAggregator();
-	    aggregator.add(preferencesAttributes);
+	    aggregator.add(preferencesAttributes, "preferences attributes");
 	    
 	    //set the profile aggregator
 	    Profile.setAggregator(aggregator);
@@ -115,7 +115,7 @@ public class FPGrowthWrapperTest {
 		attr.handle(false); attr.handle(true);
 	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
-	    aggregator.add(preferencesAttributes);
+	    aggregator.add(preferencesAttributes, "preferences attributes");
 	    Profile.setAggregator(aggregator);
 		
 		JSONObject expected = new JSONObject("{" + 
@@ -167,7 +167,7 @@ public class FPGrowthWrapperTest {
 		attr.handle(false); attr.handle(true);
 	    
 	    AttributesAggregator aggregator = new AttributesAggregator();
-	    aggregator.add(preferencesAttributes);
+	    aggregator.add(preferencesAttributes, "preferences attributes");
 	    Profile.setAggregator(aggregator);
 	    
 		JSONObject expected = new JSONObject("{" + 
