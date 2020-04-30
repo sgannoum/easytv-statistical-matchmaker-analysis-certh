@@ -9,18 +9,24 @@ import com.certh.iti.easytv.stmm.association.analysis.fpgrowth.Itemset;
 public class AssociationRuleGenerator {
 	
 	private Vector<Itemset> itemsets;
+	private int maxItem = Integer.MAX_VALUE;
 	
 	public AssociationRuleGenerator(Vector<Itemset> itemsets) {
 		this.itemsets = itemsets;
+	}
+	
+	public AssociationRuleGenerator(Vector<Itemset> itemsets, int maxItem) {
+		this.itemsets = itemsets;
+		this.maxItem = maxItem;
 	}
 	
 	public Vector<AssociationRule> findAssociationRules(Vector<Itemset> frequentItemset, double minConfidence) {
 		Vector<AssociationRule> allRules = new Vector<AssociationRule>();
 		
 		for(Itemset itemset : frequentItemset) {
-			//generate all non-empty sub sets
-			Vector<Itemset> subsets = AssociationRuleGenerator.generateAllSubSet(itemset);
-			
+					
+			Vector<Itemset> subsets = AssociationRuleGenerator.generateAllSubSet(itemset, maxItem);
+
 			//generate all association rules
 			Vector<AssociationRule> rules =  AssociationRuleGenerator.generateAllRules(this.itemsets, subsets, itemset, minConfidence);
 			
@@ -29,26 +35,26 @@ public class AssociationRuleGenerator {
 		}
 		return allRules;
 	}
-	
+
 	/**
-	 * Generate all non empty subsets
+	 * Generate all non empty subsets, filtering out all elements that are bigger than maxItem
 	 * 
 	 * @param itemset
 	 * @return
 	 */
-	public static Vector<Itemset> generateAllSubSet(Itemset itemset){
+	public static Vector<Itemset> generateAllSubSet(Itemset itemset, int maxItem){
 		//TODO mine association trees for frequent itemsets support
 		
 		List<Vector<Itemset>> intermediatSubSets = new ArrayList<Vector<Itemset>>();
-		Vector<Itemset> subsets = new Vector<Itemset>();
+		Vector<Itemset> generatedHeads = new Vector<Itemset>();
 		Vector<Itemset> itemSets = new Vector<Itemset>();
 		
 		//Create one elements subSets of itemsets
-		for(int i = 0; i < itemset.size(); i++) {
+		for(int i = 0; i < itemset.size() && itemset.get(i) < maxItem; i++) {						
 			Itemset subSet1 = new Itemset(1);
 			subSet1.add(itemset.get(i));
 			itemSets.add(subSet1);
-			subsets.add(subSet1);
+			generatedHeads.add(subSet1);
 		}
 		
 		//add
@@ -66,14 +72,24 @@ public class AssociationRuleGenerator {
 					Itemset subSet2 = itemSets.get(j);
 					Itemset combinedSubSet = subSet1.combineWith(subSet2);
 					
-					subsets.add(combinedSubSet);
+					generatedHeads.add(combinedSubSet);
 					newItemSets.add(combinedSubSet);
 				}
 				//add
 				intermediatSubSets.add(newItemSets);
 			}
 		}
-		return subsets;
+		return generatedHeads;
+	}
+	
+	/**
+	 * Generate all non empty subsets
+	 * 
+	 * @param itemset
+	 * @return
+	 */
+	public static Vector<Itemset> generateAllSubSet(Itemset itemset){
+		return generateAllSubSet(itemset,  Integer.MAX_VALUE);
 	}
 	
 	/**

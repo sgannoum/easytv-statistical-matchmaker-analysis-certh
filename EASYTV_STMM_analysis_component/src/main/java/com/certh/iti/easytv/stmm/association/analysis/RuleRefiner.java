@@ -38,21 +38,23 @@ public class RuleRefiner {
 		this.rulesConverter = new AssociationRuleConverter(aggregator);
 		
 		//Create fp-growth instance and get profiles itemsets
-		logger.info("Start association analysis");
+		logger.info("Start association analysis...");
 		AssociationAnalyzer fpgrowth = new FPGrowthWrapper(this.profiles, aggregator);
-		
-		//Association rules generator
-		logger.info("Start association rules generating process");
-		AssociationRuleGenerator ruleGenerator = new AssociationRuleGenerator(fpgrowth.getItemsets());
-		
-		logger.info(String.format("Generate rules with  Minimume support: %.1f, Minimume confidence: %.1f", minSupport, minConfidence));
 		frequentItemset = fpgrowth.getFrequentItemsets(minSupport);
+		logger.info(String.format("Found %d frequent itemsets with minSupport: %.1f", frequentItemset.size(), minSupport));
 		
-		logger.info(String.format("Found %d frequent itemsets with minSupport: %.1f and minConfidence: %.1f", frequentItemset.size(), minSupport, minConfidence));
+		//filter out contextual information from rules head
+		int maxItem = aggregator.getGroupBase("contextual attributes");
+
+		//Association rules generator
+		logger.info("Start association rules, filtering out itemset biggern than "+maxItem+"...");
+		AssociationRuleGenerator ruleGenerator = new AssociationRuleGenerator(fpgrowth.getItemsets(), maxItem);
 		associationRules = ruleGenerator.findAssociationRules(frequentItemset, minConfidence);
+		logger.info(String.format("Found %d association rules minimum confidence: %.1f", associationRules.size(), minConfidence));
 		
-		logger.info(String.format("Found %d association rules", associationRules.size()));
+		logger.info("Start converting rules...");
 		asRules = rulesConverter.convert(associationRules);
+		logger.info("Finished converting rules...");
 	}
 	
 	public double getMinSupport() {

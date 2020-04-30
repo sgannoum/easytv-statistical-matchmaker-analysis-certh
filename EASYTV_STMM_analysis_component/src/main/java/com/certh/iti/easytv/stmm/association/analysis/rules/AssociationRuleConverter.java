@@ -39,16 +39,8 @@ public class AssociationRuleConverter {
 	 */
 	public Vector<AssociationRuleWrapper> convert(Vector<AssociationRule> rules) {
 		
-		//get preference maximum item value
-		int maxItem = aggregator.getGroupBase("contextual attributes");
-		
-		//keep only rules that have preferences item in their head section
-		AssociationRuleFilter.filter(rules, maxItem);
-		logger.info(String.format("%d rules remains after filtering rules with non preferences items in their head section", rules.size()));
-
-		
 		//filter out rules
-		AssociationRuleFilter.filter(rules);
+		Vector<AssociationRule> removed = AssociationRuleFilter.filter(rules);
 		logger.info(String.format("%d rules remains after filtering generic association rules", rules.size()));
 
 		
