@@ -93,5 +93,23 @@ public class FPGrowthTest {
 	    	 Assert.assertEquals(expected[i], itemset.getWeight());
 	     }
 	}
+	
+	@Test
+	public void test_find_weight() {
+		Assert.assertEquals(6, fpg.findWeight(new Itemset("3")));	
+		Assert.assertEquals(4, fpg.findWeight(new Itemset("1,3")));	
+		Assert.assertEquals(4, fpg.findWeight(new Itemset("2,3")));	
+		Assert.assertEquals(2,fpg.findWeight(new Itemset("1,5")));
+		Assert.assertEquals(0,fpg.findWeight(new Itemset("4,5")));
+	}
+	
+	@Test
+	public void test_updateWeightAndSupport() {
+		Assert.assertEquals(new Itemset("3"  , 6, 6/8), fpg.updateWeightAndSupport(new Itemset("3")));	
+		Assert.assertEquals(new Itemset("1,3", 4, 4/8), fpg.updateWeightAndSupport(new Itemset("1,3")));	
+		Assert.assertEquals(new Itemset("2,3", 4, 4/8), fpg.updateWeightAndSupport(new Itemset("2,3")));	
+		Assert.assertEquals(new Itemset("1,5", 4, 2/8),fpg.updateWeightAndSupport(new Itemset("1,5")));
+		Assert.assertEquals(new Itemset("4,5", 0, 0/8) ,fpg.updateWeightAndSupport(new Itemset("4,5")));
+	}
 
 }

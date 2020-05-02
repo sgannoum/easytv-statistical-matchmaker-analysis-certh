@@ -300,5 +300,27 @@ public class FPTree {
 			fpt.insert(items, count);
 		}
 	}
+	
+	/**
+	 * Mine FPTree for the given items
+	 * @param Item[]
+	 * @return the number of occurrences of the items in the tree
+	 */
+	public int findWeight(Item[] item_objs) {
+		int counts = 0;
+		for(int i = 0; i < item_objs.length - 1; i++) {
+			int entry_index = ((Integer) item2index.get(new Integer(item_objs[i].item))).intValue();
+			
+			for (FPTreeNode siblingWalker = header[entry_index].head; siblingWalker != null; siblingWalker = siblingWalker.next) {
+				for(FPTreeNode parentgWalker = siblingWalker.parent; parentgWalker != null; parentgWalker = parentgWalker.parent) {
+					if(parentgWalker.item == item_objs[i + 1].item) {
+						counts += siblingWalker.count;
+						break;
+					}
+				}
+			}
+		}
+		return counts;
+	}
 
 }

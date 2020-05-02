@@ -107,6 +107,19 @@ public class Itemset
     mark = false;
   }
   
+  public Itemset(int[] record, int weight, double support)
+  {
+    capacity = record.length;
+    set = record;
+
+    Arrays.sort(set);
+
+    size = set.length;
+    this.support = support;
+    this.weight = weight;
+    mark = false;
+  }
+  
   public Itemset(String record)
   {
     StringTokenizer st = new StringTokenizer(record, ",");
@@ -121,6 +134,23 @@ public class Itemset
     size = set.length;
     support = 0;
     weight = 1;
+    mark = false;
+  }
+  
+  public Itemset(String record, int weight, double support)
+  {
+    StringTokenizer st = new StringTokenizer(record, ",");
+    capacity = st.countTokens();
+    set = new int[capacity];
+
+    for (int i = 0; i < set.length; i++)
+      set[i] = (Integer.valueOf(st.nextToken())).intValue();
+
+    Arrays.sort(set);
+
+    size = set.length;
+    this.support = support;
+    this.weight = weight;
     mark = false;
   }
 

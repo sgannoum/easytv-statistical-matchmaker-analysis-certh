@@ -67,6 +67,56 @@ public class FPGrowth {
 		// no frequent items, in which case we do only 1 pass
 		return pass_num;
 	}
+	
+	/**
+	 * Mine FPTree for the given itemset
+	 * @param itemset
+	 * @return the number of occurrences of the itemset
+	 */
+	public int findWeight(Itemset itemset) {
+		Item[] item_objs = new Item[itemset.size()];
+
+		for(int i = 0; i < itemset.size(); i++) {
+			int item = itemset.get(i);
+			item_objs[i] = new Item(item, counts[item]);
+		}
+		
+		// and sort them ascendingly according to weight
+		Arrays.sort(item_objs);
+		
+		if(item_objs.length == 1)
+			return item_objs[0].count;
+		
+		return fpt.findWeight(item_objs);
+	}
+	
+	/**
+	 * Update the itemset weight and support
+	 * @param itemset
+	 * @return the same itemset
+	 */
+	public Itemset updateWeightAndSupport(Itemset itemset) {
+		Item[] item_objs = new Item[itemset.size()];
+		
+		for(int i = 0; i < itemset.size(); i++) {
+			int item = itemset.get(i);
+			item_objs[i] = new Item(item, counts[item]);
+		}
+		
+		// and sort them ascendingly according to weight
+		Arrays.sort(item_objs);
+		
+		int weight = 0;
+		if(item_objs.length == 1)
+			weight = item_objs[0].count;
+		else
+			weight = fpt.findWeight(item_objs);
+		
+		itemset.setWeight(weight);
+		itemset.setSupport((double) weight / (double) num_rows);
+		
+		return itemset;
+	}
 
 	private FPTree constructFPTree() {
 		// see how many frequent items there are in the database
