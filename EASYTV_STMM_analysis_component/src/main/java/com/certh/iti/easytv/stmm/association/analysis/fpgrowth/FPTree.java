@@ -308,18 +308,27 @@ public class FPTree {
 	 */
 	public int findWeight(Item[] item_objs) {
 		int counts = 0;
-		for(int i = 0; i < item_objs.length - 1; i++) {
-			int entry_index = ((Integer) item2index.get(new Integer(item_objs[i].item))).intValue();
-			
-			for (FPTreeNode siblingWalker = header[entry_index].head; siblingWalker != null; siblingWalker = siblingWalker.next) {
-				for(FPTreeNode parentgWalker = siblingWalker.parent; parentgWalker != null; parentgWalker = parentgWalker.parent) {
-					if(parentgWalker.item == item_objs[i + 1].item) {
-						counts += siblingWalker.count;
+		
+		//find the header entry of the less frequent item
+		int entry_index = ((Integer) item2index.get(new Integer(item_objs[0].item))).intValue();
+		
+		//inspect all item sets with this suffix
+		for (FPTreeNode siblingWalker = header[entry_index].head; siblingWalker != null; siblingWalker = siblingWalker.next) {
+			int i = 1, matched = 1;
+			for(FPTreeNode parentgWalker = siblingWalker.parent; parentgWalker != null; parentgWalker = parentgWalker.parent) {
+				if(parentgWalker.item == item_objs[i].item) {
+					matched++;
+					
+					if(++i == item_objs.length)
 						break;
-					}
 				}
 			}
+			
+			if(matched == item_objs.length) 
+				counts += siblingWalker.count;
+			
 		}
+		
 		return counts;
 	}
 
