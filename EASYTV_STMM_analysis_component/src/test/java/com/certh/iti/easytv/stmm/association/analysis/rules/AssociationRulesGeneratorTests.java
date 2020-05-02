@@ -5,14 +5,14 @@ import java.util.Vector;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.certh.iti.easytv.stmm.association.analysis.fpgrowth.FPGrowth;
+import com.certh.iti.easytv.stmm.association.analysis.fpgrowth.FPGrowthWrapper;
 import com.certh.iti.easytv.stmm.association.analysis.fpgrowth.Itemset;
 
 import junit.framework.Assert;
 
 public class AssociationRulesGeneratorTests {
 	
-	private FPGrowth fpg;
+	private FPGrowthWrapper fpg;
 	private Vector<Itemset> itemsets;
 	private Vector<Itemset> frequentItemsets;
 	private Vector<Itemset> actualSubSets;
@@ -51,21 +51,20 @@ public class AssociationRulesGeneratorTests {
 		//count of distinct items
 		counts = new int[] {0, 6, 7, 6, 2, 2};
 		
-	    fpg = new FPGrowth(itemsets, counts);
-	    fpg.findFrequentItemsets(0.222);
-	    frequentItemsets = fpg.getFrequentItemsets();
+	    fpg = new FPGrowthWrapper(itemsets, counts);
+	    frequentItemsets = fpg.getFrequentItemsets(0.222);
 	    
 	    //Generate assoication rules of first itemset
 	    Itemset itemset = itemsets.get(0);
+	    
+		//create rule generator
+		ruleGenerator = new AssociationRuleGenerator(fpg);
 	    
 	    //all subset of itemset "1,2,5"
 		actualSubSets = AssociationRuleGenerator.generateAllSubSet(itemset);
 		
 		//corresponding association rules 
-		rules = AssociationRuleGenerator.generateAllRules(itemsets, actualSubSets, itemset, 0.1);
-		
-		//create rule generator
-		ruleGenerator = new AssociationRuleGenerator(itemsets);
+		rules = ruleGenerator.generateAllRules(actualSubSets, itemset, 0.1);
 		
 		allRules = ruleGenerator.findAssociationRules(frequentItemsets, 0.1);
 	}
@@ -99,7 +98,6 @@ public class AssociationRulesGeneratorTests {
 		expectedSubSets.add(new Itemset("1,2"));
 		expectedSubSets.add(new Itemset("1,5"));
 		expectedSubSets.add(new Itemset("2,5"));
-		expectedSubSets.add(new Itemset("1,2,5"));
 		
 		Assert.assertEquals(expectedSubSets, actualSubSets);
 	}
@@ -139,11 +137,11 @@ public class AssociationRulesGeneratorTests {
 		 * 
 		 */
 		
-		double[] support = new double[] { 2.0/6.0, 2.0/7.0, 2.0/2.0, 2.0/4.0, 2.0/2.0, 2.0/2.0 };
+		double[] support = new double[] { 2.0/2.0, 2.0/2.0, 2.0/4.0, 2.0/2.0, 2.0/7.0, 2.0/6.0 };
 
 		int index = 0;
 		for(AssociationRule rule : rules) {
-			System.out.println(rule);
+			//System.out.println(rule);
 			Assert.assertEquals(support[index++], rule.getConfidence());
 		}
 	}

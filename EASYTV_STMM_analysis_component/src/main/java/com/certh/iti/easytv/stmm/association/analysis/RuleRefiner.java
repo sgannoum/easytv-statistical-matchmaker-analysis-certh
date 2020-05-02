@@ -48,7 +48,7 @@ public class RuleRefiner {
 
 		//Association rules generator
 		logger.info("Start association rules, filtering out itemset biggern than "+maxItem+"...");
-		AssociationRuleGenerator ruleGenerator = new AssociationRuleGenerator(fpgrowth.getItemsets(), maxItem);
+		AssociationRuleGenerator ruleGenerator = new AssociationRuleGenerator(fpgrowth, maxItem);
 		associationRules = ruleGenerator.findAssociationRules(frequentItemset, minConfidence);
 		logger.info(String.format("Found %d association rules minimum confidence: %.1f", associationRules.size(), minConfidence));
 		

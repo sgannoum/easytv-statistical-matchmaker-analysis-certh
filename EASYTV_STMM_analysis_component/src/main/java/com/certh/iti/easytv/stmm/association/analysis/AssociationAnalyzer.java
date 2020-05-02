@@ -25,6 +25,13 @@ public abstract class AssociationAnalyzer {
 	public abstract Vector<Itemset> getFrequentItemsets(double minSupport);
 	
 	/**
+	 * Update the itemset weight and support
+	 * @param itemset
+	 * @return the same itemset
+	 */
+	public abstract Itemset updateWeightAndSupport(Itemset itemset);
+	
+	/**
 	 * Get the associated itemsets
 	 * @return
 	 */

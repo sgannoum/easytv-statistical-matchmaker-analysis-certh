@@ -36,11 +36,24 @@ public class FPGrowthWrapper extends AssociationAnalyzer {
         this.fpg = new FPGrowth(itemsets, counts);
 	}
 	
+	
+	public FPGrowthWrapper(Vector<Itemset> input, int[] counts) {
+		super(null);
+        
+        //create FP-growth
+        this.fpg = new FPGrowth(input, counts);
+	}
+	
 	@Override
 	public Vector<Itemset> getFrequentItemsets(double minSupport) {
 		this.minSupport = minSupport;
 		fpg.findFrequentItemsets(minSupport);
    	    return fpg.getFrequentItemsets();
+	}
+	
+	@Override
+	public Itemset updateWeightAndSupport(Itemset itemset) {
+		return fpg.updateWeightAndSupport(itemset);
 	}
 	
 	@Override

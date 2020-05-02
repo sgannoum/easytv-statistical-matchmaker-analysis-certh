@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import com.certh.iti.easytv.stmm.association.analysis.AssociationAnalyzer;
 import com.certh.iti.easytv.stmm.association.analysis.fpgrowth.Itemset;
 
 public class AssociationRuleGenerator {
 	
-	private Vector<Itemset> itemsets;
+	private AssociationAnalyzer fpgrowth;
 	private int maxItem = Integer.MAX_VALUE;
 	
-	public AssociationRuleGenerator(Vector<Itemset> itemsets) {
-		this.itemsets = itemsets;
+	public AssociationRuleGenerator(AssociationAnalyzer fpgrowth) {
+		this.fpgrowth = fpgrowth;
 	}
 	
-	public AssociationRuleGenerator(Vector<Itemset> itemsets, int maxItem) {
-		this.itemsets = itemsets;
+	public AssociationRuleGenerator(AssociationAnalyzer fpgrowth, int maxItem) {
+		this.fpgrowth = fpgrowth;
 		this.maxItem = maxItem;
 	}
 	
@@ -24,15 +25,16 @@ public class AssociationRuleGenerator {
 		Vector<AssociationRule> allRules = new Vector<AssociationRule>();
 		
 		for(Itemset itemset : frequentItemset) {
-					
+				
 			Vector<Itemset> subsets = AssociationRuleGenerator.generateAllSubSet(itemset, maxItem);
 
 			//generate all association rules
-			Vector<AssociationRule> rules =  AssociationRuleGenerator.generateAllRules(this.itemsets, subsets, itemset, minConfidence);
-			
+			Vector<AssociationRule> rules =  generateAllRules(subsets, itemset, minConfidence);
+					
 			//add
 			allRules.addAll(rules);
 		}
+		
 		return allRules;
 	}
 
@@ -42,8 +44,7 @@ public class AssociationRuleGenerator {
 	 * @param itemset
 	 * @return
 	 */
-	public static Vector<Itemset> generateAllSubSet(Itemset itemset, int maxItem){
-		//TODO mine association trees for frequent itemsets support
+	protected static Vector<Itemset> generateAllSubSet(Itemset itemset, int maxItem){
 		
 		List<Vector<Itemset>> intermediatSubSets = new ArrayList<Vector<Itemset>>();
 		Vector<Itemset> generatedHeads = new Vector<Itemset>();
@@ -59,7 +60,7 @@ public class AssociationRuleGenerator {
 		
 		//add
 		intermediatSubSets.add(itemSets);
-
+		
 		//Combines subSets together
 		while(!intermediatSubSets.isEmpty()) {
 			itemSets = intermediatSubSets.remove(0);
@@ -67,7 +68,11 @@ public class AssociationRuleGenerator {
 			for(int i = 0; i < itemSets.size(); i++) {
 				Itemset subSet1 = itemSets.get(i);
 				Vector<Itemset> newItemSets = new Vector<Itemset>();
-				
+
+				//Exclude all items itemsets
+				if(subSet1.size() == itemset.size() - 1) 
+					continue;
+
 				for(int j = i + 1;  j < itemSets.size(); j++) {
 					Itemset subSet2 = itemSets.get(j);
 					Itemset combinedSubSet = subSet1.combineWith(subSet2);
@@ -75,10 +80,12 @@ public class AssociationRuleGenerator {
 					generatedHeads.add(combinedSubSet);
 					newItemSets.add(combinedSubSet);
 				}
+				
 				//add
 				intermediatSubSets.add(newItemSets);
 			}
 		}
+				
 		return generatedHeads;
 	}
 	
@@ -88,43 +95,35 @@ public class AssociationRuleGenerator {
 	 * @param itemset
 	 * @return
 	 */
-	public static Vector<Itemset> generateAllSubSet(Itemset itemset){
+	protected static Vector<Itemset> generateAllSubSet(Itemset itemset){
 		return generateAllSubSet(itemset,  Integer.MAX_VALUE);
 	}
 	
 	/**
 	 * Generate all association rules
 	 * 
-	 * @param subsetItemsets
+	 * @param headItemsets
 	 * @param itemset
 	 */
-	public static Vector<AssociationRule> generateAllRules(Vector<Itemset> itemsets, Vector<Itemset> subsetItemsets, Itemset itemset, double minConfidence) {
-		Vector<AssociationRule> rules = new Vector<AssociationRule>(subsetItemsets.size());
+	protected Vector<AssociationRule> generateAllRules(Vector<Itemset> headItemsets, Itemset itemset, double minConfidence) {
+		Vector<AssociationRule> rules = new Vector<AssociationRule>(headItemsets.size());
 				
-		for(int i = 0; i < subsetItemsets.size(); i++) {
-			Itemset head = subsetItemsets.get(i);
+		for(int i = 0; i < headItemsets.size(); i++) {
+			Itemset head = headItemsets.get(i);
 			Itemset body = Itemset.subtraction(itemset, head);
 			Itemset union = Itemset.union(itemset, head);
 			
-			long union_counts = 0;
-			long head_counts = 0;
-			long body_counts = 0;
-			double confidence = 0;
+			if(body.size() == 0)
+				continue;
 			
-			//TODO find a more efficient way to store and compare itemsets
-			//measure counts
-			for(Itemset item : itemsets) {
-				if(union.isIncludedIn(item)) union_counts++;
-				if(head.isIncludedIn(item)) head_counts++;
-				if(body.isIncludedIn(item)) body_counts++;
-			}
-			
+			//update weight and support
+			fpgrowth.updateWeightAndSupport(head);
+			fpgrowth.updateWeightAndSupport(body);
+			fpgrowth.updateWeightAndSupport(union);
+						
 			//calculate rule confidence
-			confidence = (union_counts * 1.0) / head_counts;
-			union.setWeight(union_counts);
-			head.setWeight(head_counts);
-			body.setWeight(body_counts);
-			if(body.size() != 0 && confidence >= minConfidence) 
+			double confidence = (union.getWeight() * 1.0) / body.getWeight();
+			if(confidence >= minConfidence) 
 				rules.add(new AssociationRule(body, head, union, confidence));
 		}
 		
