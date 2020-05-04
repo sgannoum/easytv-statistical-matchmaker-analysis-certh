@@ -2,6 +2,7 @@ package com.certh.iti.easytv.stmm.association.analysis;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
 
@@ -88,20 +89,19 @@ public class RuleRefinerTest {
 		RuleWrapper rl1 = new AssociationRuleWrapper("http://registry.easytv.eu/context/device = \"tablet\" ^"
 													+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true"
 													+ "->"
-													+ "http://registry.easytv.eu/common/volume = 2");
+													+ "http://registry.easytv.eu/common/volume = 0");
 
 		RuleWrapper rl2 = new AssociationRuleWrapper("http://registry.easytv.eu/context/device = \"tablet\" ^"
-													+ "http://registry.easytv.eu/common/volume >= 0 ^"
-													+ "http://registry.easytv.eu/common/volume <= 4 ^"
+													+ "http://registry.easytv.eu/common/volume = 0 "
 													+ "->"
 													+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true");
 		
 		RuleWrapper rl3 = new AssociationRuleWrapper("http://registry.easytv.eu/context/device = \"tablet\" "
 													+ "->"
 													+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true ^"
-													+ "http://registry.easytv.eu/common/volume = 2");
+													+ "http://registry.easytv.eu/common/volume = 0");
 		
-		Vector<RuleWrapper> expectedRules = new Vector<RuleWrapper>();
+		HashSet<RuleWrapper> expectedRules = new HashSet<RuleWrapper>();
 		expectedRules.add(rl1);
 		expectedRules.add(rl2);
 		expectedRules.add(rl3);
@@ -109,7 +109,7 @@ public class RuleRefinerTest {
 		
 		// Get rules
 		Vector<AssociationRuleWrapper> actualRules = ruleRefiner.getAssociationRulesWrapper();
-		Assert.assertEquals(actualRules, expectedRules, actualRules.toString());
+		Assert.assertEquals(new HashSet<RuleWrapper>(actualRules), expectedRules, actualRules.toString());
 	}
 
 	/**
@@ -125,20 +125,19 @@ public class RuleRefinerTest {
 		RuleWrapper rl1 = new RuleWrapper("http://registry.easytv.eu/context/device = \"tablet\" ^"
 										+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true"
 										+ "->"
-										+ "http://registry.easytv.eu/common/volume = 2");
+										+ "http://registry.easytv.eu/common/volume = 0");
 		
 		RuleWrapper rl2 = new RuleWrapper("http://registry.easytv.eu/context/device = \"tablet\" "
 										+ "->"
 										+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true ^"
-										+ "http://registry.easytv.eu/common/volume = 2");
+										+ "http://registry.easytv.eu/common/volume = 0");
 
 		RuleWrapper rl3 = new RuleWrapper("http://registry.easytv.eu/context/device = \"tablet\" ^"
-										+ "http://registry.easytv.eu/common/volume >= 0 ^"
-										+ "http://registry.easytv.eu/common/volume <= 4 ^"
+										+ "http://registry.easytv.eu/common/volume = 0 "
 										+ "->"
 										+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true");
 		
-		Vector<RuleWrapper> expectedRules = new Vector<RuleWrapper>();
+		HashSet<RuleWrapper> expectedRules = new HashSet<RuleWrapper>();
 		expectedRules.add(rl1);
 		expectedRules.add(rl2);
 		expectedRules.add(rl3);
@@ -146,7 +145,7 @@ public class RuleRefinerTest {
 		
 		// Get rules
 		Vector<RuleWrapper> actualRules = ruleRefiner.refineRules(rbmmRules);
-		Assert.assertEquals(actualRules, expectedRules);
+		Assert.assertEquals(new HashSet<RuleWrapper>(actualRules), expectedRules);
 	}
 	
 	/**
@@ -174,20 +173,19 @@ public class RuleRefinerTest {
 		RuleWrapper rl1 = new RuleWrapper("http://registry.easytv.eu/context/device = \"tablet\" ^"
 										+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true"
 										+ "->"
-										+ "http://registry.easytv.eu/common/volume = 2");
+										+ "http://registry.easytv.eu/common/volume = 0");
 		
 		RuleWrapper rl2 = new RuleWrapper("http://registry.easytv.eu/context/device = \"tablet\" "
 										+ "->"
 										+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true ^"
-										+ "http://registry.easytv.eu/common/volume = 2");
+										+ "http://registry.easytv.eu/common/volume = 0");
 
 		RuleWrapper rl3 = new RuleWrapper("http://registry.easytv.eu/context/device = \"tablet\" ^"
-										+ "http://registry.easytv.eu/common/volume >= 0 ^"
-										+ "http://registry.easytv.eu/common/volume <= 4 ^"
+										+ "http://registry.easytv.eu/common/volume = 0 "
 										+ "->"
 										+ "http://registry.easytv.eu/application/cs/accessibility/detection/sound = true");
 		
-		Vector<RuleWrapper> expectedRules = new Vector<RuleWrapper>();
+		HashSet<RuleWrapper> expectedRules = new HashSet<RuleWrapper>();
 		expectedRules.add(rl1);
 		expectedRules.add(rl2);
 		expectedRules.add(rl3);
@@ -195,7 +193,7 @@ public class RuleRefinerTest {
 		
 		// Get rules
 		Vector<RuleWrapper> actualRules = ruleRefiner.refineRules(rbmmRules);
-		Assert.assertEquals(actualRules, expectedRules);
+		Assert.assertEquals(new HashSet<RuleWrapper>(actualRules), expectedRules);
 	}
 
 
