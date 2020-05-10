@@ -7,8 +7,8 @@ import org.json.JSONObject;
 
 public class RbmmRuleWrapper extends RuleWrapper {
 
-	public RbmmRuleWrapper(BodyRuleConditions body, HeadRuleConditions head) {
-		super(body, head);
+	public RbmmRuleWrapper(BodyRuleConditions body, HeadRuleConditions head, double confidence) {
+		super(body, head, confidence);
 	}
 	
 	public RbmmRuleWrapper(JSONObject json) {
@@ -20,7 +20,7 @@ public class RbmmRuleWrapper extends RuleWrapper {
 	}
 	
 	public RbmmRuleWrapper(String rule) {
-		super(rule, 0,0,0,0);
+		super(rule, 0,0,0,0, 0.0);
 	}
 	
 

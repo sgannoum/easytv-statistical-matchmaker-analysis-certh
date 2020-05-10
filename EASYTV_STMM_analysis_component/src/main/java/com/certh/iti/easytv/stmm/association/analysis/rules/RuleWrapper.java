@@ -478,19 +478,37 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 	
 	private HeadRuleConditions head;
 	private BodyRuleConditions body;
+	private double confidence = 0.0;
 	private JSONObject json = null;
+	
 	
 	public RuleWrapper(BodyRuleConditions body, HeadRuleConditions head) {
 		this.head = head;
 		this.body = body;
 	}
 	
-	public RuleWrapper(String rule, long bweight, double bsupport, long hweight, double hsupport) {
+	public RuleWrapper(BodyRuleConditions body, HeadRuleConditions head, double confidence) {
+		this.head = head;
+		this.body = body;
+		this.setConfidence(confidence);
+	}
+	
+	public RuleWrapper(String rule, long bweight, double bsupport, long hweight, double hsupport, double confidence) {
 		
 		String[] ruleBodyHead = rule.split("->");
 		
 		this.body = new BodyRuleConditions(ruleBodyHead[0], bweight, bsupport);
 		this.head = new HeadRuleConditions(ruleBodyHead[1], hweight, hsupport);
+		this.setConfidence(confidence);
+	}
+	
+	public RuleWrapper(String rule, double confidence) {
+		
+		String[] ruleBodyHead = rule.split("->");
+		
+		this.body = new BodyRuleConditions(ruleBodyHead[0], 0, 0);
+		this.head = new HeadRuleConditions(ruleBodyHead[1], 0, 0);
+		this.setConfidence(confidence);
 	}
 	
 	public RuleWrapper(String rule) {
@@ -524,6 +542,8 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			json = new JSONObject();
 			json.put("body", body.getJSONObject());
 			json.put("head", head.getJSONObject());
+			json.put("confidence", confidence);
+
 		}
 		return json;
 	}
@@ -549,6 +569,8 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 			body = new BodyRuleConditions(bodyConditions);
 		else 
 			body.setJSONObject(bodyConditions);
+		
+		confidence = json.getDouble("confidence");
 	}
 	
 	/**
@@ -602,7 +624,7 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 	
 	@Override
 	public String toString() {
-		return String.format("\r\n[\r\n%s\r\n->\r\n%s\r\n]", body.toString(), head.toString());
+		return String.format("\r\n[\r\n%s\r\n->\r\n%s\r\n] conf: %.1f ", body.toString(), head.toString(), confidence);
 	}
 
 	@Override
@@ -611,6 +633,14 @@ public class RuleWrapper implements Comparable<RuleWrapper> {
 		//TODO compare two rules instances
 
 		return -1;
+	}
+
+	public double getConfidence() {
+		return confidence;
+	}
+
+	public void setConfidence(double confidence) {
+		this.confidence = confidence;
 	}
 
 }

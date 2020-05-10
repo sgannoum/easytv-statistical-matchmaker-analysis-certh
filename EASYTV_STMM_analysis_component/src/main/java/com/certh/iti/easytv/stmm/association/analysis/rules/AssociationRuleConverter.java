@@ -60,12 +60,15 @@ public class AssociationRuleConverter {
 	 */
 	public AssociationRuleWrapper convert(AssociationRule associationRule) {
 
+		
 		//handle head
 		Itemset head = associationRule.getHead();
 		RuleCondition[] heads = new RuleCondition[head.size()];		
 		for(int i = 0; i < head.size(); i++) {			
 			Association<String, Discrete> association = aggregator.decode(head.get(i));
-			heads[i] = new RuleCondition(association.getUri(), "EQ" , new Argument[] {new Argument(association.getValue().getXMLDataTypeURI(), association.getValue().getCenter())});
+			heads[i] = new RuleCondition(association.getUri(), 
+										 "EQ", 
+										 new Argument[] {new Argument(association.getValue().getXMLDataTypeURI(), association.getValue().getCenter())});
 		}
 		
 		//handle body
@@ -77,10 +80,16 @@ public class AssociationRuleConverter {
 			Discrete discrete = association.getValue();
 			
 			if(discrete.getRange().length == 1)
-				bodies[index++] = new RuleCondition(association.getUri(), "EQ" , new Argument[] {new Argument(discrete.getXMLDataTypeURI(), discrete.getRange()[0])});
+				bodies[index++] = new RuleCondition(association.getUri(), 
+													"EQ", 
+													new Argument[] {new Argument(discrete.getXMLDataTypeURI(), discrete.getRange()[0])});
 			else {
-				bodies[index++] = new RuleCondition(association.getUri(), "GE" , new Argument[] {new Argument(discrete.getXMLDataTypeURI(), discrete.getRange()[0])});
-				bodies[index++] = new RuleCondition(association.getUri(), "LE" , new Argument[] {new Argument(discrete.getXMLDataTypeURI(), discrete.getRange()[1])});
+				bodies[index++] = new RuleCondition(association.getUri(), 
+													"GE" , 
+													new Argument[] {new Argument(discrete.getXMLDataTypeURI(), discrete.getRange()[0])});
+				bodies[index++] = new RuleCondition(association.getUri(), 
+													"LE" , 
+													new Argument[] {new Argument(discrete.getXMLDataTypeURI(), discrete.getRange()[1])});
 			}
 		}
 		
@@ -89,7 +98,7 @@ public class AssociationRuleConverter {
 		BodyRuleConditions bodyRuleConditions = new BodyRuleConditions(bodies, body.getWeight(), body.getSupport());
 		HeadRuleConditions headRuleConditions = new HeadRuleConditions(heads, head.getWeight(), head.getSupport());
 
-		return new AssociationRuleWrapper(bodyRuleConditions, headRuleConditions);
+		return new AssociationRuleWrapper(bodyRuleConditions, headRuleConditions, associationRule.getConfidence());
 	}
 
 }

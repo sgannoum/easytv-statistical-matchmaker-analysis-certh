@@ -17,12 +17,13 @@ public class RuleWrapperTest {
 	public void test_creation_from_json() {
 		
 		JSONObject rule = new JSONObject("{" + 
+				"    \"confidence\": 0.5," + 
 				"    \"head\": [{" + 
 				"        \"args\": [{" + 
 				"            \"xml-type\": \"double\"," + 
 				"            \"value\": 1.5" + 
 				"        }]," + 
-				"        \"preference\": \"http://4\"," + 
+				"        \"preference\": \"preference_2\"," + 
 				"        \"builtin\": \"EQ\"" + 
 				"    }]," + 
 				"    \"body\": [{" + 
@@ -30,20 +31,15 @@ public class RuleWrapperTest {
 				"            \"xml-type\": \"double\"," + 
 				"            \"value\": 1.6" + 
 				"        }]," + 
-				"        \"preference\": \"http://1\"," + 
+				"        \"preference\": \"preference_1\"," + 
 				"        \"builtin\": \"EQ\"" + 
 				"    }]" + 
 				"}");
 
 		RuleWrapper actual = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("double", 1.6) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0));
+				new BodyRuleConditions("preference_1 = 1.6", 0, 0),
+				new HeadRuleConditions("preference_2 = 1.5", 0, 0),
+				0.5);
 		
 		RuleWrapper expected = new RuleWrapper(rule);
 		Assert.assertEquals(actual, expected);
@@ -53,6 +49,7 @@ public class RuleWrapperTest {
 	public void test_creation_from_string() {
 		
 		JSONObject rule = new JSONObject("{" + 
+				"    \"confidence\": 0.5," + 
 				"    \"head\": [{" + 
 				"        \"args\": [{" + 
 				"            \"xml-type\": \"double\"," + 
@@ -137,7 +134,8 @@ public class RuleWrapperTest {
 											 + "http://fifth = true ^"
 											 + "http://sixth = \"hello\""
 											 + "->"
-											 + "http://tenth = 1.5");
+											 + "http://tenth = 1.5",
+											 0.5);
 		
 		Assert.assertEquals(actual, expected);
 	}
@@ -146,12 +144,13 @@ public class RuleWrapperTest {
 	public void test_toJson_conversion() {
 		
 		JSONObject expected = new JSONObject("{" + 
+				"    \"confidence\": 0.5," + 
 				"    \"head\": [{" + 
 				"        \"args\": [{" + 
 				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
 				"            \"value\": 1.5" + 
 				"        }]," + 
-				"        \"preference\": \"http://4\"," + 
+				"        \"preference\": \"preference_2\"," + 
 				"        \"builtin\": \"EQ\"" + 
 				"    }]," + 
 				"    \"body\": [{" + 
@@ -159,20 +158,15 @@ public class RuleWrapperTest {
 				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
 				"            \"value\": 1.6" + 
 				"        }]," + 
-				"        \"preference\": \"http://1\"," + 
+				"        \"preference\": \"preference_1\"," + 
 				"        \"builtin\": \"EQ\"" + 
 				"    }]" + 
 				"}");
 
 		RuleWrapper as1 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("double", 1.6) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0));
+				new BodyRuleConditions("preference_1 = 1.6", 0, 0),
+				new HeadRuleConditions("preference_2 = 1.5", 0, 0),
+				0.5);
 		
 		JSONObject actual = as1.getJSONObject();
 		Assert.assertTrue(actual.similar(expected));
@@ -182,6 +176,7 @@ public class RuleWrapperTest {
 	public void test_conversion_1() {
 		
 		JSONObject expected = new JSONObject("{" + 
+				"    \"confidence\": 0.5," + 
 				"    \"head\": [{" + 
 				"        \"args\": [{" + 
 				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
@@ -209,12 +204,13 @@ public class RuleWrapperTest {
 	public void test_conversion_2() {
 		
 		JSONObject input = new JSONObject("{" + 
+				"    \"confidence\": 0.5," + 
 				"    \"head\": [{" + 
 				"        \"args\": [{" + 
 				"            \"xml-type\": \"double\"," + 
 				"            \"value\": 1.5" + 
 				"        }]," + 
-				"        \"preference\": \"http://4\"," + 
+				"        \"preference\": \"preference_2\"," + 
 				"        \"builtin\": \"EQ\"" + 
 				"    }]," + 
 				"    \"body\": [{" + 
@@ -222,18 +218,19 @@ public class RuleWrapperTest {
 				"            \"xml-type\": \"double\"," + 
 				"            \"value\": 1.6" + 
 				"        }]," + 
-				"        \"preference\": \"http://1\"," + 
+				"        \"preference\": \"preference_1\"," + 
 				"        \"builtin\": \"EQ\"" + 
 				"    }]" + 
 				"}");
 		
 		JSONObject expected = new JSONObject("{" + 
+				"    \"confidence\": 0.5," + 
 				"    \"head\": [{" + 
 				"        \"args\": [{" + 
 				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
 				"            \"value\": 1.5" + 
 				"        }]," + 
-				"        \"preference\": \"http://4\"," + 
+				"        \"preference\": \"preference_2\"," + 
 				"        \"builtin\": \"EQ\"" + 
 				"    }]," + 
 				"    \"body\": [{" + 
@@ -241,7 +238,7 @@ public class RuleWrapperTest {
 				"            \"xml-type\": \"http://www.w3.org/2001/XMLSchema#double\"," + 
 				"            \"value\": 1.6" + 
 				"        }]," + 
-				"        \"preference\": \"http://1\"," + 
+				"        \"preference\": \"preference_1\"," + 
 				"        \"builtin\": \"EQ\"" + 
 				"    }]" + 
 				"}");
@@ -253,21 +250,20 @@ public class RuleWrapperTest {
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void test_wrong_head() {
-		RuleWrapper rl1 = new RuleWrapper("body_first = 1.6"
-										+ "->"
-										+ "head_first = 1.5 ^"
-										+ "head_first = 1.0 ^"
-										+ "head_second = 1.5");
+		new RuleWrapper("body_first = 1.6"
+						+ "->"
+						+ "head_first = 1.5 ^"
+						+ "head_first = 1.0 ^"
+						+ "head_second = 1.5");
 	}
 	
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void test_wrong_body() {
-		RuleWrapper rl1 = new RuleWrapper("body_first = 1.6 ^"
-										+ "body_first = 1.0"
-										+ "->"
-										+ "head_first = 1.5 ^"
-										+ "head_second = 1.5");
-	
+		 new RuleWrapper("body_first = 1.6 ^"
+						+ "body_first = 1.0"
+						+ "->"
+						+ "head_first = 1.5 ^"
+						+ "head_second = 1.5");
 	}
 	
 	/**
@@ -277,24 +273,12 @@ public class RuleWrapperTest {
 	public void test_hasCode_equals_args() {
 
 		RuleWrapper as1 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("double", 1.6) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0));
+				new BodyRuleConditions("preference_1 = 1.6", 0, 0),
+				new HeadRuleConditions("preference_2 = 1.5", 0, 0));
 
 		RuleWrapper as2 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("double", 1.6) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0));
+				new BodyRuleConditions("preference_1 = 1.6", 0, 0),
+				new HeadRuleConditions("preference_2 = 1.5", 0, 0));
 
 		Assert.assertTrue(as1.hashCode() == as2.hashCode());
 	}
@@ -306,24 +290,12 @@ public class RuleWrapperTest {
 	public void test_hasCode_not_equals_args() {
 
 		RuleWrapper as1 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("double", 1.4) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0));
+				new BodyRuleConditions("preference_1 = 1.4", 0, 0),
+				new HeadRuleConditions("preference_2 = 1.5", 0, 0));
 
 		RuleWrapper as2 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("double", 1.3) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0));
+				new BodyRuleConditions("preference_1 = 1.3", 0, 0),
+				new HeadRuleConditions("preference_2 = 1.5", 0, 0));
 
 		Assert.assertFalse(as1.hashCode() == as2.hashCode());
 	}
@@ -335,24 +307,12 @@ public class RuleWrapperTest {
 	public void test_hasCode_not_equals_uri() {
 
 		RuleWrapper as1 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://11", "EQ",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0));
+				new BodyRuleConditions("preference_11 = 1.5", 0, 0),
+				new HeadRuleConditions("preference_2 = 1.5", 0, 0));
 
 		RuleWrapper as2 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0));
+				new BodyRuleConditions("preference_1 = 1.5", 0, 0),
+				new HeadRuleConditions("preference_2 = 1.5", 0, 0));
 
 		Assert.assertFalse(as1.hashCode() == as2.hashCode());
 	}
@@ -364,24 +324,12 @@ public class RuleWrapperTest {
 	public void test_hasCode_not_equals_operand_type() {
 
 		RuleWrapper as1 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://11", "NE",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0));
+				new BodyRuleConditions("preference_1 != 1.5", 0, 0),
+				new HeadRuleConditions("preference_2 = 1.5", 0, 0));
 
 		RuleWrapper as2 = new RuleWrapper(
-				new BodyRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://1", "EQ",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0),
-				new HeadRuleConditions(
-						new RuleCondition[] { new RuleCondition("http://4", "EQ",
-								new Argument[] { new Argument("double", 1.5) }) },
-						0, 0));
+				new BodyRuleConditions("preference_1 = 1.5", 0, 0),
+				new HeadRuleConditions("preference_2 = 1.5", 0, 0));
 
 		Assert.assertFalse(as1.hashCode() == as2.hashCode());
 	}
@@ -393,8 +341,9 @@ public class RuleWrapperTest {
 	public void test_hasCode_not_equals_xml_type() {
 
 		RuleWrapper as1 = new RuleWrapper(
-				new BodyRuleConditions(new RuleCondition[] { new RuleCondition("http://11", "EQ",
-						new Argument[] { new Argument("int", 1.5) }) }, 0, 0),
+				new BodyRuleConditions(
+						new RuleCondition[] { new RuleCondition("http://11", "EQ",
+								new Argument[] { new Argument("int", 1.5) }) }, 0, 0),
 				new HeadRuleConditions(
 						new RuleCondition[] { new RuleCondition("http://4", "EQ",
 								new Argument[] { new Argument("double", 1.5) }) },

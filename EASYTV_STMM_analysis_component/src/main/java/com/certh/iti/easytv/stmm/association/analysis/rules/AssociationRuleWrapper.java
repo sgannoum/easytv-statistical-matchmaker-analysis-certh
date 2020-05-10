@@ -4,8 +4,8 @@ import org.json.JSONObject;
 
 public class AssociationRuleWrapper extends RuleWrapper {
 
-	public AssociationRuleWrapper(BodyRuleConditions body, HeadRuleConditions head) {
-		super(body, head);
+	public AssociationRuleWrapper(BodyRuleConditions body, HeadRuleConditions head, double confidence) {
+		super(body, head, confidence);
 	}
 	
 	public AssociationRuleWrapper(JSONObject json) {
@@ -13,7 +13,11 @@ public class AssociationRuleWrapper extends RuleWrapper {
 	}
 	
 	public AssociationRuleWrapper(String rule) {
-		super(rule);
+		super(rule, 0.0);
+	}
+	
+	public AssociationRuleWrapper(String rule, double confidence) {
+		super(rule, confidence);
 	}
 
 }
