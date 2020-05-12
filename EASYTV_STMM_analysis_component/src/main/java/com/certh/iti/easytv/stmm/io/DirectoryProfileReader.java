@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
@@ -79,6 +80,20 @@ public class DirectoryProfileReader implements ProfileReader {
 		File[] directories = directory.listFiles(new dirFileFilter());
 		for (int i = 0; i < directories.length; i++)
 			readProfiles(directories[i], profiles);
+	}
+
+
+	@Override
+	public Cluster<Profile> readUserHisotryOfInteraction(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<Integer> getUsersIds() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

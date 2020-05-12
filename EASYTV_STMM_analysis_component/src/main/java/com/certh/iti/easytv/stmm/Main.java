@@ -56,7 +56,7 @@ public class Main {
 	private static String RBMM_HOST = "localhost";
 	private static String RBMM_PORT = "8080";
 
-	private static String DB_HOST = "172.18.0.2";
+	private static String DB_HOST = "172.20.0.2";
 	private static String DB_PORT = "3306";
 	private static String DB_NAME = "easytv";
 	private static String DB_USER = "easytv";
@@ -66,6 +66,9 @@ public class Main {
 	private static Vector<RbmmRuleWrapper> rbmmRules;
 	private static double RULES_MIN_SUPPORT = 0.8;
 	private static double RULES_MIN_CONFIDENCE = 0.9;
+	
+	
+	private static DBProfileReader dbReader = null;
 	
 	public static void main(String[] args) 
 			throws NumberFormatException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, 
@@ -141,14 +144,14 @@ public class Main {
 		if(_ProfilesDirectory != null && _ProfilesDirectory.exists()) {
 			//From directory
 			profileReader = new DirectoryProfileReader(_ProfilesDirectory);
-			_Profiles = profileReader.readProfiles();
 		} else {
 			//From DB
-			DBProfileReader dbReader = new DBProfileReader(DB_HOST + ":"+DB_PORT+"/"+DB_NAME, DB_USER, DB_PASSWORD);
-			_Profiles = dbReader.readProfiles();
+			dbReader = new DBProfileReader(DB_HOST + ":"+DB_PORT+"/"+DB_NAME, DB_USER, DB_PASSWORD);
 		}
 		
-		
+		//read profiles
+		_Profiles = dbReader.readProfiles();
+
 		//exit when there are no profiles
 		if(_Profiles.getPoints().isEmpty()) {
 			logger.info("No profiles loaded...exit");
@@ -165,17 +168,17 @@ public class Main {
 		/**
 		 *	ASSOCIATION ANALYSIS
 		 */
-		RULES_RFINEMENT();
+		RULES_RFINEMENT(_Profiles);
 		        
 		/**
 		 *	CLUSTERING
 		 */
-		CLUSTERING_ANALYSIS();
+		CLUSTERING_ANALYSIS(_Profiles);
 	}
 	
 	
-	public static void RULES_RFINEMENT() throws IOException {
-		logger.info("Start rules refinement...");
+	public static void RULES_RFINEMENT(Cluster<Profile> profiles) throws IOException {
+		logger.info("Start mining rules...");
 		if(_rbmmRulesFile != null) {
 			logger.info("Read RBMM rules from file " + _rbmmRulesFile.getAbsolutePath());
 			
@@ -202,22 +205,36 @@ public class Main {
 		
 		logger.info(""+rbmmRules.size()+" rules have been received.");
 		
-        RuleRefiner ruleRefiner = new RuleRefiner(Profile.getAggregator(),_Profiles.getPoints(), RULES_MIN_SUPPORT, RULES_MIN_CONFIDENCE);
+        RuleRefiner ruleRefiner = new RuleRefiner(Profile.getAggregator(),profiles.getPoints(), RULES_MIN_SUPPORT, RULES_MIN_CONFIDENCE);
         Vector<RuleWrapper> rules =  ruleRefiner.refineRules(rbmmRules);
 
         //Inform RBMM
         if(!rules.isEmpty() && !ENVIRONMENT.equals("development")) 
 			HttpHandler.writeRules("http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules", rules);
-        
 	}
 	
+	public static void HISOTRY_OF_INTERACTION() throws IOException {
+		logger.info("Start mining users history of interaction...");
+
+		List<Integer> ids = dbReader.getUsersIds();
+		for(Integer id : ids) {
+			Cluster<Profile> history = dbReader.readUserHisotryOfInteraction(id);
+			
+	        RuleRefiner ruleRefiner = new RuleRefiner(Profile.getAggregator(), history.getPoints(), RULES_MIN_SUPPORT, RULES_MIN_CONFIDENCE);
+	        Vector<RuleWrapper> rules =  ruleRefiner.refineRules(rbmmRules);
+	        
+	        //TODO write suggestions to db
+	        
+	        //TODO remove history of interaction
+		}
+	}
 	
-	public static void CLUSTERING_ANALYSIS() throws UserProfileParsingException, IOException {
+	public static void CLUSTERING_ANALYSIS(Cluster<Profile> profiles) throws UserProfileParsingException, IOException {
         logger.info("Start clustering...");
         List<Cluster<Profile>> foundedClusters = new ArrayList<Cluster<Profile>>();    	
 
         //start with all profile as first cluster
-        foundedClusters.add(_Profiles);
+        foundedClusters.add(profiles);
                
         //Cluster user profiles
         Clustere clutere = new Clustere(Config.getInstance().Clusteres);

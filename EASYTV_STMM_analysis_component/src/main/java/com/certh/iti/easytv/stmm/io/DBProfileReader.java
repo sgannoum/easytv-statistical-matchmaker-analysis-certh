@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
@@ -35,16 +38,12 @@ public class DBProfileReader implements ProfileReader{
 		try 
 		{			
 			con = DriverManager.getConnection("jdbc:mysql://"+ Url, userName, Password);
-			
-			logger.info("Connection success....");
-			
+						
 			// here sonoo is database name, root is username and password
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT userId, userModel as user_profile, userContext, userContent "
 										   + "FROM userModels");
-			
-			logger.info("Parse user profiles...");
-			
+						
 			while (rs.next()) {
 				
 				JSONObject json = new JSONObject()
@@ -83,6 +82,89 @@ public class DBProfileReader implements ProfileReader{
 		}
 		
 		return profiles;
+	}
+	
+	public Cluster<Profile> readUserHisotryOfInteraction(int id) {
+		Profile profile;
+		Cluster<Profile> profiles = new Cluster<Profile>();
+		
+		try 
+		{			
+			con = DriverManager.getConnection("jdbc:mysql://"+ Url, userName, Password);
+						
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT preferences, context, time "
+										   + "FROM interaction_history"
+										   + "WHERE id = "+ id
+										   + "ORDERD BY DESC (time)");
+			Time previous = new Time(0);			
+			while (rs.next()) {
+				
+				//ignore an event that has time interval less than one second 
+				long timeDiff = rs.getTime("time").getTime() - previous.getTime();
+				if(timeDiff < 5000) continue;
+				
+				previous = rs.getTime("time");
+				
+				JSONObject json = new JSONObject()
+						.put("user_id", id)
+						.put("user_profile", new JSONObject(rs.getString("preferences")));
+				
+				if(rs.getString("userContext") != null) 
+					json
+						.put("user_context", new JSONObject(rs.getString("context")));
+
+				try 
+				{
+					profile = new Profile(json);
+				} catch (UserProfileParsingException e1) {
+					//Print ERROR message and ignore error
+					logger.warning("Problem loading profile: "+e1.getMessage());
+					continue;
+				} 
+				
+				//add to profile list
+				profiles.addPoint(profile);
+				
+				logger.info("Reading profile user_id: " + profile.getUserId());
+			}
+			
+			//close
+			con.close();
+			
+		} catch (Exception e2) {
+			logger.info("Connection failed...."+e2.getMessage());
+			e2.printStackTrace();
+		}
+		
+		return profiles;
+	}
+	
+	public List<Integer> getUsersIds() {
+		List<Integer> ids = new ArrayList<Integer>();
+		
+		try 
+		{			
+			con = DriverManager.getConnection("jdbc:mysql://"+ Url, userName, Password);
+						
+			// here sonoo is database name, root is username and password
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT userId"
+										   + "FROM userModels");
+						
+			while (rs.next()) {
+				ids.add(rs.getInt("userId"));
+			}
+			
+			//close
+			con.close();
+			
+		} catch (Exception e2) {
+			logger.info("Connection failed...."+e2.getMessage());
+			e2.printStackTrace();
+		}
+		
+		return ids;
 	}
 
 }
