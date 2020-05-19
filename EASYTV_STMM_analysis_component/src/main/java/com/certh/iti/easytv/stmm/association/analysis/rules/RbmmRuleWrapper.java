@@ -23,5 +23,4 @@ public class RbmmRuleWrapper extends RuleWrapper {
 		super(rule, 0,0,0,0, 0.0);
 	}
 	
-
 }

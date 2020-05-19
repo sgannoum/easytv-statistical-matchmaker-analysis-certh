@@ -35,16 +35,16 @@ public class RuleRefiner {
 		this.minSupport = minSupport;
 		this.minConfidence = minConfidence;
 		this.profiles = profiles;
-		this.rulesConverter = new AssociationRuleConverter(aggregator);
+		this.rulesConverter = new AssociationRuleConverter(this.aggregator);
 		
 		//Create fp-growth instance and get profiles itemsets
 		logger.info("Start association analysis...");
-		AssociationAnalyzer fpgrowth = new FPGrowthWrapper(this.profiles, aggregator);
+		AssociationAnalyzer fpgrowth = new FPGrowthWrapper(this.profiles, this.aggregator);
 		frequentItemset = fpgrowth.getFrequentItemsets(minSupport);
 		logger.info(String.format("Found %d frequent itemsets with minSupport: %.1f", frequentItemset.size(), minSupport));
 		
 		//filter out contextual information from rules head
-		int maxItem = aggregator.getGroupBase("contextual attributes");
+		int maxItem = this.aggregator.getGroupBase("contextual attributes");
 
 		//Association rules generator
 		logger.info("Start association rules, filtering out itemset biggern than "+maxItem+"...");

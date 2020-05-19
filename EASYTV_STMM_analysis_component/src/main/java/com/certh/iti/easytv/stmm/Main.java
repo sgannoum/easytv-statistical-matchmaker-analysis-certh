@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import javax.mail.MessagingException;
@@ -15,6 +16,7 @@ import javax.mail.internet.AddressException;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.certh.iti.easytv.stmm.association.analysis.RuleRefiner;
 import com.certh.iti.easytv.stmm.association.analysis.rules.RbmmRuleWrapper;
@@ -30,6 +32,8 @@ import com.certh.iti.easytv.stmm.io.JsFileWriter;
 import com.certh.iti.easytv.stmm.io.HttpHandler;
 import com.certh.iti.easytv.user.Profile;
 import com.certh.iti.easytv.user.exceptions.UserProfileParsingException;
+import com.certh.iti.easytv.user.preference.Preference;
+import com.certh.iti.easytv.user.preference.attributes.Attribute;
 
 
 public class Main {
@@ -51,11 +55,14 @@ public class Main {
 	private static Cluster<Profile> _Profiles;
 	private static ProfileReader profileReader;
 	private static ProfileWriter profileWriter;
+	
+	//Component parameters
 	private static String STMM_HOST = "localhost";
 	private static String STMM_PORT = "8077";
 	private static String RBMM_HOST = "localhost";
 	private static String RBMM_PORT = "8080";
-
+	
+	//DB parameters
 	private static String DB_HOST = "172.20.0.2";
 	private static String DB_PORT = "3306";
 	private static String DB_NAME = "easytv";
@@ -63,10 +70,14 @@ public class Main {
 	private static String DB_PASSWORD = "easytv";
 	private static String ENVIRONMENT = "development";
 	
+	//rule refinements parameters
 	private static Vector<RbmmRuleWrapper> rbmmRules;
 	private static double RULES_MIN_SUPPORT = 0.8;
 	private static double RULES_MIN_CONFIDENCE = 0.9;
 	
+	//history of interaction parameters
+	private static long EVENT_INTERVAL = 5000;
+	private static int MIN_EVENT_WEIGHT = 3;
 	
 	private static DBProfileReader dbReader = null;
 	
@@ -113,6 +124,8 @@ public class Main {
 		if(System.getenv("DB_PASSWORD") != null)				DB_PASSWORD = System.getenv("DB_PASSWORD") ;
 		if(System.getenv("RULES_MIN_SUPPORT") != null)			RULES_MIN_SUPPORT = Double.valueOf(System.getenv("RULES_MIN_SUPPORT"));
 		if(System.getenv("RULES_MIN_CONFIDENCE") != null)		RULES_MIN_CONFIDENCE = Double.valueOf(System.getenv("RULES_MIN_CONFIDENCE"));
+		if(System.getenv("EVENT_INTERVAL") != null)				EVENT_INTERVAL = Long.valueOf(System.getenv("EVENT_INTERVAL"));
+		if(System.getenv("MIN_EVENT_WEIGHT") != null)			MIN_EVENT_WEIGHT = Integer.valueOf(System.getenv("MIN_EVENT_WEIGHT"));
 		if(System.getenv("ENVIRONMENT") != null)				ENVIRONMENT = System.getenv("ENVIRONMENT");
 		if(System.getenv("DB_PASSWORD_FILE") != null) {
 			String line = "";
@@ -168,16 +181,26 @@ public class Main {
 		/**
 		 *	ASSOCIATION ANALYSIS
 		 */
-		RULES_RFINEMENT(_Profiles);
+		RULES_RFINEMENT_ANALYSIS(_Profiles);
 		        
 		/**
 		 *	CLUSTERING
 		 */
 		CLUSTERING_ANALYSIS(_Profiles);
+		
+		/**
+		 * Mine user history of interaction
+		 */
+		HISOTRY_OF_INTERACTION_ANALYSIS();
 	}
 	
-	
-	public static void RULES_RFINEMENT(Cluster<Profile> profiles) throws IOException {
+	/**
+	 * Rules refinements
+	 * 
+	 * @param profiles
+	 * @throws IOException
+	 */
+	public static void RULES_RFINEMENT_ANALYSIS(Cluster<Profile> profiles) throws IOException {
 		logger.info("Start mining rules...");
 		if(_rbmmRulesFile != null) {
 			logger.info("Read RBMM rules from file " + _rbmmRulesFile.getAbsolutePath());
@@ -212,23 +235,14 @@ public class Main {
         if(!rules.isEmpty() && !ENVIRONMENT.equals("development")) 
 			HttpHandler.writeRules("http://"+RBMM_HOST+":"+RBMM_PORT+"/EasyTV_RBMM_Restful_WS/personalize/rules", rules);
 	}
-	
-	public static void HISOTRY_OF_INTERACTION() throws IOException {
-		logger.info("Start mining users history of interaction...");
 
-		List<Integer> ids = dbReader.getUsersIds();
-		for(Integer id : ids) {
-			Cluster<Profile> history = dbReader.readUserHisotryOfInteraction(id);
-			
-	        RuleRefiner ruleRefiner = new RuleRefiner(Profile.getAggregator(), history.getPoints(), RULES_MIN_SUPPORT, RULES_MIN_CONFIDENCE);
-	        Vector<RuleWrapper> rules =  ruleRefiner.refineRules(rbmmRules);
-	        
-	        //TODO write suggestions to db
-	        
-	        //TODO remove history of interaction
-		}
-	}
-	
+	/**
+	 * Cluster analysis
+	 * 
+	 * @param profiles
+	 * @throws UserProfileParsingException
+	 * @throws IOException
+	 */
 	public static void CLUSTERING_ANALYSIS(Cluster<Profile> profiles) throws UserProfileParsingException, IOException {
         logger.info("Start clustering...");
         List<Cluster<Profile>> foundedClusters = new ArrayList<Cluster<Profile>>();    	
@@ -258,6 +272,36 @@ public class Main {
 			HttpHandler stmmWriter = new HttpHandler("http://"+STMM_HOST+":"+STMM_PORT+"/EasyTV_STMM_Restful_WS/analysis/clusters"); 
 			stmmWriter.write(generalized);
 		}
+	}
+	
+	/**
+	 * Analysis the user history of interaction
+	 * 
+	 * @throws IOException
+	 */
+	public static void HISOTRY_OF_INTERACTION_ANALYSIS() throws IOException {
+		logger.info("Start mining users history of interaction...");
+		
+		List<Integer> ids = dbReader.getUsersIds();
+		for(Integer id : ids) {
+			
+			//reset dimensions
+			Profile.init();
+			
+			Cluster<Profile> history = dbReader.readUserHisotryOfInteraction(id, EVENT_INTERVAL);
+			JSONObject modificationSuggestions = new JSONObject();
+			
+			for(Entry<String, Attribute> entry : Preference.getAttributes().entrySet()) {
+				Attribute attr = entry.getValue();
+				if(attr.getMostFrequentValueCounts() >= MIN_EVENT_WEIGHT) 
+					modificationSuggestions.put(entry.getKey(), attr.getMostFrequentValue());
+			}
+			
+			dbReader.writeUserModificationSuggestions(id, modificationSuggestions);
+		}
+		
+		//clean history table content
+		dbReader.clearHisotryOfInteraction();
 	}
 
 }

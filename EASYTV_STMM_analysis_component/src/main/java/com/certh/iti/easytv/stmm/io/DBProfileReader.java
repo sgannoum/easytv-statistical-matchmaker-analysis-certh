@@ -84,7 +84,7 @@ public class DBProfileReader implements ProfileReader{
 		return profiles;
 	}
 	
-	public Cluster<Profile> readUserHisotryOfInteraction(int id) {
+	public Cluster<Profile> readUserHisotryOfInteraction(int id, long timeInterval) {
 		Profile profile;
 		Cluster<Profile> profiles = new Cluster<Profile>();
 		
@@ -102,13 +102,13 @@ public class DBProfileReader implements ProfileReader{
 				
 				//ignore an event that has time interval less than one second 
 				long timeDiff = rs.getTime("time").getTime() - previous.getTime();
-				if(timeDiff < 5000) continue;
+				if(timeDiff < timeInterval) continue;
 				
 				previous = rs.getTime("time");
 				
 				JSONObject json = new JSONObject()
 						.put("user_id", id)
-						.put("user_profile", new JSONObject(rs.getString("preferences")));
+						.put("user_profile",new JSONObject().put("user_preferences", new JSONObject().put("default", rs.getString("preferences"))));
 				
 				if(rs.getString("userContext") != null) 
 					json
@@ -140,6 +140,28 @@ public class DBProfileReader implements ProfileReader{
 		return profiles;
 	}
 	
+	public void clearHisotryOfInteraction() {	
+		try 
+		{			
+			con = DriverManager.getConnection("jdbc:mysql://"+ Url, userName, Password);
+						
+			ResultSet rs = con.createStatement()
+							  .executeQuery("DELETE "
+										  + "FROM interaction_history"
+										  + "WHERE id >= 0 ");
+			
+			logger.info("User history of interaction cleared...."+rs.getFetchSize());
+
+			//close
+			con.close();
+			
+		} catch (Exception e2) {
+			logger.info("Connection failed...."+e2.getMessage());
+			e2.printStackTrace();
+		}
+		
+	}
+	
 	public List<Integer> getUsersIds() {
 		List<Integer> ids = new ArrayList<Integer>();
 		
@@ -165,6 +187,30 @@ public class DBProfileReader implements ProfileReader{
 		}
 		
 		return ids;
+	}
+
+	@Override
+	public void writeUserModificationSuggestions(int id, JSONObject suggestions) {
+		
+		String suggestion = suggestions.toString();
+		
+		try 
+		{			
+			con = DriverManager.getConnection("jdbc:mysql://"+ Url, userName, Password);
+			ResultSet rs = con.createStatement()
+							  .executeQuery("INSERT INTO ModificationSuggestions "+
+									  		 String.format("(id, suggestion) VALUE (%d, %d)", id, suggestion) +
+										    "ON DUPLICATE KEY UPDATE "+ 
+									  		 String.format("id = %d, suggestion = %d", id, suggestion));
+			
+			//close
+			con.close();
+			
+		} catch (Exception e2) {
+			logger.info("Connection failed...."+e2.getMessage());
+			e2.printStackTrace();
+		}
+		
 	}
 
 }

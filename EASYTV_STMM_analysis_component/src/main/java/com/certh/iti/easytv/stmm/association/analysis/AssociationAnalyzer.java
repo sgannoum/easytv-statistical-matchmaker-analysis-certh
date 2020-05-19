@@ -11,7 +11,6 @@ public abstract class AssociationAnalyzer {
 	protected List<Profile> input;
 	protected Vector<Itemset> frequent1 = null;
 	protected Vector<Itemset> itemsets = null;
-	protected double minSupport = 0.0;
 	
 	public AssociationAnalyzer(List<Profile> input) {
 		this.input = input;
@@ -23,6 +22,14 @@ public abstract class AssociationAnalyzer {
 	 * @param minSupport
 	 */
 	public abstract Vector<Itemset> getFrequentItemsets(double minSupport);
+	
+	/**
+	 * Get the frequent itemset that has minWeight
+	 * 
+	 * @param minSupport
+	 */
+	public abstract Vector<Itemset> getFrequentItemsets(int minWeight);
+	
 	
 	/**
 	 * Update the itemset weight and support

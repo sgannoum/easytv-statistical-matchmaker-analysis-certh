@@ -69,6 +69,34 @@ public class FPGrowth {
 	}
 	
 	/**
+	 * Find the frequent itemsets in a database
+	 *
+	 * if this is null, then nothing will be saved, this is useful for benchmarking
+	 * 
+	 * @param minWeight the minimum weight
+	 * @return the number of passes executed over the database
+	 */
+	public int findFrequentItemsets(int minWeight) {
+		
+		// Calculate min_weight
+		this.min_weight = minWeight;
+
+		// second pass constructs FPTree
+		this.fpt = constructFPTree();
+
+		// finally we mine the FPTree using the FP-growth algorithm
+		if (fpt != null) {
+			logger.info("<FPgrowth>: Weight "+min_weight+" FPTree has " + fpt.getCountNodes() + " nodes");
+			fpt.fp_growth(new Itemset());
+		} else
+			logger.info("<FPgrowth>: FPTree is empty");
+
+		// there will usually be 2 passes unless there are
+		// no frequent items, in which case we do only 1 pass
+		return pass_num;
+	}
+	
+	/**
 	 * Mine FPTree for the given itemset
 	 * @param itemset
 	 * @return the number of occurrences of the itemset

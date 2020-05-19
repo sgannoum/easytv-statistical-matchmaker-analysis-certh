@@ -46,7 +46,6 @@ public class FPGrowthWrapper extends AssociationAnalyzer {
 	
 	@Override
 	public Vector<Itemset> getFrequentItemsets(double minSupport) {
-		this.minSupport = minSupport;
 		fpg.findFrequentItemsets(minSupport);
    	    return fpg.getFrequentItemsets();
 	}
@@ -59,6 +58,13 @@ public class FPGrowthWrapper extends AssociationAnalyzer {
 	@Override
 	public Vector<Itemset> getItemsets() {
 		return itemsets;
+	}
+
+
+	@Override
+	public Vector<Itemset> getFrequentItemsets(int minWeight) {
+		fpg.findFrequentItemsets(minWeight);
+   	    return fpg.getFrequentItemsets();
 	}
 
 }
