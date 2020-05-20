@@ -5,6 +5,7 @@ import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
@@ -84,14 +85,14 @@ public class DirectoryProfileReader implements ProfileReader {
 
 
 	@Override
-	public Cluster<Profile> readUserHisotryOfInteraction(int id, long timeInterval) {
+	public Cluster<Profile> readUserHisotryOfInteractionOfModel(int id, long timeInterval) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public List<Integer> getUsersIds() {
+	public List<Integer> getModelsId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -106,6 +107,13 @@ public class DirectoryProfileReader implements ProfileReader {
 
 	@Override
 	public void clearHisotryOfInteraction() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void writeUserModificationSuggestions(Map<Integer, JSONObject> params) {
 		// TODO Auto-generated method stub
 		
 	}

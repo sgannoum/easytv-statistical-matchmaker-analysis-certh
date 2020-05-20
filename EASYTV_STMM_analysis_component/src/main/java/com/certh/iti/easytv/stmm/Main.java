@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
@@ -63,7 +65,7 @@ public class Main {
 	private static String RBMM_PORT = "8080";
 	
 	//DB parameters
-	private static String DB_HOST = "172.20.0.2";
+	private static String DB_HOST = "localhost";
 	private static String DB_PORT = "3306";
 	private static String DB_NAME = "easytv";
 	private static String DB_USER = "easytv";
@@ -282,23 +284,29 @@ public class Main {
 	public static void HISOTRY_OF_INTERACTION_ANALYSIS() throws IOException {
 		logger.info("Start mining users history of interaction...");
 		
-		List<Integer> ids = dbReader.getUsersIds();
+		List<Integer> ids = dbReader.getModelsId();
+		Map<Integer, JSONObject> suggestions = new HashMap<Integer, JSONObject>();
 		for(Integer id : ids) {
 			
 			//reset dimensions
 			Profile.init();
 			
-			Cluster<Profile> history = dbReader.readUserHisotryOfInteraction(id, EVENT_INTERVAL);
-			JSONObject modificationSuggestions = new JSONObject();
+			Cluster<Profile> history = dbReader.readUserHisotryOfInteractionOfModel(id, EVENT_INTERVAL);
+			JSONObject suggestion = new JSONObject();
 			
 			for(Entry<String, Attribute> entry : Preference.getAttributes().entrySet()) {
 				Attribute attr = entry.getValue();
 				if(attr.getMostFrequentValueCounts() >= MIN_EVENT_WEIGHT) 
-					modificationSuggestions.put(entry.getKey(), attr.getMostFrequentValue());
+					suggestion.put(entry.getKey(), attr.getMostFrequentValue());
 			}
 			
-			dbReader.writeUserModificationSuggestions(id, modificationSuggestions);
+			if(!suggestion.isEmpty()) {
+				suggestions.put(id, suggestion);
+			}
 		}
+		
+		//batch update
+		dbReader.writeUserModificationSuggestions(suggestions);
 		
 		//clean history table content
 		dbReader.clearHisotryOfInteraction();

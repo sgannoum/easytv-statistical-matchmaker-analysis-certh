@@ -1,6 +1,7 @@
 package com.certh.iti.easytv.stmm.io;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.math3.ml.clustering.Cluster;
 import org.json.JSONObject;
@@ -20,7 +21,7 @@ public interface ProfileReader {
 	 * @param id
 	 * @return
 	 */
-	public Cluster<Profile> readUserHisotryOfInteraction(int id, long timeInterval);
+	public Cluster<Profile> readUserHisotryOfInteractionOfModel(int id, long timeInterval);
 	
 	
 	/**
@@ -32,6 +33,12 @@ public interface ProfileReader {
 	public void writeUserModificationSuggestions(int id, JSONObject Suggestions);
 	
 	/**
+	 * 
+	 * @param params a map of modelId and suggestion to update
+	 */
+	void writeUserModificationSuggestions(Map<Integer, JSONObject> params);
+
+	/**
 	 * Clean up history of interaction
 	 * @param id
 	 * @return
@@ -42,6 +49,6 @@ public interface ProfileReader {
 	 * Get all users ids
 	 * @return
 	 */
-	public List<Integer> getUsersIds();
+	public List<Integer> getModelsId();
 
 }
