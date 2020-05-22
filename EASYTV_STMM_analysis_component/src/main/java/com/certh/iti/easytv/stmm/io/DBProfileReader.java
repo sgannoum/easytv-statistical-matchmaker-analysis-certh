@@ -158,12 +158,12 @@ public class DBProfileReader implements ProfileReader{
 		{			
 			con = DriverManager.getConnection("jdbc:mysql://"+ Url, userName, Password);
 						
-			ResultSet rs = con.createStatement()
-							  .executeQuery("DELETE "
-										  + "FROM InteractionEvents "
-										  + "WHERE id >= 0 ");
+			boolean rs = con.createStatement()
+							  .execute("DELETE "
+									 + "FROM InteractionEvents "
+									 + "WHERE id >= 0 ");
 			
-			logger.info("User history of interaction cleared...."+rs.getFetchSize());
+			logger.info("User history of interaction cleared...."+rs);
 
 			//close
 			con.close();
