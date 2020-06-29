@@ -174,12 +174,7 @@ public class Main {
 		}
 		
 		logger.info("Finished loading " + _Profiles.getPoints().size() + " profiles.");
-		
-		if(!ENVIRONMENT.equals("development")) {
-			logger.info("Send email with statistics...");
-			EmailHandler.sendAttachmenentMail("noreply@easytvproject.eu", "salgan@iti.gr", Profile.getStatistics());
-		}
-		
+
 		/**
 		 *	ASSOCIATION ANALYSIS
 		 */
