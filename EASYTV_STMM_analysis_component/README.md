@@ -10,7 +10,7 @@ Then change to the newly created directory and run the following command:
 
     mvn install
 	
-## Running the Hybrid Matchmaker
+## Running the Statistical Matchmaker
 
 First, you must declare the following environmental variables:
 
